@@ -25,7 +25,6 @@ exports.constructGraph = async function (start, finish) {
     let finishFound = false;
     g.addNode(start);
 
-    var q = [];
     var numOfSteps = 0;
 
     // TODO: Find way to make multiple title requests at once
@@ -43,15 +42,13 @@ exports.constructGraph = async function (start, finish) {
 
         numOfSteps++;
         console.log("STEPS: " + numOfSteps);
-        console.log("QUEUE LENGTH: " + q.length);
 
         for (key in links) {
             if (links[key].includes(finish)) {
                 finishFound = true
                 break
             } else {
-                q = q.concat(links);
-                start = q.shift();
+                start = links[key];
             }
         }
     };

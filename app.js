@@ -29,6 +29,6 @@ const graph = require("./graph");
     // Test small amount of links on multiple pages
     let start6 = ['Emsetal', 'Ptoseulia oxyropa', 'Gusen (river)']
 
-    graph.constructGraph(start4, finish4);
+    graph.constructGraph(start3, finish3);
 
 })();

@@ -45,12 +45,8 @@ exports.parseArticle = async function (pageTitle) {
     // Make request
     let responseBody = await getRequest(url);
 
-    // Extract links from response
-    let links = extractLinksFromResponse(responseBody)
-    // Add the newly extracted links to titleLinks
-    for (key in links) {
-        titleLinks[key].push.apply(titleLinks[key], links[key])
-    }
+    // Extract links from response and assign to titleLinks
+    Object.assign(titleLinks, extractLinksFromResponse(responseBody))
 
     // Make additional requests until all the links for that title are exhausted
     while (responseBody.hasOwnProperty('continue')) {
@@ -60,7 +56,7 @@ exports.parseArticle = async function (pageTitle) {
         responseBody = await getRequest(continueUrl)
 
         // TODO: Optimize dictionary 'links' so not to iterate unnecessarily through keys with empty arrays as values
-        links = extractLinksFromResponse(responseBody)
+        let links = extractLinksFromResponse(responseBody)
         for (key in links) {
             titleLinks[key].push.apply(titleLinks[key], links[key])
         }
