@@ -1,4 +1,7 @@
 const api = require("./api.js");
+const {
+    performance
+} = require('perf_hooks');
 
 class Graph {
     constructor() {
@@ -25,6 +28,7 @@ exports.constructGraph = async function (start, finish) {
     let finishFound = false;
     g.addNode(start);
 
+    // Log starting construction of Graph
     console.log("\n==========================================================\n")
     console.log("STARTING ARTICLE: \t\t" + start)
     console.log("FINISHING ARTICLE: \t\t" + finish)
@@ -34,12 +38,18 @@ exports.constructGraph = async function (start, finish) {
     var numOfSteps = 0;
 
     while (finishFound == false) {
+        var t0 = performance.now();
         var {
             links,
             numOfRequests
         } = await api.parseArticle(start);
-        g.addChildren(start, links);
+        var t1 = performance.now();
 
+        var t2 = performance.now();
+        g.addChildren(start, links);
+        var t3 = performance.now();
+
+        var t4 = performance.now();
         // Create a new node for each of the newly acquired links
         for (key in links) {
             links[key].forEach((elem) => {
@@ -47,13 +57,18 @@ exports.constructGraph = async function (start, finish) {
                     g.addNode(elem)
                 }
             });
-        }
+        };
+        var t5 = performance.now();
 
+        // Log progress
         numOfSteps++;
         console.log("STEP: " + numOfSteps);
-        console.log("REQUESTS: " + numOfRequests)
-        console.log("\n==========================================================\n")
+        console.log("REQUESTS: " + numOfRequests);
+        console.log("TIME REQUIRED FOR REQUESTS: \t\t\t\t\t" + (t1 - t0).toFixed(2) + "\t miliseconds");
+        console.log("TIME REQUIRED FOR ADDING CHILDREN: \t\t\t\t" + (t3 - t2).toFixed(5) + "\t miliseconds");
+        console.log("TIME REQUIRED FOR CREATING NEW NODES FOR EACH CHILDREN: \t" + (t5 - t4).toFixed(5) + "\t miliseconds");
 
+        var t6 = performance.now();
         for (key in links) {
             if (links[key].includes(finish)) {
                 finishFound = true
@@ -62,6 +77,9 @@ exports.constructGraph = async function (start, finish) {
                 start = links[key];
             }
         }
+        var t7 = performance.now();
+        console.log("TIME REQUIRED FOR ASSIGNING NEW LINKS TO THE NEXT REQUEST: \t" + (t7 - t6).toFixed(5) + "\t miliseconds");
+        console.log("\n==========================================================\n")
     };
 
     console.log("====================================================")
