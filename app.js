@@ -20,8 +20,9 @@ const graph = require("./graph");
     let finish3 = 'Stage (theatre)';
 
     // Test massive amount of links on 1 page
+    // 2 steps
     let start4 = 'Barcelona'
-    let finish4 = 'Port of Barcelona'
+    let finish4 = 'Llobregat Delta'
 
     // Test massive amounts of links on multiple pages
     let start5 = ['Barcelona', 'London', 'Berlin']
@@ -29,6 +30,13 @@ const graph = require("./graph");
     // Test small amount of links on multiple pages
     let start6 = ['Emsetal', 'Ptoseulia oxyropa', 'Gusen (river)']
 
-    graph.constructGraph(start3, finish3);
+    // 3 steps
+    // WORKING - presumably because Emsetal has a small amount of links so the request url isn't too long
+    //          2nd link is Germany
+    //          3rd link is Left-side and right-side traffic
+    let start7 = 'Emsetal';
+    let finish7 = 'Roundabout'
+
+    graph.constructGraph('Adam RA-15 Major', 'Constitutional Convention Bill');
 
 })();

@@ -41,9 +41,11 @@ exports.parseArticle = async function (pageTitle) {
     }
 
     let url = "https://en.wikipedia.org/w/api.php?action=query&prop=links&pllimit=max&plnamespace=0&format=json&titles=" + pageTitle
+    var numOfRequests = 0;
 
     // Make request
     let responseBody = await getRequest(url);
+    numOfRequests++;
 
     // Extract links from response and assign to titleLinks
     Object.assign(titleLinks, extractLinksFromResponse(responseBody))
@@ -53,7 +55,8 @@ exports.parseArticle = async function (pageTitle) {
         let apiContinueParam = '&plcontinue=' + responseBody.continue.plcontinue
         let continueUrl = url + apiContinueParam;
 
-        responseBody = await getRequest(continueUrl)
+        responseBody = await getRequest(continueUrl);
+        numOfRequests++;
 
         // TODO: Optimize dictionary 'links' so not to iterate unnecessarily through keys with empty arrays as values
         let links = extractLinksFromResponse(responseBody)
@@ -62,7 +65,10 @@ exports.parseArticle = async function (pageTitle) {
         }
     }
 
-    return titleLinks
+    return {
+        links: titleLinks,
+        numOfRequests: numOfRequests
+    }
 };
 
 // Make a GET request

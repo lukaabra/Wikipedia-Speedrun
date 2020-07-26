@@ -25,12 +25,21 @@ exports.constructGraph = async function (start, finish) {
     let finishFound = false;
     g.addNode(start);
 
+    console.log("\n==========================================================\n")
+    console.log("STARTING ARTICLE: \t\t" + start)
+    console.log("FINISHING ARTICLE: \t\t" + finish)
+    console.log("\nCONSTRUCTING GRAPH...")
+    console.log("\n==========================================================\n")
+
     var numOfSteps = 0;
 
-    // TODO: Find way to make multiple title requests at once
     while (finishFound == false) {
-        var links = await api.parseArticle(start);
+        var {
+            links,
+            numOfRequests
+        } = await api.parseArticle(start);
         g.addChildren(start, links);
+
         // Create a new node for each of the newly acquired links
         for (key in links) {
             links[key].forEach((elem) => {
@@ -41,7 +50,9 @@ exports.constructGraph = async function (start, finish) {
         }
 
         numOfSteps++;
-        console.log("STEPS: " + numOfSteps);
+        console.log("STEP: " + numOfSteps);
+        console.log("REQUESTS: " + numOfRequests)
+        console.log("\n==========================================================\n")
 
         for (key in links) {
             if (links[key].includes(finish)) {
