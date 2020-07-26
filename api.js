@@ -27,20 +27,12 @@ exports.getRandomStartFinish = async function () {
 
 
 exports.parseArticle = async function (pageTitle) {
-    // Object that will be returned containing links for each title
-    let titleLinks = {}
 
-    // If the passeg argument is an array of titles, join them so one request is made in total instead of one for each title
-    if (pageTitle instanceof Array) {
-        pageTitle.forEach((elem) => {
-            titleLinks[elem] = []
-        });
-        pageTitle = pageTitle.join('|')
-    } else {
-        titleLinks[pageTitle] = []
-    }
+    let cleanedUpInput = cleanUpInput(pageTitle);
+    let titleLinks = cleanedUpInput.titleLinks
+    pageTitle = cleanedUpInput.pageTitle
 
-    let url = "https://en.wikipedia.org/w/api.php?action=query&prop=links&pllimit=max&plnamespace=0&format=json&titles=" + pageTitle
+    let url = constructURL(pageTitle);
     var numOfRequests = 0;
 
     // Make request
@@ -81,7 +73,63 @@ async function getRequest(url) {
     } catch (error) {
         console.log(error);
     }
+};
+
+function constructURL(pageTitle) {
+    let url;
+    let urlString = "https://en.wikipedia.org/w/api.php?action=query&prop=links&pllimit=max&plnamespace=0&format=json&titles="
+
+    // If the pageTitle is an array of 50 links in each array, construct an array of URLs fo each array of titles
+    if (pageTitle instanceof Array) {
+        url = [];
+
+        pageTitle.forEach((elem) => {
+            url.push(urlString + elem)
+        });
+
+        // Else, just construct the URL from the title
+    } else {
+        url = urlString + pageTitle
+    }
+
+    return url
 }
+
+function cleanUpInput(pageTitle) {
+    let titleLinks = {}
+
+    // Create an empty array for each pageTitle provided which will store links for each article in the future
+    if (pageTitle instanceof Array) {
+        pageTitle.forEach((elem) => {
+            titleLinks[elem] = []
+        });
+
+        // If the passed argument array has more than 50 elements, break it off into multiple arrays of max length 50
+        if (pageTitle.length > 50) {
+            let multipleArrayPageTitles = []
+
+            while (pageTitle.length > 0) {
+                multipleArrayPageTitles.push(pageTitle.splice(0, 50))
+            }
+
+            // Assign the array of length 50 titles to pageTitle
+            pageTitle = multipleArrayPageTitles
+
+            // Else just create a single string from the array of strings
+        } else {
+            pageTitle = pageTitle.join('|')
+        }
+
+        // If the provided pageTitle is a single title and not an array of titles, create an empty array for it
+    } else {
+        titleLinks[pageTitle] = []
+    }
+
+    return {
+        titleLinks: titleLinks,
+        pageTitle: pageTitle
+    }
+};
 
 // Given an object of objects containing titles of links, return only the titles
 function extractLinksFromResponse(responseBody) {
