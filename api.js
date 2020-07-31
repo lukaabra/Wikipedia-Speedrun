@@ -26,7 +26,7 @@ exports.getRandomStartFinish = async function () {
 };
 
 
-exports.parseArticle = async function (articleTitle) {
+exports.queryArticle = async function (articleTitle) {
 
     let titleLinks = {}
     let url = constructURL(articleTitle);

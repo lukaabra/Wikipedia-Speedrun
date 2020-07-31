@@ -16,7 +16,7 @@ class Graph {
         if (!(node in this.nodes) && children instanceof Array) {
             this.nodes[node] = {
                 title: node,
-                articleLinks: children
+                articleObject: children
             };
         }
     }
@@ -25,7 +25,7 @@ class Graph {
         if (parentNode in this.nodes) {
             this.nodes[parentNode] = {
                 title: parentNode,
-                articleLinks: childNodes
+                articleObject: childNodes
             }
         }
     }
@@ -43,10 +43,10 @@ class Graph {
 
 };
 
-function createNodesFromChildren(articleLinks, graph) {
+function createNodesFromChildren(articleObject, graph) {
     // For each link in the array, add it as a distinct node in the graph
-    for (title in articleLinks) {
-        articleLinks[title].forEach((link) => {
+    for (title in articleObject) {
+        articleObject[title].forEach((link) => {
             if (!(link in graph.nodes)) {
                 graph.addNode(link)
             }
@@ -58,69 +58,98 @@ exports.writeArticlesToDB = async function (start) {
 
     Article.deleteMany({}, () => {})
 
+    //============================================
+    // Variable declarations
+    //============================================
     let lastArticleInLayer;
+    let threshold = 0.2;
     let layer = 0;
-    let articleLinks = {}
+    let articleObject = {}
     let explored = [];
     let unexplored = [];
 
-    // Parse the article and store it with it's links to the db
-    articleLinks = await api.parseArticle(start);
+    //============================================
+    // Query starting article
+    //============================================
+
+    articleObject = await api.queryArticle(start);
 
     // Mark the title as explored, and all of its links as unexplored
     // Mark the last unexplored article as the end of the current layer of the imaginary graph
-    explored.push(articleLinks.title);
-    articleLinks.links.forEach((link) => {
+    explored.push(articleObject.title);
+    articleObject.links.forEach((link) => {
         // Due to a large amount of links for each layer of the imaginary graph, there is only
-        // a ~33% chance of the link being parsed reducing the link amount to a third
-        let chance = (Math.random() * 10).toFixed(0)
-        if (chance < 3) {
+        // a ~20% chance of the link being parsed reducing the link amount to a fifth
+        let chance = (Math.random()).toFixed(1)
+        if (chance < threshold) {
             unexplored.push(link);
             lastArticleInLayer = link
         }
     });
     layer++;
 
-    // Reduce the original size of links to a third
-    articleLinks.links = unexplored
+    // Reduce the original size of links to a fifth
+    articleObject.links = unexplored
 
-    Article.create(articleLinks, (err, newlyCreated) => {
+    //============================================
+    // Store to database
+    //============================================
+
+    Article.create(articleObject, (err, newlyCreated) => {
         if (err) console.log("CREATE: " + err)
     });
+
+    //============================================
+    // Logging
+    //============================================
 
     console.log("LAYER: " + layer)
     console.log("EXPLORED SIZE: " + explored.length)
     console.log("UNEXPLORED SIZE: " + unexplored.length)
     console.log("==============================")
 
+
+    //============================================
+    // Query starting article's links
+    //============================================
+
     for (let item of unexplored) {
         // Parse the article and store it with it's links to the db
-        articleLinks = await api.parseArticle(item)
+        articleObject = await api.queryArticle(item)
 
         // Since unexplored contains the links from the previous articles a new list is needed to store
-        // only a third of the total links in articleLinks
+        // only a fifth of the total links in articleObject
         let currentItemUnexplored = []
 
         // Mark the title as explored, and all of its links as unexplored
         explored.push(item)
-        articleLinks.links.forEach((link) => {
+        articleObject.links.forEach((link) => {
             // Due to a large amount of links for each layer of the imaginary graph, there is only
-            // a ~33% chance of the link being parsed reducing the link amount to a third
-            let chance = (Math.random() * 10).toFixed(0)
-            if (chance < 3) {
+            // a ~20% chance of the link being parsed reducing the link amount to a fifth
+            let chance = (Math.random()).toFixed(1)
+            if (chance < threshold) {
                 currentItemUnexplored.push(link)
                 unexplored.push(link);
                 // Mark the last unexplored article as the end of the current layer of the imaginary graph
                 if (item == lastArticleInLayer) lastArticleInLayer = link
             }
         });
+
         if (item == lastArticleInLayer) layer++;
 
-        articleLinks.links = currentItemUnexplored
+        articleObject.links = currentItemUnexplored
 
-        Article.create(articleLinks, (err, newlyCreated) => {
+        //============================================
+        // Store to database
+        //============================================
+
+        Article.create(articleObject, (err, newlyCreated) => {
             if (err) console.log("CREATE: " + err)
         });
+
+        //============================================
+        // Logging
+        //============================================
 
         console.log("LAYER: " + layer)
         console.log("EXPLORED SIZE: " + explored.length)
