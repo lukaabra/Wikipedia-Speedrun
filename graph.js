@@ -62,11 +62,16 @@ exports.writeArticlesToDB = async function (start) {
     // Variable declarations
     //============================================
     let lastArticleInLayer;
-    let threshold = 0.1;
+    let threshold = 0.05;
     let layer = 0;
     let articleObject = {}
+
     let explored = [];
     let unexplored = [];
+
+    // Variables for logging purposes
+    let articlesToNextLayer;
+    let articlesPerLayer = []
 
     //============================================
     // Query starting article
@@ -80,8 +85,8 @@ exports.writeArticlesToDB = async function (start) {
     articleObject.links.forEach((link) => {
 
         // Due to a large amount of links for each layer of the imaginary graph, there is only
-        // a ~10% chance of the link being parsed reducing the link amount to a tenth of the original size
-        let chance = (Math.random()).toFixed(1)
+        // a ~5% chance of the link being parsed reducing the link amount to 5% of the original size
+        let chance = (Math.random()).toFixed(2)
 
         if (chance < threshold) {
             unexplored.push(link);
@@ -89,8 +94,10 @@ exports.writeArticlesToDB = async function (start) {
         }
     });
     layer++;
+    articlesToNextLayer = unexplored.length
+    articlesPerLayer.push(articlesToNextLayer)
 
-    // Reduce the original size of links to a tenth
+    // Reduce the original size of links to 5%
     articleObject.links = unexplored
 
     //============================================
@@ -101,7 +108,7 @@ exports.writeArticlesToDB = async function (start) {
         if (err) console.log("CREATE: " + err)
     });
 
-    logProgress(layer, explored, unexplored)
+    logProgress(layer, articlesToNextLayer, explored, unexplored)
 
     //============================================
     // Query starting article's links
@@ -112,18 +119,22 @@ exports.writeArticlesToDB = async function (start) {
         articleObject = await api.queryArticle(item)
 
         // Since unexplored contains the links from the previous articles a new list is needed to store
-        // only a tenth of the total links in articleObject
+        // only 5% of the total links in articleObject
         let currentItemUnexplored = []
 
-        if (item == lastArticleInLayer) layer++;
+        if (item == lastArticleInLayer) {
+            layer++;
+            articlesToNextLayer = unexplored.length
+            articlesPerLayer.push(articlesToNextLayer)
+        }
 
         // Mark the title as explored, and all of its links as unexplored
         explored.push(item)
         articleObject.links.forEach((link) => {
 
             // Due to a large amount of links for each layer of the imaginary graph, there is only
-            // a ~10% chance of the link being parsed reducing the link amount to a tenth of the original size
-            let chance = (Math.random()).toFixed(1)
+            // a ~5% chance of the link being parsed reducing the link amount to 5% of the original size
+            let chance = (Math.random()).toFixed(2)
 
             // Ensure that a new lastArticleInLayer is assigned
             if (item == lastArticleInLayer) chance = 0
@@ -147,20 +158,37 @@ exports.writeArticlesToDB = async function (start) {
             if (err) console.log("CREATE: " + err)
         });
 
-        logProgress(layer, explored, unexplored)
+        logProgress(layer, articlesToNextLayer, explored, unexplored)
 
-        if (layer == 10) break
+        if (layer == 6) break
     }
 
-    Article.find({}, (err, allArticles) => {
-        if (err) console.log("FINAL FIND: " + err)
-        else console.log(allArticles.length)
+    articlesPerLayer.forEach((articles, index) => {
+        console.log("LAYER " + (index + 1) + " HAS " + articles + " ARTICLES.")
     })
+    console.log("\n")
+    checkNumberOfArticles();
+
 };
 
-function logProgress(layer, explored, unexplored) {
+function logProgress(layer, articlesToNextLayer, explored, unexplored) {
     console.log("LAYER: " + layer)
+    console.log("ARTICLES TO NEXT LAYER: " + articlesToNextLayer)
     console.log("EXPLORED SIZE: " + explored.length)
     console.log("UNEXPLORED SIZE: " + unexplored.length)
     console.log("==============================")
+}
+
+function checkNumberOfArticles() {
+    Article.find({}, (err, allArticles) => {
+        if (err) console.log("FINAL FIND: " + err)
+        else console.log("NUMBER OF ARTICLES: " + allArticles.length)
+    });
+
+    Article.find({
+        links: []
+    }, (err, allArticles) => {
+        if (err) console.log("FINAL FIND: " + err)
+        else console.log("NUMBER OF ARTICLES WITH NO LINKS: " + allArticles.length)
+    });
 }
