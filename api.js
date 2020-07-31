@@ -1,4 +1,7 @@
 const got = require('got'); // Using Got since Node's http library doesn't support async functions (?)
+const {
+    response
+} = require('express');
 
 // Returns a promise even if getRandomStartFinish is sync
 exports.getRandomStartFinish = async function () {
@@ -81,6 +84,11 @@ function constructURL(articleTitle, plcontinue = false) {
 function extractLinksFromResponse(responseBody) {
     let linkTitles = {};
     let title;
+    try {
+        let a = responseBody.query.pages;
+    } catch (err) {
+        console.log(responseBody.query)
+    }
     let pages = responseBody.query.pages;
 
     // Iterate through all pages in response
