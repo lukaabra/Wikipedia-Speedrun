@@ -62,7 +62,7 @@ exports.writeArticlesToDB = async function (start) {
     // Variable declarations
     //============================================
     let lastArticleInLayer;
-    let threshold = 0.2;
+    let threshold = 0.1;
     let layer = 0;
     let articleObject = {}
     let explored = [];
@@ -78,9 +78,11 @@ exports.writeArticlesToDB = async function (start) {
     // Mark the last unexplored article as the end of the current layer of the imaginary graph
     explored.push(articleObject.title);
     articleObject.links.forEach((link) => {
+
         // Due to a large amount of links for each layer of the imaginary graph, there is only
-        // a ~20% chance of the link being parsed reducing the link amount to a fifth
+        // a ~10% chance of the link being parsed reducing the link amount to a tenth of the original size
         let chance = (Math.random()).toFixed(1)
+
         if (chance < threshold) {
             unexplored.push(link);
             lastArticleInLayer = link
@@ -88,7 +90,7 @@ exports.writeArticlesToDB = async function (start) {
     });
     layer++;
 
-    // Reduce the original size of links to a fifth
+    // Reduce the original size of links to a tenth
     articleObject.links = unexplored
 
     //============================================
@@ -99,15 +101,7 @@ exports.writeArticlesToDB = async function (start) {
         if (err) console.log("CREATE: " + err)
     });
 
-    //============================================
-    // Logging
-    //============================================
-
-    console.log("LAYER: " + layer)
-    console.log("EXPLORED SIZE: " + explored.length)
-    console.log("UNEXPLORED SIZE: " + unexplored.length)
-    console.log("==============================")
-
+    logProgress(layer, explored, unexplored)
 
     //============================================
     // Query starting article's links
@@ -118,15 +112,22 @@ exports.writeArticlesToDB = async function (start) {
         articleObject = await api.queryArticle(item)
 
         // Since unexplored contains the links from the previous articles a new list is needed to store
-        // only a fifth of the total links in articleObject
+        // only a tenth of the total links in articleObject
         let currentItemUnexplored = []
+
+        if (item == lastArticleInLayer) layer++;
 
         // Mark the title as explored, and all of its links as unexplored
         explored.push(item)
         articleObject.links.forEach((link) => {
+
             // Due to a large amount of links for each layer of the imaginary graph, there is only
-            // a ~20% chance of the link being parsed reducing the link amount to a fifth
+            // a ~10% chance of the link being parsed reducing the link amount to a tenth of the original size
             let chance = (Math.random()).toFixed(1)
+
+            // Ensure that a new lastArticleInLayer is assigned
+            if (item == lastArticleInLayer) chance = 0
+
             if (chance < threshold) {
                 currentItemUnexplored.push(link)
                 unexplored.push(link);
@@ -135,8 +136,7 @@ exports.writeArticlesToDB = async function (start) {
             }
         });
 
-        if (item == lastArticleInLayer) layer++;
-
+        // Reduce the original size of links to a tenth
         articleObject.links = currentItemUnexplored
 
         //============================================
@@ -147,14 +147,7 @@ exports.writeArticlesToDB = async function (start) {
             if (err) console.log("CREATE: " + err)
         });
 
-        //============================================
-        // Logging
-        //============================================
-
-        console.log("LAYER: " + layer)
-        console.log("EXPLORED SIZE: " + explored.length)
-        console.log("UNEXPLORED SIZE: " + unexplored.length)
-        console.log("==============================")
+        logProgress(layer, explored, unexplored)
 
         if (layer == 10) break
     }
@@ -163,7 +156,11 @@ exports.writeArticlesToDB = async function (start) {
         if (err) console.log("FINAL FIND: " + err)
         else console.log(allArticles.length)
     })
-
-    Article.deleteMany({}, () => {})
-
 };
+
+function logProgress(layer, explored, unexplored) {
+    console.log("LAYER: " + layer)
+    console.log("EXPLORED SIZE: " + explored.length)
+    console.log("UNEXPLORED SIZE: " + unexplored.length)
+    console.log("==============================")
+}
