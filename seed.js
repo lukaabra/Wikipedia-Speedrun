@@ -3,6 +3,18 @@ const api = require("./api.js");
 const Article = require('./models/articles.js');
 
 exports.seedDb = async function (start) {
+    /*
+    Function that seeds the database with Wikipedia articles and their links. Starts at the starting article 'start',
+    and finishes after 5 layers of Wikipedia articles and their links have been passed.
+    In other words -> 
+
+                        Starting article                    LAYER 0
+                       /       |        \               ---------------
+                Article #1  Article #2  Article #3          LAYER 1
+               /     \          \         /     \       ---------------
+      Article #4  Article #5    ...     ...     ...         LAYER 2
+          |           |          |       |       |            ...
+    */
 
     //============================================
     // Variable declarations
