@@ -1,6 +1,4 @@
-const api = require("./api.js");
-const graph = require("./graph");
-const mongoose = require("mongoose");
+const seed = require('./seed.js')
 
 const Article = require('./models/articles.js')
 
@@ -8,15 +6,15 @@ const Article = require('./models/articles.js')
 //====================================================
 // MONGOOSE SETUP
 //====================================================
+
 mongoose.connect('mongodb://localhost/test', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
 
-// HOW MANY STEPS DOES IT TAKE TO REACH DONALD TRUMP
 (async () => {
 
-    // graph.seedDb('Rijeka');
+    // seed.seedDb('Rijeka');
 
 })();
