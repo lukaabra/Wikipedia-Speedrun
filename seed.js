@@ -1,4 +1,4 @@
-const api = require("./api.js");
+const wiki = require("./wikiapi.js");
 
 const Article = require('./models/articles.js');
 
@@ -35,7 +35,7 @@ exports.seedDb = async function (start) {
     // Query the starting article
     //============================================
 
-    articleObject = await api.queryArticle(start);
+    articleObject = await wiki.queryArticle(start);
 
     // Mark the title as explored, and all of its links as unexplored
     // Mark the last unexplored article as the end of the current layer of the imaginary graph
@@ -75,7 +75,7 @@ exports.seedDb = async function (start) {
 
     for (let item of unexplored) {
         // Parse the article and store it with it's links to the db
-        articleObject = await api.queryArticle(item);
+        articleObject = await wiki.queryArticle(item);
 
         // Since unexplored contains the links from the previous articles a new list is needed to store
         // only 5% of the total links in articleObject
