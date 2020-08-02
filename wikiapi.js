@@ -111,9 +111,10 @@ function extractLinksFromResponse(responseBody) {
 
         // If the current page has links, add them to linkTitles
         if (page.hasOwnProperty('links')) {
-            for (var i = 0; i < page.links.length; i++) {
-                linkTitles['links'].push(page.links[i].title);
-            }
+            // Iterate through all links and add the title of links to 'linkTitles'
+            page.links.map((link) => {
+                linkTitles['links'].push(link.title)
+            });
         }
     }
 

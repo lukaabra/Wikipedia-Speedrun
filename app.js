@@ -10,15 +10,15 @@ const seed = require('./seed.js')
 // MONGOOSE SETUP
 //====================================================
 
-// mongoose.connect('mongodb://localhost/test', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-// });
+mongoose.connect('mongodb://localhost/test', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
 
-// (async () => {
-//     seed.seedDb('Rijeka');
-// })();
+(async () => {
+    seed.seedDb('Rijeka');
+})();
 
 app.listen(3000, (req, res) => {
     console.log("Serving on port 3000 ...");
