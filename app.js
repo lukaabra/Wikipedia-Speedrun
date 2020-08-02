@@ -13,8 +13,6 @@ mongoose.connect('mongodb://localhost/test', {
 });
 
 
-(async () => {
-
-    // seed.seedDb('Rijeka');
-
-})();
+// (async () => {
+//     seed.seedDb('Rijeka');
+// })();
