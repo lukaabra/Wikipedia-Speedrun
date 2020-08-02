@@ -17,7 +17,6 @@ mongoose.connect('mongodb://localhost/test', {
 // HOW MANY STEPS DOES IT TAKE TO REACH DONALD TRUMP
 (async () => {
 
-    // graph.writeArticlesToDB('Gymnopilus submarasmioides');
-    graph.writeArticlesToDB('Rijeka');
+    // graph.seedDb('Rijeka');
 
 })();
