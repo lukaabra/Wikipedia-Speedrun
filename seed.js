@@ -24,8 +24,8 @@ exports.seedDb = async function (start) {
     let layer = 0;
     let articleObject = {};
 
-    let explored = [];
-    let unexplored = [];
+    let explored = new Set();
+    let unexplored = new Set();
 
     // Variables for logging purposes
     let articlesToNextLayer;
@@ -39,7 +39,7 @@ exports.seedDb = async function (start) {
 
     // Mark the title as explored, and all of its links as unexplored
     // Mark the last unexplored article as the end of the current layer of the imaginary graph
-    explored.push(articleObject.title);
+    explored.add(articleObject.title);
     articleObject.links.forEach((link) => {
 
         // Due to a large amount of links for each layer of the imaginary graph, there is only
@@ -47,13 +47,13 @@ exports.seedDb = async function (start) {
         let chance = (Math.random()).toFixed(2);
 
         if (chance < threshold) {
-            unexplored.push(link);
+            unexplored.add(link);
             lastArticleInLayer = link
         }
     });
 
     layer++;
-    articlesToNextLayer = unexplored.length;
+    articlesToNextLayer = unexplored.size;
     articlesPerLayer.push(articlesToNextLayer);
 
     // Reduce the original size of links to 5%
@@ -62,6 +62,9 @@ exports.seedDb = async function (start) {
     //============================================
     // Store to database
     //============================================
+
+    // Convert to array to be able to store to database
+    articleObject.links = Array.from(articleObject.links)
 
     Article.create(articleObject, (err, newlyCreated) => {
         if (err) console.log("CREATE: " + err);
@@ -79,16 +82,16 @@ exports.seedDb = async function (start) {
 
         // Since unexplored contains the links from the previous articles a new list is needed to store
         // only 5% of the total links in articleObject
-        let currentItemUnexplored = [];
+        let currentItemUnexplored = new Set();
 
         if (item == lastArticleInLayer) {
             layer++;
-            articlesToNextLayer = unexplored.length;
+            articlesToNextLayer = unexplored.size;
             articlesPerLayer.push(articlesToNextLayer);
         }
 
         // Mark the title as explored, and all of its links as unexplored
-        explored.push(item);
+        explored.add(item);
         articleObject.links.forEach((link) => {
 
             // Due to a large amount of links for each layer of the imaginary graph, there is only
@@ -99,8 +102,8 @@ exports.seedDb = async function (start) {
             if (item == lastArticleInLayer) chance = 0;
 
             if (chance < threshold) {
-                currentItemUnexplored.push(link);
-                unexplored.push(link);
+                currentItemUnexplored.add(link);
+                unexplored.add(link);
                 // Mark the last unexplored article as the end of the current layer of the imaginary graph
                 if (item == lastArticleInLayer) lastArticleInLayer = link;
             }
@@ -112,6 +115,9 @@ exports.seedDb = async function (start) {
         //============================================
         // Store to database
         //============================================
+
+        // Convert to array to be able to store to database
+        articleObject.links = Array.from(articleObject.links)
 
         Article.create(articleObject, (err, newlyCreated) => {
             if (err) console.log("CREATE: " + err);
@@ -133,8 +139,8 @@ exports.seedDb = async function (start) {
 function logProgress(layer, articlesToNextLayer, explored, unexplored) {
     console.log("LAYER: " + layer);
     console.log("ARTICLES TO NEXT LAYER: " + articlesToNextLayer);
-    console.log("EXPLORED SIZE: " + explored.length);
-    console.log("UNEXPLORED SIZE: " + unexplored.length);
+    console.log("EXPLORED SIZE: " + explored.size);
+    console.log("UNEXPLORED SIZE: " + unexplored.size);
     console.log("==============================");
 };
 

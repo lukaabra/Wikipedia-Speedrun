@@ -39,6 +39,8 @@ exports.queryArticle = async function (articleTitle) {
         titleLinks['links'].push(...links['links']);
     }
 
+    titleLinks['links'] = new Set(titleLinks['links'])
+
     return titleLinks
 };
 
