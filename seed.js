@@ -103,7 +103,7 @@ exports.seedDb = async function (start) {
 
             if (chance < threshold) {
                 currentItemUnexplored.add(link);
-                unexplored.add(link);
+                if (!(explored.has(link))) unexplored.add(link);
                 // Mark the last unexplored article as the end of the current layer of the imaginary graph
                 if (item == lastArticleInLayer) lastArticleInLayer = link;
             }

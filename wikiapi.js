@@ -1,7 +1,4 @@
 const got = require('got'); // Using Got since Node's http library doesn't support async functions (?)
-// const {
-//     response
-// } = require('express');
 
 
 exports.queryArticle = async function (articleTitle) {
