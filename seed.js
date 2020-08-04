@@ -25,11 +25,13 @@ exports.seedDb = async function (start) {
     let articleObject = {};
 
     let explored = new Set();
-    let unexplored = new Set();
+    let queue = new Set();
 
     // Variables for logging purposes
     let articlesToNextLayer;
     let articlesPerLayer = [];
+
+    Article.deleteMany({}, () => {})
 
     //============================================
     // Query the starting article
@@ -37,8 +39,8 @@ exports.seedDb = async function (start) {
 
     articleObject = await wiki.queryArticle(start);
 
-    // Mark the title as explored, and all of its links as unexplored
-    // Mark the last unexplored article as the end of the current layer of the imaginary graph
+    // Mark the title as explored, and all of its links as queue
+    // Mark the last queue article as the end of the current layer of the imaginary graph
     explored.add(articleObject.title);
     articleObject.links.forEach((link) => {
 
@@ -47,17 +49,17 @@ exports.seedDb = async function (start) {
         let chance = (Math.random()).toFixed(2);
 
         if (chance < threshold) {
-            unexplored.add(link);
+            queue.add(link);
             lastArticleInLayer = link
         }
     });
 
     layer++;
-    articlesToNextLayer = unexplored.size;
+    articlesToNextLayer = queue.size;
     articlesPerLayer.push(articlesToNextLayer);
 
     // Reduce the original size of links to 5%
-    articleObject.links = unexplored;
+    articleObject.links = queue;
 
     //============================================
     // Store to database
@@ -70,27 +72,27 @@ exports.seedDb = async function (start) {
         if (err) console.log("CREATE: " + err);
     });
 
-    logProgress(layer, articlesToNextLayer, explored, unexplored);
+    logProgress(layer, articlesToNextLayer, explored, queue);
 
     //============================================
     // Query starting article's links
     //============================================
 
-    for (let item of unexplored) {
+    for (let item of queue) {
         // Parse the article and store it with it's links to the db
         articleObject = await wiki.queryArticle(item);
 
-        // Since unexplored contains the links from the previous articles a new list is needed to store
+        // Since queue contains the links from the previous articles a new list is needed to store
         // only 5% of the total links in articleObject
-        let currentItemUnexplored = new Set();
+        let currentItemqueue = new Set();
 
         if (item == lastArticleInLayer) {
             layer++;
-            articlesToNextLayer = unexplored.size;
+            articlesToNextLayer = queue.size;
             articlesPerLayer.push(articlesToNextLayer);
         }
 
-        // Mark the title as explored, and all of its links as unexplored
+        // Mark the title as explored, and all of its links as queue
         explored.add(item);
         articleObject.links.forEach((link) => {
 
@@ -102,15 +104,18 @@ exports.seedDb = async function (start) {
             if (item == lastArticleInLayer) chance = 0;
 
             if (chance < threshold) {
-                currentItemUnexplored.add(link);
-                if (!(explored.has(link))) unexplored.add(link);
-                // Mark the last unexplored article as the end of the current layer of the imaginary graph
-                if (item == lastArticleInLayer) lastArticleInLayer = link;
+                // If link is not in explored, add it to the queue (this is to avoid duplicates)
+                if (!(explored.has(link))) {
+                    currentItemqueue.add(link);
+                    queue.add(link);
+                    // Mark the last queue article as the end of the current layer of the imaginary graph
+                    if (item == lastArticleInLayer) lastArticleInLayer = link;
+                }
             }
         });
 
         // Reduce the original size of links to a tenth
-        articleObject.links = currentItemUnexplored;
+        articleObject.links = currentItemqueue;
 
         //============================================
         // Store to database
@@ -123,7 +128,7 @@ exports.seedDb = async function (start) {
             if (err) console.log("CREATE: " + err);
         });
 
-        logProgress(layer, articlesToNextLayer, explored, unexplored);
+        logProgress(layer, articlesToNextLayer, explored, queue);
 
         if (layer == 5) break;
     }
@@ -136,11 +141,11 @@ exports.seedDb = async function (start) {
 
 };
 
-function logProgress(layer, articlesToNextLayer, explored, unexplored) {
+function logProgress(layer, articlesToNextLayer, explored, queue) {
     console.log("LAYER: " + layer);
     console.log("ARTICLES TO NEXT LAYER: " + articlesToNextLayer);
     console.log("EXPLORED SIZE: " + explored.size);
-    console.log("UNEXPLORED SIZE: " + unexplored.size);
+    console.log("QUEUE SIZE: " + queue.size);
     console.log("==============================");
 };
 
