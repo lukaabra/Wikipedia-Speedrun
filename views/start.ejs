@@ -9,10 +9,10 @@
 
 <body>
     <div>
-        <h3><%= randomArticle[0].title %></h3>
+        <h3><%= randomArticle.title %></h3>
 
         <ul>
-            <% randomArticle[0].links.forEach((link) => { %>
+            <% randomArticle.links.forEach((link) => { %>
             <li><%= link %></li>
             <% }); %>
         </ul>
