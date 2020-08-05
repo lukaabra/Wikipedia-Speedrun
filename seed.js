@@ -31,7 +31,6 @@ exports.seedDb = async function (start) {
     let articlesToNextLayer;
     let articlesPerLayer = [];
 
-    Article.deleteMany({}, () => {})
 
     //============================================
     // Query the starting article
@@ -82,9 +81,9 @@ exports.seedDb = async function (start) {
         // Parse the article and store it with it's links to the db
         articleObject = await wiki.queryArticle(item);
 
-        // Since queue contains the links from the previous articles a new list is needed to store
+        // Since queue contains the links from the previous articles a new set is needed to store
         // only 5% of the total links in articleObject
-        let currentItemqueue = new Set();
+        let currentItemQueue = new Set();
 
         if (item == lastArticleInLayer) {
             layer++;
@@ -106,7 +105,7 @@ exports.seedDb = async function (start) {
             if (chance < threshold) {
                 // If link is not in explored, add it to the queue (this is to avoid duplicates)
                 if (!(explored.has(link))) {
-                    currentItemqueue.add(link);
+                    currentItemQueue.add(link);
                     queue.add(link);
                     // Mark the last queue article as the end of the current layer of the imaginary graph
                     if (item == lastArticleInLayer) lastArticleInLayer = link;
@@ -115,7 +114,7 @@ exports.seedDb = async function (start) {
         });
 
         // Reduce the original size of links to a tenth
-        articleObject.links = currentItemqueue;
+        articleObject.links = currentItemQueue;
 
         //============================================
         // Store to database
