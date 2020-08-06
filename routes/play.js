@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router();
 var Article = require('../models/articles');
+var graph = require('../graph.js');
 
 const ARTICLE_COUNT = 47163
 
@@ -28,10 +29,15 @@ router.get("/start", async (req, res) => {
 
 // GET ARTICLE
 router.get("/play/:id", async (req, res) => {
+
     Article.findById(req.params.id, (err, foundArticle) => {
         if (err) {
             console.log("GET ARTICLE ERROR: " + err)
         } else {
+
+            var g = new graph.Graph(foundArticle)
+            g.constructGraph(foundArticle)
+
             res.render("play/play", {
                 article: foundArticle
             });
