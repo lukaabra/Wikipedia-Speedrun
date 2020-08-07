@@ -9,11 +9,11 @@
 
 <body>
     <div>
-        <h3><%= article.title %></h3>
+        <h3><%= center.title %></h3>
 
         <ul>
-            <% article.links.forEach((link) => { %>
-            <li><%= link %></li>
+            <% center.links.forEach((link) => { %>
+            <li><%= link %> - <%= children[link].links.length %></li>
             <% }); %>
         </ul>
 

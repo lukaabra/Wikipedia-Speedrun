@@ -30,16 +30,19 @@ router.get("/start", async (req, res) => {
 // GET ARTICLE
 router.get("/play/:id", async (req, res) => {
 
-    Article.findById(req.params.id, (err, foundArticle) => {
+    Article.findById(req.params.id, async (err, foundArticle) => {
         if (err) {
             console.log("GET ARTICLE ERROR: " + err)
         } else {
 
-            var g = new graph.Graph(foundArticle)
-            g.constructGraph(foundArticle)
+            let g = new graph.Graph(foundArticle);
+            await g.constructGraphToShow();
+
+            console.log(Object.keys(g.nodes).length)
 
             res.render("play/play", {
-                article: foundArticle
+                center: g.center,
+                children: g.nodes
             });
         }
     });

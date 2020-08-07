@@ -1,21 +1,21 @@
 var Article = require('./models/articles');
 
 class Node {
-    constructor(title, id = "", edges = [], explored = false) {
+    constructor(title, id = "", links = [], explored = false) {
         this.title = title;
         this.id = id;
-        this.edges = []
+        this.links = []
         this.explored = explored
         this.isLeaf = false
 
-        this.addEdges(edges)
+        this.addLinks(links)
     }
 
-    addEdges(edges) {
-        if (edges instanceof Array) {
-            this.edges.push(...edges)
+    addLinks(links) {
+        if (links instanceof Array) {
+            this.links.push(...links)
         } else {
-            this.edges.push(edges)
+            this.links.push(links)
         }
     }
 }
@@ -24,9 +24,8 @@ class Graph {
     constructor(article) {
         this.nodes = {}
         this.size = Object.keys(this.nodes).length
+        // Center is not included in nodes
         this.center = new Node(article.title, article.id, article.links, true)
-
-        this.addNode(article.title, article.id, article.links)
     }
 
     async addNode(title, id = null, links) {
@@ -35,28 +34,30 @@ class Graph {
         // Adding the initial node
         if (id != null) {
             nodeToAdd = new Node(title, id, links)
+            this.nodes[title] = nodeToAdd
         } else {
             // Look up db to get id and links of the node to add
-            let nodeRecord = await Article.findOne({
+            let newNode = await Article.findOne({
                 'title': title
             });
 
-            // If nodeRecord is null, that means that the link (node) that is being looked up is a leaf node
+            // If newNode is null, that means that the link (node) that is being looked up is a leaf node
             // which means that it is not even stored in the database.
-            if (nodeRecord != null) nodeToAdd = new Node(nodeRecord.title, nodeRecord.id, nodeRecord.links)
-            else {
-                nodeToAdd = new Node(title)
-                nodeToAdd.isLeaf = true
+            if (newNode != null) {
+                this.nodes[title] = new Node(newNode.title, newNode.id, newNode.links);
+            } else {
+                this.nodes[title] = new Node(title);
+                this.nodes[title].isLeaf = true;
             }
         }
-
-        this.nodes[title] = nodeToAdd
     }
 
-    constructGraph(article) {
-        this.center.edges.forEach((edge) => {
-            this.addNode(edge)
-        }, this)
+    async constructGraphToShow() {
+
+        for (let link of this.center.links) {
+            await this.addNode(link)
+        }
+
     }
 }
 
