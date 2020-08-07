@@ -9,11 +9,19 @@
 
 <body>
     <div>
+        <h1><a href="/">HOME</a></h1>
+
         <h3><%= center.title %></h3>
 
         <ul>
             <% center.links.forEach((link) => { %>
+            <!-- If the link has no children (therefore also has no id) -->
+            <% if (children[link].links.length != 0) { %>
+            <li><a href="/play/<%= children[link].id %>"><%= link %> - <%= children[link].links.length %></a></li>
+            <% } else { %>
+            <!-- Cannot click on link if it has no children (because it also has no id since it is not in the database) -->
             <li><%= link %> - <%= children[link].links.length %></li>
+            <% } %>
             <% }); %>
         </ul>
 
