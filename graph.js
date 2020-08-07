@@ -1,47 +1,66 @@
+var Article = require('./models/articles');
+
+class Node {
+    constructor(title, id = "", links = [], explored = false) {
+        this.title = title;
+        this.id = id;
+        this.links = []
+        this.explored = explored
+        this.isLeaf = false
+
+        this.addLinks(links)
+    }
+
+    addLinks(links) {
+        if (links instanceof Array) {
+            this.links.push(...links)
+        } else {
+            this.links.push(links)
+        }
+    }
+}
+
 class Graph {
-    constructor() {
-        this.nodes = {};
-        this.explored = new Set();
+    constructor(article) {
+        this.nodes = {}
+        this.size = Object.keys(this.nodes).length
+        // Center is not included in nodes
+        this.center = new Node(article.title, article.id, article.links, true)
     }
 
-    addNode(node, children = []) {
-        if (!(node in this.nodes) && children instanceof Array) {
-            this.nodes[node] = {
-                title: node,
-                articleObject: children
-            };
-        }
-    }
+    async addNode(title, id = null, links) {
+        let nodeToAdd;
 
-    addChildren(parentNode, childNodes) {
-        if (parentNode in this.nodes) {
-            this.nodes[parentNode] = {
-                title: parentNode,
-                articleObject: childNodes
+        // Adding the initial node
+        if (id != null) {
+            nodeToAdd = new Node(title, id, links)
+            this.nodes[title] = nodeToAdd
+        } else {
+            // Look up db to get id and links of the node to add
+            let newNode = await Article.findOne({
+                'title': title
+            });
+
+            // If newNode is null, that means that the link (node) that is being looked up is a leaf node
+            // which means that it is not even stored in the database.
+            if (newNode != null) {
+                this.nodes[title] = new Node(newNode.title, newNode.id, newNode.links);
+            } else {
+                this.nodes[title] = new Node(title);
+                this.nodes[title].isLeaf = true;
             }
         }
     }
 
-    randomKey() {
-        // Chooses a random key in the property nodes
-        let keys = Object.keys(this.nodes)
-        let randomlySelectedKey;
-        do {
-            randomlySelectedKey = keys[keys.length * Math.random() << 0];
-        } while (this.explored.has(randomlySelectedKey))
+    async constructGraphToShow() {
 
-        return randomlySelectedKey
+        for (let link of this.center.links) {
+            await this.addNode(link)
+        }
+
     }
+}
 
-};
-
-function createNodesFromChildren(articleObject, graph) {
-    // For each link in the array, add it as a distinct node in the graph
-    for (title in articleObject) {
-        articleObject[title].forEach((link) => {
-            if (!(link in graph.nodes)) {
-                graph.addNode(link)
-            }
-        });
-    };
+module.exports = {
+    Graph
 }

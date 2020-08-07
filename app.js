@@ -1,10 +1,15 @@
 var express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
-    Article = require('./models/articles.js');
+    Article = require('./models/articles');
 
-const seed = require('./seed.js')
+// const seed = require('./seed.js')    // Database seeding
 
+// REQUIRING ROUTES
+var indexRoutes = require('./routes/index'),
+    playRoutes = require('./routes/play');
+
+const ARTICLE_COUNT = 47163;
 
 //====================================================
 // MONGOOSE SETUP
@@ -15,11 +20,16 @@ mongoose.connect('mongodb://localhost:27017/wiki_articles', {
     useUnifiedTopology: true
 });
 
-
+// Database seeding
 // (async () => {
 //     seed.seedDb('Rijeka');
 // })();
 
-// app.listen(3000, (req, res) => {
-//     console.log("Serving on port 3000 ...");
-// })
+app.set("view engine", "ejs");
+
+app.use(indexRoutes);
+app.use(playRoutes);
+
+app.listen(3000, () => {
+    console.log("Server starting at port 3000 ...");
+});
