@@ -8,7 +8,7 @@ exports.queryArticle = async function (articleTitle) {
     In that case, make additional requests until all links are retrieved.
 
     Returns the passed article's links in a JS object format (example articleTitle = 'Javascript'):
-        titleLinks = {
+        titleChildren = {
             title: 'Javascript',
             links: [
                 'ECMAScript',
@@ -18,27 +18,27 @@ exports.queryArticle = async function (articleTitle) {
         }
     */
 
-    let titleLinks = {};
+    let titleChildren = {};
     let url = constructURL(articleTitle);
 
     // Make request
     let responseBody = await getRequest(url);
 
-    // Extract links from response and assign to titleLinks
-    Object.assign(titleLinks, extractLinksFromResponse(responseBody));
+    // Extract links from response and assign to titleChildren
+    Object.assign(titleChildren, extractChildrenFromResponse(responseBody));
 
     // Make additional requests until all the links for that title are exhausted
     while (responseBody.hasOwnProperty('continue')) {
         url = constructURL(articleTitle, responseBody.continue.plcontinue);
         responseBody = await getRequest(url);
 
-        let links = extractLinksFromResponse(responseBody);
-        titleLinks['links'].push(...links['links']);
+        let children = extractChildrenFromResponse(responseBody);
+        titleChildren['children'].push(...children['children']);
     }
 
-    titleLinks['links'] = new Set(titleLinks['links'])
+    titleChildren['children'] = new Set(titleChildren['children'])
 
-    return titleLinks
+    return titleChildren
 };
 
 
@@ -83,7 +83,7 @@ function constructURL(articleTitle, plcontinue = false) {
 };
 
 // 
-function extractLinksFromResponse(responseBody) {
+function extractChildrenFromResponse(responseBody) {
     /*
     Given an object of objects containing links of a Wikipedia article, extract the links.
 
@@ -106,13 +106,13 @@ function extractLinksFromResponse(responseBody) {
         let page = pages[key];
         title = page.title;
         linkTitles['title'] = title;
-        linkTitles['links'] = [];
+        linkTitles['children'] = [];
 
-        // If the current page has links, add them to linkTitles
-        if (page.hasOwnProperty('links')) {
-            // Iterate through all links and add the title of links to 'linkTitles'
-            page.links.map((link) => {
-                linkTitles['links'].push(link.title)
+        // If the current page has children, add them to linkTitles
+        if (page.hasOwnProperty('children')) {
+            // Iterate through all children and add the title of children to 'linkTitles'
+            page.links.map((child) => {
+                linkTitles['children'].push(child.title)
             });
         }
     }
