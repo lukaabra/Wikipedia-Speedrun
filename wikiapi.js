@@ -109,7 +109,7 @@ function extractChildrenFromResponse(responseBody) {
         linkTitles['children'] = [];
 
         // If the current page has children, add them to linkTitles
-        if (page.hasOwnProperty('children')) {
+        if (page.hasOwnProperty('links')) {
             // Iterate through all children and add the title of children to 'linkTitles'
             page.links.map((child) => {
                 linkTitles['children'].push(child.title)

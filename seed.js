@@ -31,6 +31,7 @@ exports.seedDb = async function (start) {
     let articlesToNextLayer;
     let articlesPerLayer = [];
 
+    Article.deleteMany({}, () => {});
 
     //============================================
     // Query the starting article
@@ -41,15 +42,15 @@ exports.seedDb = async function (start) {
     // Mark the title as explored, and all of its links as queue
     // Mark the last queue article as the end of the current layer of the imaginary graph
     explored.add(articleObject.title);
-    articleObject.links.forEach((link) => {
+    articleObject.children.forEach((child) => {
 
-        // Due to a large amount of links for each layer of the imaginary graph, there is only
-        // a ~5% chance of the link being parsed reducing the link amount to 5% of the original size
+        // Due to a large amount of children for each layer of the imaginary graph, there is only
+        // a ~5% chance of the child being parsed reducing the child amount to 5% of the original size
         let chance = (Math.random()).toFixed(2);
 
         if (chance < threshold) {
-            queue.add(link);
-            lastArticleInLayer = link
+            queue.add(child);
+            lastArticleInLayer = child
         }
     });
 
@@ -57,24 +58,38 @@ exports.seedDb = async function (start) {
     articlesToNextLayer = queue.size;
     articlesPerLayer.push(articlesToNextLayer);
 
-    // Reduce the original size of links to 5%
-    articleObject.links = queue;
+    // Reduce the original size of children to 5%
+    articleObject.children = queue;
+    articleObject.parent = '' // Root article has no parent
 
     //============================================
     // Store to database
     //============================================
 
     // Convert to array to be able to store to database
-    articleObject.links = Array.from(articleObject.links)
+    articleObject.children = Array.from(articleObject.children)
 
     Article.create(articleObject, (err, newlyCreated) => {
         if (err) console.log("CREATE: " + err);
     });
 
+    // Create child objects to store in database
+    articleObject.children.forEach(async (child) => {
+        let childObject = {
+            'title': child,
+            'parent': articleObject.title,
+            'children': []
+        }
+
+        Article.create(childObject, (err, newlyCreated) => {
+            if (err) console.log("CREATE CHILD: " + err);
+        });
+    });
+
     logProgress(layer, articlesToNextLayer, explored, queue);
 
     //============================================
-    // Query starting article's links
+    // Query starting article's children
     //============================================
 
     for (let item of queue) {
@@ -93,38 +108,60 @@ exports.seedDb = async function (start) {
 
         // Mark the title as explored, and all of its links as queue
         explored.add(item);
-        articleObject.links.forEach((link) => {
+        articleObject.children.forEach((child) => {
 
             // Due to a large amount of links for each layer of the imaginary graph, there is only
-            // a ~5% chance of the link being parsed reducing the link amount to 5% of the original size
+            // a ~5% chance of the link being parsed reducing the child amount to 5% of the original size
             let chance = (Math.random()).toFixed(2);
 
             // Ensure that a new lastArticleInLayer is assigned
             if (item == lastArticleInLayer) chance = 0;
 
             if (chance < threshold) {
-                // If link is not in explored, add it to the queue (this is to avoid duplicates)
-                if (!(explored.has(link))) {
-                    currentItemQueue.add(link);
-                    queue.add(link);
+                // If child is not in explored, add it to the queue (this is to avoid duplicates)
+                if (!(explored.has(child))) {
+                    currentItemQueue.add(child);
+                    queue.add(child);
                     // Mark the last queue article as the end of the current layer of the imaginary graph
-                    if (item == lastArticleInLayer) lastArticleInLayer = link;
+                    if (item == lastArticleInLayer) lastArticleInLayer = child;
                 }
             }
         });
 
         // Reduce the original size of links to a tenth
-        articleObject.links = currentItemQueue;
+        articleObject.children = currentItemQueue;
 
         //============================================
         // Store to database
         //============================================
 
         // Convert to array to be able to store to database
-        articleObject.links = Array.from(articleObject.links)
+        articleObject.children = Array.from(articleObject.children)
 
-        Article.create(articleObject, (err, newlyCreated) => {
-            if (err) console.log("CREATE: " + err);
+        // Find the previously entered article with the title and parent info (but empty children) and
+        // fill in the children data
+        Article.findOneAndUpdate({
+            "title": articleObject.title
+        }, {
+            "children": articleObject.children
+        }, {
+            "new": true
+        }, (err, article) => {
+            if (err) console.log("FIND AND UPDATE: " + err);
+            else console.log(article.title, article.parent.length, article.children.length);
+        });
+
+        // Create child objects to store in database
+        articleObject.children.forEach(async (child) => {
+            let childObject = {
+                'title': child,
+                'parent': articleObject.title,
+                'children': []
+            }
+
+            Article.create(childObject, (err, newlyCreated) => {
+                if (err) console.log("CREATE CHILD: " + err);
+            });
         });
 
         logProgress(layer, articlesToNextLayer, explored, queue);

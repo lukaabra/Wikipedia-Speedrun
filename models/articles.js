@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const articleSchema = new mongoose.Schema({
     title: String,
-    links: [String]
+    parent: [String],
+    children: [String]
 });
 
 // First argument is the singular name of the collection
