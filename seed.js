@@ -54,13 +54,17 @@ exports.seedDb = async function (start) {
         }
     });
 
-    layer++;
     articlesToNextLayer = queue.size;
     articlesPerLayer.push(articlesToNextLayer);
 
     // Reduce the original size of children to 5%
     articleObject.children = queue;
     articleObject.parent = '' // Root article has no parent
+    articleObject.distance = layer
+
+    logProgress(layer, articlesToNextLayer, explored, queue);
+
+    layer++;
 
     //============================================
     // Store to database
@@ -78,15 +82,14 @@ exports.seedDb = async function (start) {
         let childObject = {
             'title': child,
             'parent': articleObject.title,
-            'children': []
+            'children': [],
+            'distance': layer
         }
 
         Article.create(childObject, (err, newlyCreated) => {
             if (err) console.log("CREATE CHILD: " + err);
         });
     });
-
-    logProgress(layer, articlesToNextLayer, explored, queue);
 
     //============================================
     // Query starting article's children
@@ -151,7 +154,9 @@ exports.seedDb = async function (start) {
             // Sometimes article.title is null for some reason
             if (article.title == null) {
                 console.log(article)
-            } else console.log(article.title, article.parent.length, article.children.length);
+            } else {
+                console.log(article.title + "\nPARENT: " + article.parent.length + " - CHILDREN: " + article.children.length + " - DISTANCE: " + article.distance + " - LAYER: " + layer);
+            }
         });
 
         // Create child objects to store in database
@@ -159,7 +164,8 @@ exports.seedDb = async function (start) {
             let childObject = {
                 'title': child,
                 'parent': articleObject.title,
-                'children': []
+                'children': [],
+                'distance': layer + 1
             }
 
             // Check if the child is already stored with a different parent

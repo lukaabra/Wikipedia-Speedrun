@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const articleSchema = new mongoose.Schema({
     title: String,
     parent: [String],
-    children: [String]
+    children: [String],
+    distance: Number // Distance in steps to starting article 'Rijeka'
 });
 
 // First argument is the singular name of the collection
