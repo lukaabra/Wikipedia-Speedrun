@@ -148,7 +148,10 @@ exports.seedDb = async function (start) {
             "new": true
         }, (err, article) => {
             if (err) console.log("FIND AND UPDATE: " + err);
-            else console.log(article.title, article.parent.length, article.children.length);
+            // Sometimes article.title is null for some reason
+            if (article.title == null) {
+                console.log(article)
+            } else console.log(article.title, article.parent.length, article.children.length);
         });
 
         // Create child objects to store in database
@@ -159,9 +162,36 @@ exports.seedDb = async function (start) {
                 'children': []
             }
 
-            Article.create(childObject, (err, newlyCreated) => {
-                if (err) console.log("CREATE CHILD: " + err);
+            // Check if the child is already stored with a different parent
+            let childWithParentExists = await Article.exists({
+                "name": child,
+                "parent.0": {
+                    "$exists": true
+                }
             });
+
+            if (childWithParentExists) {
+                // Find that child
+                let childWithParent = await Article.findOne({
+                    "title": childObject.title
+                });
+
+                // Add another parent
+                childWithParent.parent.push(...childObject.parent);
+
+                // Update that child
+                Article.findOneAndUpdate({
+                    "title": childObject.title
+                }, {
+                    "parent": childWithParent.parent
+                })
+
+            } else {
+                // Create entry for that child
+                Article.create(childObject, (err, newlyCreated) => {
+                    if (err) console.log("CREATE CHILD: " + err);
+                });
+            }
         });
 
         logProgress(layer, articlesToNextLayer, explored, queue);
