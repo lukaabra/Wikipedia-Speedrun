@@ -5,6 +5,7 @@ class Graph {
     // Undirected graph
     constructor() {
         this.nodes = new Map();
+        this.distances = new Map();
     }
 
     addVertex(v) {
@@ -25,14 +26,36 @@ class Graph {
     }
 
     bfs(start) {
-        // TODO
+        let explored = new Set([start]),
+            queue = [];
+
+        queue.push(start);
+        this.distances.set(start, 0)
+
+        while (queue.length > 0) {
+            let v = queue.shift() // Remove first element of queue
+            for (let w of this.nodes.get(v)) {
+                if (!(explored.has(w))) {
+                    explored.add(w);
+                    queue.push(w)
+
+                    // Set the distance of w as 1 more than the distance of v from the start
+                    this.distances.set(w, this.distances.get(v) + 1)
+                }
+            }
+        }
     }
 
     saveToJSON() {
         let nodesObject = map_to_object(this.nodes)
         fs.writeFile('graph.json', JSON.stringify(nodesObject), (err) => {
             if (err) throw err;
-        })
+        });
+
+        let distancesObject = map_to_object(this.distances)
+        fs.writeFile('distances.json', JSON.stringify(distancesObject), (err) => {
+            if (err) throw err;
+        });
     }
 
     saveToDB() {

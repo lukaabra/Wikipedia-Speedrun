@@ -37,6 +37,8 @@ exports.seedDb = async function (start) {
 
     console.log("FINISHED IN: " + ((t2 - t1) / 1000).toFixed(2) + " s");
 
+    g.bfs(start)
+
     g.saveToJSON()
 };
 
