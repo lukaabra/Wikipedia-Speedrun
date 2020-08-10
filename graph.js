@@ -1,5 +1,3 @@
-var Article = require('./models/articles');
-
 class Graph {
     // Undirected graph
     constructor() {
