@@ -84,8 +84,10 @@ function map_to_object(map) {
     map.forEach((value, key) => {
         if (value instanceof Map) {
             out[key] = map_to_object(value)
-        } else {
+        } else if (value instanceof Set) {
             out[key] = Array.from(value)
+        } else {
+            out[key] = value
         }
     })
     return out
