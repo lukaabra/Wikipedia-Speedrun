@@ -2,6 +2,8 @@ const wiki = require("./wikiapi.js");
 
 const Article = require('./models/articles.js');
 
+const graph = require('./graph');
+
 exports.seedDb = async function (start) {
     /*
     Function that seeds the database with Wikipedia articles and their links. Starts at the starting article 'start',
@@ -20,12 +22,14 @@ exports.seedDb = async function (start) {
     // Variable declarations
     //============================================
     let lastArticleInLayer;
-    let threshold = 0.05;
+    let threshold = 0.01;
     let layer = 0;
     let articleObject = {};
 
     let explored = new Set();
     let queue = new Set();
+
+    let g = new graph.Graph();
 
     // Variables for logging purposes
     let articlesToNextLayer;
@@ -33,34 +37,70 @@ exports.seedDb = async function (start) {
 
     Article.deleteMany({}, () => {});
 
+    function reduceEdgeSize(articleObject) {
+        /*
+        Reduces the amount of edges in an article object. Reduces it to the amount specified by the
+        variable 'threshold'
+        */
+
+        // Since queue contains the links from the previous articles a new set is needed to store
+        // only 5% of the total links in articleObject
+        let currentItemQueue = new Set();
+
+        // Mark the title as explored, and all of its edges as queue
+        // Mark the last queue article as the end of the current layer of the imaginary graph
+        explored.add(articleObject.title);
+        articleObject.edges.forEach((edge) => {
+
+            // Due to a large amount of edges for each layer of the imaginary graph, there is only
+            // a ~5% chance of the edge being parsed reducing the edge amount to 5% of the original size
+            let chance = (Math.random()).toFixed(2);
+
+            // Ensure that a new lastArticleInLayer is assigned
+            if (articleObject.title == lastArticleInLayer) chance = 0;
+
+            if (chance < threshold) {
+                // If the article object is the starting article
+                if (articleObject.title == 'Rijeka') {
+                    queue.add(edge);
+                    lastArticleInLayer = edge
+                } else {
+                    // If child is not in explored, add it to the queue (this is to avoid duplicates)
+                    if (!(explored.has(edge))) {
+                        currentItemQueue.add(edge);
+                        queue.add(edge);
+                        // Mark the last queue article as the end of the current layer of the imaginary graph
+                        if (articleObject.title == lastArticleInLayer) lastArticleInLayer = edge;
+                    }
+                }
+            }
+        });
+
+        articlesToNextLayer = queue.size;
+        articlesPerLayer.push(articlesToNextLayer);
+
+        // Reduce the original size of edges to 5%
+        if (articleObject.title == 'Rijeka') articleObject.edges = queue;
+        else articleObject.edges = currentItemQueue
+    }
+
+    function addToGraph(vertex, edges) {
+        // Add the vertex and edges to the graph
+        g.addVertex(vertex);
+        edges.forEach((edge) => {
+            g.addEdge(vertex, edge);
+        });
+    }
+
     //============================================
     // Query the starting article
     //============================================
 
     articleObject = await wiki.queryArticle(start);
 
-    // Mark the title as explored, and all of its links as queue
-    // Mark the last queue article as the end of the current layer of the imaginary graph
-    explored.add(articleObject.title);
-    articleObject.children.forEach((child) => {
+    reduceEdgeSize(articleObject);
 
-        // Due to a large amount of children for each layer of the imaginary graph, there is only
-        // a ~5% chance of the child being parsed reducing the child amount to 5% of the original size
-        let chance = (Math.random()).toFixed(2);
-
-        if (chance < threshold) {
-            queue.add(child);
-            lastArticleInLayer = child
-        }
-    });
-
-    articlesToNextLayer = queue.size;
-    articlesPerLayer.push(articlesToNextLayer);
-
-    // Reduce the original size of children to 5%
-    articleObject.children = queue;
-    articleObject.parent = '' // Root article has no parent
-    articleObject.distance = layer
+    addtoGraph(articleObject.title, articleObject.edges);
 
     logProgress(layer, articlesToNextLayer, explored, queue);
 
@@ -71,37 +111,19 @@ exports.seedDb = async function (start) {
     //============================================
 
     // Convert to array to be able to store to database
-    articleObject.children = Array.from(articleObject.children)
+    // articleObject.edges = Array.from(articleObject.edges)
 
-    Article.create(articleObject, (err, newlyCreated) => {
-        if (err) console.log("CREATE: " + err);
-    });
-
-    // Create child objects to store in database
-    articleObject.children.forEach(async (child) => {
-        let childObject = {
-            'title': child,
-            'parent': articleObject.title,
-            'children': [],
-            'distance': layer
-        }
-
-        Article.create(childObject, (err, newlyCreated) => {
-            if (err) console.log("CREATE CHILD: " + err);
-        });
-    });
+    // Article.create(articleObject, (err, newlyCreated) => {
+    //     if (err) console.log("CREATE: " + err);
+    // });
 
     //============================================
-    // Query starting article's children
+    // Query starting article's edges
     //============================================
 
     for (let item of queue) {
         // Parse the article and store it with it's links to the db
         articleObject = await wiki.queryArticle(item);
-
-        // Since queue contains the links from the previous articles a new set is needed to store
-        // only 5% of the total links in articleObject
-        let currentItemQueue = new Set();
 
         if (item == lastArticleInLayer) {
             layer++;
@@ -109,96 +131,20 @@ exports.seedDb = async function (start) {
             articlesPerLayer.push(articlesToNextLayer);
         }
 
-        // Mark the title as explored, and all of its links as queue
-        explored.add(item);
-        articleObject.children.forEach((child) => {
+        reduceEdgeSize(articleObject)
 
-            // Due to a large amount of links for each layer of the imaginary graph, there is only
-            // a ~5% chance of the link being parsed reducing the child amount to 5% of the original size
-            let chance = (Math.random()).toFixed(2);
-
-            // Ensure that a new lastArticleInLayer is assigned
-            if (item == lastArticleInLayer) chance = 0;
-
-            if (chance < threshold) {
-                // If child is not in explored, add it to the queue (this is to avoid duplicates)
-                if (!(explored.has(child))) {
-                    currentItemQueue.add(child);
-                    queue.add(child);
-                    // Mark the last queue article as the end of the current layer of the imaginary graph
-                    if (item == lastArticleInLayer) lastArticleInLayer = child;
-                }
-            }
+        g.addVertex(articleObject.title);
+        articleObject.edges.forEach((edge) => {
+            g.addEdge(articleObject.title, edge);
         });
-
-        // Reduce the original size of links to a tenth
-        articleObject.children = currentItemQueue;
+        g.print();
 
         //============================================
         // Store to database
         //============================================
 
         // Convert to array to be able to store to database
-        articleObject.children = Array.from(articleObject.children)
-
-        // Find the previously entered article with the title and parent info (but empty children) and
-        // fill in the children data
-        Article.findOneAndUpdate({
-            "title": articleObject.title
-        }, {
-            "children": articleObject.children
-        }, {
-            "new": true
-        }, (err, article) => {
-            if (err) console.log("FIND AND UPDATE: " + err);
-            // Sometimes article.title is null for some reason
-            if (article.title == null) {
-                console.log(article)
-            } else {
-                console.log(article.title + "\nPARENT: " + article.parent.length + " - CHILDREN: " + article.children.length + " - DISTANCE: " + article.distance + " - LAYER: " + layer);
-            }
-        });
-
-        // Create child objects to store in database
-        articleObject.children.forEach(async (child) => {
-            let childObject = {
-                'title': child,
-                'parent': articleObject.title,
-                'children': [],
-                'distance': layer + 1
-            }
-
-            // Check if the child is already stored with a different parent
-            let childWithParentExists = await Article.exists({
-                "name": child,
-                "parent.0": {
-                    "$exists": true
-                }
-            });
-
-            if (childWithParentExists) {
-                // Find that child
-                let childWithParent = await Article.findOne({
-                    "title": childObject.title
-                });
-
-                // Add another parent
-                childWithParent.parent.push(...childObject.parent);
-
-                // Update that child
-                Article.findOneAndUpdate({
-                    "title": childObject.title
-                }, {
-                    "parent": childWithParent.parent
-                })
-
-            } else {
-                // Create entry for that child
-                Article.create(childObject, (err, newlyCreated) => {
-                    if (err) console.log("CREATE CHILD: " + err);
-                });
-            }
-        });
+        articleObject.edges = Array.from(articleObject.edges)
 
         logProgress(layer, articlesToNextLayer, explored, queue);
 

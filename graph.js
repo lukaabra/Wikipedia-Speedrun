@@ -1,63 +1,35 @@
 var Article = require('./models/articles');
 
-class Node {
-    constructor(title, id = "", links = [], explored = false) {
-        this.title = title;
-        this.id = id;
-        this.links = []
-        this.explored = explored
-        this.isLeaf = false
-
-        this.addLinks(links)
-    }
-
-    addLinks(links) {
-        if (links instanceof Array) {
-            this.links.push(...links)
-        } else {
-            this.links.push(links)
-        }
-    }
-}
-
 class Graph {
-    constructor(article) {
-        this.nodes = {}
-        this.size = Object.keys(this.nodes).length
-        // Center is not included in nodes
-        this.center = new Node(article.title, article.id, article.links, true)
+    // Undirected graph
+    constructor() {
+        this.nodes = new Map();
     }
 
-    async addNode(title, id = null, links) {
-        let nodeToAdd;
+    addVertex(v) {
+        // Check if the vertex is already inside the graph
+        if (!(this.nodes.has(v))) this.nodes.set(v, new Set());
+    }
 
-        // Adding the initial node
-        if (id != null) {
-            nodeToAdd = new Node(title, id, links)
-            this.nodes[title] = nodeToAdd
+    addEdge(v, w) {
+        this.nodes.get(v).add(w);
+
+        // Check if there is an entry for w in the graph. If not, add it
+        if (this.nodes.has(w)) {
+            this.nodes.get(w).add(v);
         } else {
-            // Look up db to get id and links of the node to add
-            let newNode = await Article.findOne({
-                'title': title
-            });
-
-            // If newNode is null, that means that the link (node) that is being looked up is a leaf node
-            // which means that it is not even stored in the database.
-            if (newNode != null) {
-                this.nodes[title] = new Node(newNode.title, newNode.id, newNode.links);
-            } else {
-                this.nodes[title] = new Node(title);
-                this.nodes[title].isLeaf = true;
-            }
+            this.addVertex(w)
+            this.nodes.get(w).add(v);
         }
     }
 
-    async constructGraphToShow() {
-
-        for (let link of this.center.links) {
-            await this.addNode(link)
+    print() {
+        for (let [key, value] of this.nodes.entries()) {
+            console.log("Node: " + key);
+            console.log("Edges: ");
+            console.log(Array.from(value))
+            console.log("==============================")
         }
-
     }
 }
 
