@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const articleSchema = new mongoose.Schema({
     title: String,
-    parent: [String],
-    children: [String],
+    edges: [String],
     distance: Number, // Distance in steps to starting article 'Rijeka'
     explored: Boolean
 });

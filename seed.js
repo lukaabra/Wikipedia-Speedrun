@@ -1,15 +1,19 @@
 const wiki = require("./wikiapi.js");
 const graph = require('./graph');
+const perf_hooks = require('perf_hooks')
 
 const Article = require('./models/articles.js');
 
 exports.seedDb = async function (start) {
+
+    const GRAPH_SIZE = 10
 
     let queue = new Set([start]);
     let g = new graph.Graph();
 
     Article.deleteMany({}, () => {});
 
+    let t1 = perf_hooks.performance.now();
     for (let item of queue) {
         let queriedArticle = await wiki.queryArticle(item);
         let reducedArticle = reduceEdgeSize(queriedArticle);
@@ -25,11 +29,15 @@ exports.seedDb = async function (start) {
             g.addEdge(reducedArticle.title, edge);
         });
 
+        console.log(queue.size)
         // Limit graph size to 1000 vertices
-        if (queue.size > 1000) break;
+        if (queue.size > GRAPH_SIZE) break;
     }
+    let t2 = perf_hooks.performance.now()
 
-    g.print();
+    console.log("FINISHED IN: " + ((t2 - t1) / 1000).toFixed(2) + " s");
+
+    g.saveToJSON()
 };
 
 
