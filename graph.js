@@ -6,6 +6,7 @@ class Graph {
     constructor() {
         this.nodes = new Map();
         this.distances = new Map();
+        this.paths = new Map();
     }
 
     addVertex(v) {
@@ -26,21 +27,34 @@ class Graph {
     }
 
     bfs(start) {
-        let explored = new Set([start]),
-            queue = [];
+        let explored = new Set([start]);
+        let queue = [
+            [start]
+        ];
 
-        queue.push(start);
-        this.distances.set(start, 0)
+        this.distances.set(start, 0);
+        this.paths.set(start, [start])
 
+        // BFS Path question:
+        // https://stackoverflow.com/questions/8922060/how-to-trace-the-path-in-a-breadth-first-search
         while (queue.length > 0) {
-            let v = queue.shift() // Remove first element of queue
+            let path = queue.shift();
+            let v = path[path.length - 1];
+
             for (let w of this.nodes.get(v)) {
                 if (!(explored.has(w))) {
                     explored.add(w);
-                    queue.push(w)
+                    let newPath = Array(path);
+                    newPath.push(w);
+                    queue.push(newPath)
+
+                    newPath = flattenNewPath(newPath);
 
                     // Set the distance of w as 1 more than the distance of v from the start
-                    this.distances.set(w, this.distances.get(v) + 1)
+                    let currentDistance = this.distances.get(v) + 1;
+
+                    this.distances.set(w, currentDistance);
+                    this.paths.set(w, newPath);
                 }
             }
         }
@@ -54,6 +68,11 @@ class Graph {
 
         let distancesObject = map_to_object(this.distances)
         fs.writeFile('distances.json', JSON.stringify(distancesObject), (err) => {
+            if (err) throw err;
+        });
+
+        let pathObject = map_to_object(this.paths)
+        fs.writeFile('paths.json', JSON.stringify(pathObject), (err) => {
             if (err) throw err;
         });
     }
@@ -91,6 +110,23 @@ function map_to_object(map) {
         }
     })
     return out
+}
+
+/*
+ * Flatten an array of arrays.
+ *
+ * @param {Array[Array[...]]} path to flatten
+ * @return {Array[String]}
+ */
+function flattenNewPath(path) {
+    let newPath = path;
+
+    // By flattening the newPath array, it's length is increased
+    for (let i = 0; i < newPath.length; i++) {
+        newPath = newPath.flat();
+    }
+
+    return newPath
 }
 
 module.exports = {
