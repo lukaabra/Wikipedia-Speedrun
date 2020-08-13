@@ -1,6 +1,5 @@
 const wiki = require("./wikiapi.js");
 const graph = require('./graph');
-const perf_hooks = require('perf_hooks');
 const fs = require('fs');
 
 const Article = require('../models/articles.js');
