@@ -5,7 +5,16 @@ const fs = require('fs');
 
 const Article = require('../models/articles.js');
 
-async function seedDb(start) {
+/*
+ *  Queries the Wikipedia API for the article's links. Reduces the size of links to percentage specified by const THRESHOLD
+ *  in helper function 'reduceEdgeSize'.
+ *  Adds the article's title and edges to the graph.
+ *  Repeat until graph is size GRAPH_SIZE.
+ *  
+ *  @param {string} start - Starting article from which to construct the graph.
+ *  @returns {Graph} Constructed Graph
+ */
+async function constructGraph(start) {
 
     const GRAPH_SIZE = 50000
 
@@ -44,6 +53,49 @@ function addTitleAndEdgesToGraph(article, graph) {
 };
 
 
+function reduceEdgeSize(queriedArticle) {
+    /*
+    Reduces the amount of edges in an article object. Reduces it to the amount specified by the
+    variable 'threshold'
+    */
+    const THRESHOLD = 0.03
+    let reducedEdges = new Set()
+
+    queriedArticle.edges.forEach((edge) => {
+        let chance = (Math.random()).toFixed(2);
+
+        if (chance < THRESHOLD) {
+            reducedEdges.add(edge);
+        }
+    });
+
+    // Return an object with reduced number of edges
+    return {
+        'title': queriedArticle.title,
+        'edges': reducedEdges
+    }
+};
+
+exports.saveGraphToDb = async function () {
+    let graph = mergeToNewObject();
+
+    for (let title in graph) {
+        // Create object that is same as the database schema
+        let articleToSave = {
+            'title': title,
+            'edges': graph[title].edges,
+            'distance': graph[title].distance,
+            'path': graph[title].path
+        };
+
+        // Add to database
+        await Article.create(articleToSave, (err, createdGraph) => {
+            if (err) console.log(err)
+            else console.log(createdGraph)
+        });
+    }
+};
+
 function mergeToNewObject() {
     // Read JSON files
     let graph = readJSON('json/graph.json');
@@ -68,49 +120,4 @@ function mergeToNewObject() {
 function readJSON(file) {
     let obj = JSON.parse(fs.readFileSync(file, 'utf8'));
     return obj
-};
-
-
-exports.saveGraphToDb = async function () {
-    let graph = mergeToNewObject();
-
-    for (let title in graph) {
-        // Create object that is same as the database schema
-        let articleToSave = {
-            'title': title,
-            'edges': graph[title].edges,
-            'distance': graph[title].distance,
-            'path': graph[title].path
-        };
-
-        // Add to database
-        await Article.create(articleToSave, (err, createdGraph) => {
-            if (err) console.log(err)
-            else console.log(createdGraph)
-        });
-    }
-};
-
-
-function reduceEdgeSize(queriedArticle) {
-    /*
-    Reduces the amount of edges in an article object. Reduces it to the amount specified by the
-    variable 'threshold'
-    */
-    const THRESHOLD = 0.03
-    let reducedEdges = new Set()
-
-    queriedArticle.edges.forEach((edge) => {
-        let chance = (Math.random()).toFixed(2);
-
-        if (chance < THRESHOLD) {
-            reducedEdges.add(edge);
-        }
-    });
-
-    // Return an object with reduced number of edges
-    return {
-        'title': queriedArticle.title,
-        'edges': reducedEdges
-    }
 };
