@@ -1,31 +1,52 @@
 const fs = require('fs'),
     Article = require('../models/articles');
 
+/* Class representing an undirected Graph */
 class Graph {
-    // Undirected graph
+    /**
+     * Create 3 maps representing the graphs nodes (edges), distances, and paths. The structure is as follows:
+     * 
+     * nodes = {'WikipediaArticleTitle': ['ArticleLink1', 'ArticleLink2', ...]}
+     * nodes = {'WikipediaArticleTitle': 5}
+     * nodes = {'WikipediaArticleTitle': ['WikipediaArticleTitle1', 'WikipediaArticleTitle2', ...]}
+     */
     constructor() {
         this.nodes = new Map();
         this.distances = new Map();
         this.paths = new Map();
     }
 
+    /**
+     * Adds a vertex to the map nodes.
+     * 
+     * @param {String} v - Vertex to be added to the graph
+     */
     addVertex(v) {
         // Check if the vertex is already inside the graph
         if (!(this.nodes.has(v))) this.nodes.set(v, new Set());
     }
 
+    /**
+     * Add vertex w as an edge to v. Also checks if w is already a node in the map nodes. If not, adds it to nodes and
+     * v as its edge.
+     * 
+     * @param {String} v - Vertex to which to add w
+     * @param {String} w - Vertex which to add to v
+     */
     addEdge(v, w) {
         this.nodes.get(v).add(w);
 
         // Check if there is an entry for w in the graph. If not, add it
-        if (this.nodes.has(w)) {
-            this.nodes.get(w).add(v);
-        } else {
-            this.addVertex(w)
-            this.nodes.get(w).add(v);
-        }
+        if (!(this.nodes.has(w))) this.addVertex(w)
+        this.nodes.get(w).add(v);
     }
 
+    /**
+     * Implementation of Breadth-First Search on this implementation of the graph. Calculates the shortest distance of all 
+     * edges from the starting edge. Also marks the path for that shortest distance.
+     * 
+     * @param {String} start - Article title from which to start the search.
+     */
     bfs(start) {
         let explored = new Set([start]);
         let queue = [
@@ -60,9 +81,12 @@ class Graph {
         }
     }
 
+    /**
+     * Writes all the instance properties (nodes, distances, and paths) as JSON files.
+     */
     saveToJSON() {
         let nodesObject = map_to_object(this.nodes)
-        fs.writeFile('graph.json', JSON.stringify(nodesObject), (err) => {
+        fs.writeFile('edges.json', JSON.stringify(nodesObject), (err) => {
             if (err) throw err;
         });
 
@@ -77,10 +101,9 @@ class Graph {
         });
     }
 
-    saveToDB() {
-        // TODO
-    }
-
+    /**
+     * Print out the graph
+     */
     print() {
         for (let [key, value] of this.nodes.entries()) {
             console.log("Node: " + key);
@@ -112,21 +135,22 @@ function map_to_object(map) {
     return out
 }
 
-/*
- * Flatten an array of arrays.
- *
- * @param {Array[Array[...]]} path to flatten
- * @return {Array[String]}
+/**
+ * Flatten an array of arrays. Depth of the arrays is proportional to its length.
+ * TODO: MAYBE IMPLEMENT AS A METHOD OF GRAPH ?
+ * 
+ * @param {[[[[String]]], String]} array - Array of arrays to be flattened
+ * @returns {[String]} - Completely flattened array
  */
-function flattenNewPath(path) {
-    let newPath = path;
+function flattenNewPath(array) {
+    let flattenedArray = array;
 
-    // By flattening the newPath array, it's length is increased
-    for (let i = 0; i < newPath.length; i++) {
-        newPath = newPath.flat();
+    // By flattening the flattenedArray array, it's length is increased
+    for (let i = 0; i < flattenedArray.length; i++) {
+        flattenedArray = flattenedArray.flat();
     }
 
-    return newPath
+    return flattenedArray
 }
 
 module.exports = {
