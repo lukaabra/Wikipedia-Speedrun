@@ -5,7 +5,7 @@ const fs = require('fs');
 const Article = require('../models/articles.js');
 
 
-/*
+/**
  *  Constructs a graph of Wikipedia article connections. The graph contains article edges (links), distance to starting
  *  article, and path to reach starting article.
  * 
@@ -44,7 +44,7 @@ async function constructGraphToJSON(start) {
 // CONSTRUCTGRAPH HELPER FUNCTIONS
 //====================================================
 
-/*
+/**
  *  Given a JS object of a Wikipedia article (with title and links), add all the edges (links) to the queue.
  *  
  *  @param {Object} article - Wikipedia article object with title and it's links.
@@ -60,7 +60,7 @@ function addNewEdgesToQueue(article, queue) {
     return newQueue
 };
 
-/*
+/**
  *  Add titles and edges (links) of a provided JS object of a Wikipedia article to a Graph object.
  *  
  *  TODO: MAYBE NEED TO IMPLEMENT A RETURN PARAMETER AS TO NOT MUTATE graph INSIDE THE FUNCTION.
@@ -75,7 +75,7 @@ function addTitleAndEdgesToGraph(article, graph) {
     });
 };
 
-/*
+/**
  *  Reduces the amount of edges in an article object. Reduces it to the amount specified by the constant THRESHOLD
  *  
  *  @param {Object} queriedArticle - Wikipedia article object with title and it's links.
@@ -101,7 +101,7 @@ function reduceEdgeSize(queriedArticle) {
 };
 
 
-/*
+/**
  *  Given a JS object representation of the Wikipedia article connectedness graph, create objects (articleToSave)
  *  to store to database.
  */
@@ -130,7 +130,7 @@ async function saveGraphToDb() {
 // SAVEGRAPHTODB HELPER FUNCTIONS
 //====================================================
 
-/*
+/**
  *  Read 3 different JSON files containing edges, distances, and paths of the Wikipedia article connectedness graph and
  *  merge them to a new object.
  *  
@@ -156,7 +156,7 @@ function mergeToNewObject() {
     return newObj
 };
 
-/*
+/**
  *  Given a file name read the file sychronously and parse it as a JS object.
  *  
  *  @returns {Object}  - JS object representing the contents of the read file.
