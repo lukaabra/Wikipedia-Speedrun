@@ -16,23 +16,31 @@ async function seedDb(start) {
         let queriedArticle = await wiki.queryArticle(item);
         let reducedArticle = reduceEdgeSize(queriedArticle);
 
-        // Add new edges to the queue
-        reducedArticle.edges.forEach(edge => {
-            queue.add(edge)
-        });
+        addNewEdgesToQueue(reducedArticle, queue);
+        addTitleAndEdgesToGraph(reducedArticle, g);
 
-        // Add the title and its edges to the graph
-        g.addVertex(reducedArticle.title);
-        reducedArticle.edges.forEach((edge) => {
-            g.addEdge(reducedArticle.title, edge);
-        });
-
-        console.log(queue.size)
+        // Progress logging
+        console.log(queue.size + " / " + GRAPH_SIZE);
         if (queue.size > GRAPH_SIZE) break;
     }
 
     g.bfs(start)
     g.saveToJSON()
+};
+
+
+function addNewEdgesToQueue(article, queue) {
+    article.edges.forEach(edge => {
+        queue.add(edge)
+    });
+};
+
+
+function addTitleAndEdgesToGraph(article, graph) {
+    graph.addVertex(article.title);
+    article.edges.forEach((edge) => {
+        graph.addEdge(article.title, edge);
+    });
 };
 
 
