@@ -6,11 +6,12 @@ const fs = require('fs');
 const Article = require('../models/articles.js');
 
 /*
- *  Queries the Wikipedia API for the article's links. Reduces the size of links to percentage specified by const THRESHOLD
- *  in helper function 'reduceEdgeSize'.
- *  Adds the article's title and edges to the graph.
+ *  Constructs a graph of Wikipedia article connections. The graph contains article edges (links), distance to starting
+ *  article, and path to reach starting article.
+ * 
+ *  Queries the Wikipedia API for the article's links. Reduces the size of links. Adds the article's title and edges to the graph.
  *  Repeat until graph is size GRAPH_SIZE.
- *  Perform BFS from the starting article.
+ *  Perform BFS from the starting article to get the distances and paths.
  *  Save the graph to JSON.
  *  
  *  @param {string} start - Starting article from which to construct the graph.
