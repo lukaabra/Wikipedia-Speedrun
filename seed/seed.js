@@ -165,3 +165,8 @@ function readJSON(file) {
     let obj = JSON.parse(fs.readFileSync(file, 'utf8'));
     return obj
 };
+
+module.exports = {
+    constructGraphToJSON,
+    saveGraphToDb
+};

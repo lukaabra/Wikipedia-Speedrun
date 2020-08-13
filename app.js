@@ -3,21 +3,33 @@ var express = require('express'),
     mongoose = require('mongoose'),
     Article = require('./models/articles');
 
-const seed = require('./seed/seed') // Database seeding
-
-const graph = require('./seed/graph')
+// DATABASE SEEDING
+var seed = require('./seed/seed');
 
 // REQUIRING ROUTES
 var indexRoutes = require('./routes/index'),
     playRoutes = require('./routes/play');
 
-//====================================================
-// MONGOOSE SETUP
-//====================================================
-await mongoose.connect('mongodb://localhost:27017/wiki_articles', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+
+(async () => {
+    //====================================================
+    // MONGOOSE SETUP
+    // Connection is awaited to prevent database actions rushing before the connection is established.
+    //====================================================
+    await mongoose.connect('mongodb://localhost:27017/wiki_articles', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+
+    //====================================================
+    // CREATE GRAPH AND SEED DATABASE
+    // ! WARNING !
+    // COMMENT OUT ONLY IF YOU WANT TO WRITE JSON FILES AND DB FROM SCRATCH
+    //====================================================
+    // const STARTING_ARTICLE = 'Rijeka'
+    // await seed.constructGraphToJSON(STARTING_ARTICLE);
+    // await seed.saveGraphToDb();
+})();
 
 app.set("view engine", "ejs");
 
