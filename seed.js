@@ -1,19 +1,17 @@
 const wiki = require("./wikiapi.js");
 const graph = require('./graph');
-const perf_hooks = require('perf_hooks')
+const perf_hooks = require('perf_hooks');
+const fs = require('fs');
 
 const Article = require('./models/articles.js');
 
-exports.seedDb = async function (start) {
+async function seedDb(start) {
 
-    const GRAPH_SIZE = 1000
+    const GRAPH_SIZE = 50000
 
     let queue = new Set([start]);
     let g = new graph.Graph();
 
-    Article.deleteMany({}, () => {});
-
-    let t1 = perf_hooks.performance.now();
     for (let item of queue) {
         let queriedArticle = await wiki.queryArticle(item);
         let reducedArticle = reduceEdgeSize(queriedArticle);
@@ -32,21 +30,57 @@ exports.seedDb = async function (start) {
         console.log(queue.size)
         if (queue.size > GRAPH_SIZE) break;
     }
-    let t2 = perf_hooks.performance.now();
 
-    console.log("FINISHED CONSTRUCTING GRAPH IN : " + ((t2 - t1) / 1000).toFixed(2) + " s");
-
-    let t3 = perf_hooks.performance.now()
     g.bfs(start)
-    let t4 = perf_hooks.performance.now()
-
-    console.log("FINISHED BFS IN: " + ((t4 - t3) / 1000).toFixed(2) + " s");
-
-    let t5 = perf_hooks.performance.now()
     g.saveToJSON()
-    let t6 = perf_hooks.performance.now()
+};
 
-    console.log("FINISHED WRITING TO JSON IN: " + ((t6 - t5) / 1000).toFixed(2) + " s");
+
+function mergeToNewObject() {
+    // Read JSON files
+    let graph = readJSON('json/graph.json');
+    let distance = readJSON('json/distances.json');
+    let path = readJSON('json/paths.json');
+
+    let newObj = {};
+
+    // Merge 3 objects from 3 different JSON files to 1 new object
+    for (let key in graph) {
+        newObj[key] = {
+            'edges': graph[key],
+            'distance': distance[key],
+            'path': path[key]
+        }
+    }
+
+    return newObj
+};
+
+
+function readJSON(file) {
+    let obj = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return obj
+};
+
+
+exports.saveGraphToDb = async function () {
+    let graph = mergeToNewObject();
+
+    for (let title in graph) {
+        // Create object that is same as the database schema
+        let articleToSave = {
+            'title': title,
+            'edges': graph[title].edges,
+            'distance': graph[title].distance,
+            'path': graph[title].path
+        };
+
+        // Add to database
+        await Article.create(articleToSave, (err, createdGraph) => {
+            if (err) console.log(err)
+            else console.log(createdGraph)
+        });
+    }
 };
 
 
@@ -55,7 +89,7 @@ function reduceEdgeSize(queriedArticle) {
     Reduces the amount of edges in an article object. Reduces it to the amount specified by the
     variable 'threshold'
     */
-    const THRESHOLD = 0.02
+    const THRESHOLD = 0.03
     let reducedEdges = new Set()
 
     queriedArticle.edges.forEach((edge) => {

@@ -11,49 +11,36 @@ const graph = require('./graph')
 var indexRoutes = require('./routes/index'),
     playRoutes = require('./routes/play');
 
-const ARTICLE_COUNT = 47163;
-
 //====================================================
 // MONGOOSE SETUP
 //====================================================
 
-mongoose.connect('mongodb://localhost:27017/wiki_articles', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-});
-
-// let g = new graph.Graph();
-// g.addVertex("Rijeka");
-// g.addEdge("Rijeka", "Čakovec");
-// g.addEdge("Rijeka", "Zagreb");
-
-// g.addVertex("Čakovec");
-// g.addEdge("Čakovec", "Rijeka");
-// g.addEdge("Čakovec", "Međimurje");
-
-// g.addVertex("Zagreb");
-// g.addEdge("Zagreb", "Rijeka");
-// g.addEdge("Zagreb", "Dinamo");
-
-// g.addVertex("Međimurje");
-// g.addEdge("Međimurje", "Čakovec");
-
-// g.addVertex("Dinamo");
-// g.addEdge("Dinamo", "Zagreb");
-
-// g.print();
-
-// Database seeding
 (async () => {
-    seed.seedDb('Rijeka');
-})();
+    try {
+        // Mongoose connection is being awaited before the database seeding function is called because of a
+        // connection timeout error if the connection is not omitted. I suspect the reason is because not enough time
+        // passes from the mongoose.connection call to the first database create call inside saveGraphToDb.
+        await mongoose.connect('mongodb://localhost:27017/wiki_articles', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+    // Database seeding
+    await seed.saveGraphToDb();
+
+    await Article.find({}, (err, found) => {
+        console.log(found)
+    })
+})()
 
 // app.set("view engine", "ejs");
 
 // app.use(indexRoutes);
 // app.use(playRoutes);
 
-app.listen(3000, () => {
-    console.log("Server starting at port 3000 ...");
-});
+// app.listen(3000, () => {
+//     console.log("Server starting at port 3000 ...");
+// });

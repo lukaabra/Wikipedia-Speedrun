@@ -4,7 +4,7 @@ const articleSchema = new mongoose.Schema({
     title: String,
     edges: [String],
     distance: Number, // Distance in steps to starting article 'Rijeka'
-    explored: Boolean
+    path: [String]
 });
 
 // First argument is the singular name of the collection
