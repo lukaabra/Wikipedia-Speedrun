@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const Article = require('../models/articles.js');
 
+
 /*
  *  Constructs a graph of Wikipedia article connections. The graph contains article edges (links), distance to starting
  *  article, and path to reach starting article.
@@ -101,7 +102,11 @@ function reduceEdgeSize(queriedArticle) {
 };
 
 
-exports.saveGraphToDb = async function () {
+/*
+ *  Given a JS object representation of the Wikipedia article connectedness graph, create objects (articleToSave)
+ *  to store to database.
+ */
+async function saveGraphToDb() {
     let graph = mergeToNewObject();
 
     for (let title in graph) {
@@ -121,22 +126,29 @@ exports.saveGraphToDb = async function () {
     }
 };
 
+
 //====================================================
 // SAVEGRAPHTODB HELPER FUNCTIONS
 //====================================================
 
+/*
+ *  Read 3 different JSON files containing edges, distances, and paths of the Wikipedia article connectedness graph and
+ *  merge them to a new object.
+ *  
+ *  @returns {Object}  - Newly constructed JS object containing the queriedArticle title, and a reduced number of edges (links)
+ */
 function mergeToNewObject() {
     // Read JSON files
-    let graph = readJSON('json/graph.json');
+    let edges = readJSON('json/edges.json');
     let distance = readJSON('json/distances.json');
     let path = readJSON('json/paths.json');
 
     let newObj = {};
 
     // Merge 3 objects from 3 different JSON files to 1 new object
-    for (let key in graph) {
+    for (let key in edges) {
         newObj[key] = {
-            'edges': graph[key],
+            'edges': edges[key],
             'distance': distance[key],
             'path': path[key]
         }
@@ -145,7 +157,11 @@ function mergeToNewObject() {
     return newObj
 };
 
-
+/*
+ *  Given a file name read the file sychronously and parse it as a JS object.
+ *  
+ *  @returns {Object}  - JS object representing the contents of the read file.
+ */
 function readJSON(file) {
     let obj = JSON.parse(fs.readFileSync(file, 'utf8'));
     return obj
