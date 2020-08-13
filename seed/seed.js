@@ -10,11 +10,13 @@ const Article = require('../models/articles.js');
  *  in helper function 'reduceEdgeSize'.
  *  Adds the article's title and edges to the graph.
  *  Repeat until graph is size GRAPH_SIZE.
+ *  Perform BFS from the starting article.
+ *  Save the graph to JSON.
  *  
  *  @param {string} start - Starting article from which to construct the graph.
  *  @returns {Graph} Constructed Graph
  */
-async function constructGraph(start) {
+async function constructGraphToJSON(start) {
 
     const GRAPH_SIZE = 50000
 
@@ -25,7 +27,7 @@ async function constructGraph(start) {
         let queriedArticle = await wiki.queryArticle(item);
         let reducedArticle = reduceEdgeSize(queriedArticle);
 
-        addNewEdgesToQueue(reducedArticle, queue);
+        queue = addNewEdgesToQueue(reducedArticle, queue);
         addTitleAndEdgesToGraph(reducedArticle, g);
 
         // Progress logging
@@ -37,14 +39,34 @@ async function constructGraph(start) {
     g.saveToJSON()
 };
 
+//====================================================
+// CONSTRUCTGRAPH HELPER FUNCTIONS
+//====================================================
 
+/*
+ *  Given a JS object of a Wikipedia article (with title and links), add all the edges (links) to the queue.
+ *  
+ *  @param {Object} article - Wikipedia article object with title and it's links.
+ *  @param {Set} queue - Queue of articles to be iterated over
+ *  @returns {Set} newQueue - Copied values from queue but with newly added edges.
+ */
 function addNewEdgesToQueue(article, queue) {
+    let newQueue = queue
     article.edges.forEach(edge => {
-        queue.add(edge)
+        newQueue.add(edge)
     });
+
+    return newQueue
 };
 
-
+/*
+ *  Add titles and edges (links) of a provided JS object of a Wikipedia article to a Graph object.
+ *  
+ *  TODO: MAYBE NEED TO IMPLEMENT A RETURN PARAMETER AS TO NOT MUTATE graph INSIDE THE FUNCTION.
+ * 
+ *  @param {Object} article - Wikipedia article object with title and it's links.
+ *  @param {Graph} graph - Graph object containing a representation of Wikipedia article connectedness
+ */
 function addTitleAndEdgesToGraph(article, graph) {
     graph.addVertex(article.title);
     article.edges.forEach((edge) => {
@@ -52,12 +74,13 @@ function addTitleAndEdgesToGraph(article, graph) {
     });
 };
 
-
+/*
+ *  Reduces the amount of edges in an article object. Reduces it to the amount specified by the constant THRESHOLD
+ *  
+ *  @param {Object} queriedArticle - Wikipedia article object with title and it's links.
+ *  @returns {Object}  - Newly constructed JS object containing the queriedArticle title, and a reduced number of edges (links)
+ */
 function reduceEdgeSize(queriedArticle) {
-    /*
-    Reduces the amount of edges in an article object. Reduces it to the amount specified by the
-    variable 'threshold'
-    */
     const THRESHOLD = 0.03
     let reducedEdges = new Set()
 
@@ -75,6 +98,7 @@ function reduceEdgeSize(queriedArticle) {
         'edges': reducedEdges
     }
 };
+
 
 exports.saveGraphToDb = async function () {
     let graph = mergeToNewObject();
@@ -95,6 +119,10 @@ exports.saveGraphToDb = async function () {
         });
     }
 };
+
+//====================================================
+// SAVEGRAPHTODB HELPER FUNCTIONS
+//====================================================
 
 function mergeToNewObject() {
     // Read JSON files
