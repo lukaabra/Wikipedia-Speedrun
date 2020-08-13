@@ -3,7 +3,7 @@ const graph = require('./graph');
 const perf_hooks = require('perf_hooks');
 const fs = require('fs');
 
-const Article = require('./models/articles.js');
+const Article = require('../models/articles.js');
 
 async function seedDb(start) {
 

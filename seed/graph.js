@@ -1,5 +1,5 @@
 const fs = require('fs'),
-    Article = require('./models/articles');
+    Article = require('../models/articles');
 
 class Graph {
     // Undirected graph
