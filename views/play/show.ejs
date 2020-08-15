@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia speedrun</title>
+</head>
+
+<body>
+    <div>
+        <h1><a href="/">HOME</a></h1>
+
+        <h3><%= article.title %></h3>
+
+        <ul>
+            <% article.edges.forEach((edge) => { %>
+            <li><a href="/play/<%= currentArticleEdges[edge]._id %>"><%= edge %></a> has
+                <%= currentArticleEdges[edge].edges.length %> links
+            </li>
+            <% }); %>
+        </ul>
+
+    </div>
+
+    <footer>
+        <div>How it works?</div>
+        <a href="https://github.com/lukaabra">Luka Abramovic</a>
+    </footer>
+</body>
+
+</html>
