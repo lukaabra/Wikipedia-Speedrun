@@ -1,6 +1,7 @@
 var express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
+    session = require('express-session'),
     Article = require('./models/articles');
 
 // DATABASE SEEDING
@@ -32,6 +33,14 @@ var indexRoutes = require('./routes/index'),
 })();
 
 app.set("view engine", "ejs");
+
+// Session setup
+app.use(session({
+    secret: 'Speedrunning is my passion',
+    maxAge: 3600000,
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use(indexRoutes);
 app.use(playRoutes);

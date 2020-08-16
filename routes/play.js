@@ -1,9 +1,10 @@
 var express = require('express')
 var router = express.Router();
 var Article = require('../models/articles');
+const middlewareObject = require('../middleware');
 
 
-function generateRandomArticle() {
+function generateRandomArticle(difficulty) {
     // Returns an object inside of an array, wrapped in a Promise --> Promise( [{...}] )
 
     // Returns a Promise
@@ -17,16 +18,20 @@ function generateRandomArticle() {
 }
 
 // GET STARTING SCREEN
-router.get("/start", async (req, res) => {
-    const RANDOM_STARTING_ARTICLE = (await generateRandomArticle())[0];
-
-    res.render("play/start", {
-        article: RANDOM_STARTING_ARTICLE
-    });
+router.get("/start", (req, res) => {
+    res.render("play/start");
 });
 
+// GET METHOD FOR GENERATING RANDOM PAGE
+router.get("/generate", async (req, res) => {
+    const RANDOM_STARTING_ARTICLE = (await generateRandomArticle(req.query.difficulty))[0];
+
+    res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
+});
+
+
 // GET ARTICLE
-router.get("/play/:id", async (req, res) => {
+router.get("/play/:id", middlewareObject.checkDifficulty, async (req, res) => {
 
     let currentArticle = await Article.findById(req.params.id, (err, foundArticle) => {
         if (err) console.log("GET ARTICLE ERROR: " + err)
@@ -41,7 +46,7 @@ router.get("/play/:id", async (req, res) => {
             if (err) console.log("GET ARTICLE EDGE ERROR: " + err)
         });
 
-        currentArticleEdges[edgeRecord.title] = edgeRecord
+        currentArticleEdges[edgeRecord.title] = edgeRecord;
     }
 
     res.render('play/show', {

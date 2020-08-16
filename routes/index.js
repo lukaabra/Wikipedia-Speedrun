@@ -1,6 +1,5 @@
 var express = require('express')
 var router = express.Router();
-var Article = require('../models/articles');
 
 
 // GET INDEX
