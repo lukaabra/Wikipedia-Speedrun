@@ -1,4 +1,4 @@
-var express = require('express')
+var express = require('express');
 var router = express.Router();
 var Article = require('../models/articles');
 const middlewareObject = require('../middleware');
@@ -7,10 +7,27 @@ const middlewareObject = require('../middleware');
 function generateRandomArticle(difficulty) {
     // Returns an object inside of an array, wrapped in a Promise --> Promise( [{...}] )
 
+    let distGT, distLT;
+    switch (difficulty) {
+        case 'easy':
+            distGT = 1;
+            distLT = 8
+            break;
+        case 'medium':
+            distGT = 2;
+            distLT = 5;
+            break;
+        case 'hard':
+            distGT = 5;
+            distLT = 8;
+            break;
+    }
+
     // Returns a Promise
     let randomArticle = Article.aggregate().match({
-        "edges.1": { // Check if the record has at least 1 link
-            "$exists": true
+        "distance": { // Check if distance is in accordance with the selected difficulty
+            "$gt": distGT,
+            "$lt": distLT
         }
     }).sample(1).exec();
 
@@ -25,6 +42,8 @@ router.get("/start", (req, res) => {
 // GET METHOD FOR GENERATING RANDOM PAGE
 router.get("/generate", async (req, res) => {
     const RANDOM_STARTING_ARTICLE = (await generateRandomArticle(req.query.difficulty))[0];
+    console.log("RANDOM DISTANCE: " + RANDOM_STARTING_ARTICLE.distance);
+    console.log("DIFFICULTY: " + req.query.difficulty);
 
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
 });
