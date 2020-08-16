@@ -14,13 +14,34 @@
         <h3><%= article.title %></h3>
 
         <ul>
-            <% article.edges.forEach((edge) => { %>
+            <% article.edges.sort().forEach((edge) => { %>
             <li><a href="/play/<%= currentArticleEdges[edge]._id %>"><%= edge %></a> has
                 <%= currentArticleEdges[edge].edges.length %> links
             </li>
             <% }); %>
         </ul>
 
+    </div>
+
+    <div>
+        <h5>
+            Hints:
+            <% if (hints > 3) { %>
+            unlimited
+            <% } else { %>
+            <%= hints %>
+            <% } %>
+        </h5>
+        <p>HINT: <%= userVisibleHint  %> </p>
+        <form action="/play/<%= article._id %>" method="get">
+            <input type="hidden" name="hints" value="-1">
+            <!-- If there are 0 hints left, display the disabled button -->
+            <% if (hints == 0) { %>
+            <button type="submit" disabled>Get Hint</button>
+            <% } else { %>
+            <button type="submit">Get Hint</button>
+            <% } %>
+        </form>
     </div>
 
     <footer>

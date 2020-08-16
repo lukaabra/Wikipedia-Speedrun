@@ -17,7 +17,7 @@ function generateRandomArticle(difficulty) {
             distLT = 5;
             break;
         case 'hard':
-            distGT = 5;
+            distGT = 4;
             distLT = 8;
             break;
     }
@@ -39,7 +39,7 @@ router.get("/start", (req, res) => {
 });
 
 // GET METHOD FOR GENERATING RANDOM PAGE
-router.get("/generate", async (req, res) => {
+router.get("/generate", middlewareObject.setHints, async (req, res) => {
     const RANDOM_STARTING_ARTICLE = (await generateRandomArticle(req.query.difficulty))[0];
     // Immediately redirects to GET ARTICLE route
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
@@ -47,7 +47,9 @@ router.get("/generate", async (req, res) => {
 
 
 // GET ARTICLE
-router.get("/play/:id", middlewareObject.checkDifficulty, async (req, res) => {
+router.get("/play/:id", middlewareObject.trackHints, async (req, res) => {
+
+    console.log(req.session)
 
     let currentArticle = await Article.findById(req.params.id, (err, foundArticle) => {
         if (err) console.log("GET ARTICLE ERROR: " + err)
@@ -65,9 +67,16 @@ router.get("/play/:id", middlewareObject.checkDifficulty, async (req, res) => {
         currentArticleEdges[edgeRecord.title] = edgeRecord;
     }
 
+    // If a hint is requested from the user then a next node in path is assigned
+    let nextNodeInPath;
+    if (req.query.hints && req.session.hints >= 0) nextNodeInPath = currentArticle.path[currentArticle.path.length - 2];
+    else nextNodeInPath = '';
+
     res.render('play/show', {
         article: currentArticle,
-        currentArticleEdges
+        currentArticleEdges: currentArticleEdges,
+        hints: req.session.hints,
+        userVisibleHint: nextNodeInPath
     });
 });
 
