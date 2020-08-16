@@ -3,9 +3,8 @@ var router = express.Router();
 var Article = require('../models/articles');
 const middlewareObject = require('../middleware');
 
-
+// Returns an object inside of an array, wrapped in a Promise --> Promise( [{...}] )
 function generateRandomArticle(difficulty) {
-    // Returns an object inside of an array, wrapped in a Promise --> Promise( [{...}] )
 
     let distGT, distLT;
     switch (difficulty) {
@@ -42,9 +41,7 @@ router.get("/start", (req, res) => {
 // GET METHOD FOR GENERATING RANDOM PAGE
 router.get("/generate", async (req, res) => {
     const RANDOM_STARTING_ARTICLE = (await generateRandomArticle(req.query.difficulty))[0];
-    console.log("RANDOM DISTANCE: " + RANDOM_STARTING_ARTICLE.distance);
-    console.log("DIFFICULTY: " + req.query.difficulty);
-
+    // Immediately redirects to GET ARTICLE route
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
 });
 
