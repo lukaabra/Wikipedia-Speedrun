@@ -1,6 +1,5 @@
 var express = require('express'),
     app = express(),
-    bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     session = require('express-session'),
     Article = require('./models/articles');
@@ -34,11 +33,6 @@ var indexRoutes = require('./routes/index'),
 })();
 
 app.set("view engine", "ejs");
-
-// Express uses the body parser to parse the requests body from URL encodings to JS
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
 
 // Session setup
 app.use(session({
