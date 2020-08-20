@@ -7,7 +7,8 @@ router.get("/finish", (req, res) => {
     console.log(req.session)
     res.render("finish", {
         shortestPath: req.session.shortestPath,
-        bestPossibleScore: req.session.bestPossibleScore
+        bestPossibleScore: req.session.bestPossibleScore,
+        startingArticle: req.session.startingArticle
     });
 });
 

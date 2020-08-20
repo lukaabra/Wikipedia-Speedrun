@@ -43,6 +43,7 @@ router.get("/generate", middlewareObject.setHints, async (req, res) => {
     const RANDOM_STARTING_ARTICLE = (await generateRandomArticle(req.query.difficulty))[0];
     // Set the shortest path of the random starting article to the session, so it can be accessed at the finishing screen
     // Also set the best possible score of the session to be the shortest distance of the random starting article form 'Rijeka'
+    req.session.startingArticle = RANDOM_STARTING_ARTICLE.title;
     req.session.shortestPath = RANDOM_STARTING_ARTICLE.path;
     req.session.bestPossibleScore = RANDOM_STARTING_ARTICLE.distance;
     // Immediately redirects to GET ARTICLE route
