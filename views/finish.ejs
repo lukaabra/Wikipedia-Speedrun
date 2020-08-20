@@ -18,20 +18,26 @@
 
     <div>
         <h2>Your starting article was: <%= startingArticle %></h2>
+
+        <h4>Your time: <%= totalRunTime %></h4>
+
         <h4>Your score: <%= userScore %> </h4>
         <h4>Best possible score: <%= bestPossibleScore %></h4>
+
         <h5>Your path: </h5>
         <ul>
             <% userPath.forEach((node) => { %>
             <li> <%= node %> </li>
             <% }) %>
         </ul>
+
         <h5>The shortest path was:</h5>
         <ul>
             <% shortestPath.reverse().forEach((node) => { %>
             <li> <%= node %> </li>
             <% }) %>
         </ul>
+
     </div>
 
     <div>

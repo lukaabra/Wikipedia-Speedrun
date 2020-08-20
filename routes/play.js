@@ -50,6 +50,7 @@ router.get("/generate", middlewareObject.setHints, async (req, res) => {
 
     req.session.userScore = 0;
     req.session.userPath = [];
+    req.session.startingTime = Date.now();
 
     // Immediately redirects to GET ARTICLE route
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
