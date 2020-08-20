@@ -41,11 +41,15 @@ router.get("/start", (req, res) => {
 // GET METHOD FOR GENERATING RANDOM PAGE
 router.get("/generate", middlewareObject.setHints, async (req, res) => {
     const RANDOM_STARTING_ARTICLE = (await generateRandomArticle(req.query.difficulty))[0];
+
     // Set the shortest path of the random starting article to the session, so it can be accessed at the finishing screen
     // Also set the best possible score of the session to be the shortest distance of the random starting article form 'Rijeka'
     req.session.startingArticle = RANDOM_STARTING_ARTICLE.title;
     req.session.shortestPath = RANDOM_STARTING_ARTICLE.path;
     req.session.bestPossibleScore = RANDOM_STARTING_ARTICLE.distance;
+    // User score set to -1 because it will be increased to 0 when the user enters the '/play/:id' page
+    req.session.userScore = -1;
+
     // Immediately redirects to GET ARTICLE route
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
 });
@@ -74,6 +78,9 @@ router.get("/play/:id", middlewareObject.trackHints, middlewareObject.checkWinni
     let nextNodeInPath;
     if (req.query.hints && req.session.hints >= 0) nextNodeInPath = currentArticle.path[currentArticle.path.length - 2];
     else nextNodeInPath = '';
+
+    req.session.userScore++;
+    console.log(req.session.userScore)
 
     res.render('play/show', {
         article: currentArticle,

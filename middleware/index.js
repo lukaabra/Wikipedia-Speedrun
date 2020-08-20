@@ -13,7 +13,12 @@ middlewareObject.checkWinningCondition = function (req, res, next) {
 }
 
 middlewareObject.trackHints = function (req, res, next) {
-    if (req.query.hints) req.session.hints -= 1;
+    if (req.query.hints) {
+        req.session.hints--;
+        // Decrement the user score because it will automatically be incremented in the get route for 'play/:id'
+        // Decrementing it here means that the user didn't click on any article, only that he/she took a hint
+        req.session.userScore--;
+    }
     if (req.session.hints < 0) req.session.hints = 0
 
     next();
