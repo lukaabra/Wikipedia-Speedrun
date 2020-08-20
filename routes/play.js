@@ -75,7 +75,7 @@ router.get("/play/:id", middlewareObject.trackHints, middlewareObject.checkWinni
         currentArticleEdges[edgeRecord.title] = edgeRecord;
     }
 
-    // If a hint is requested from the user then a next node in path is assigned
+    // If a hint is requested from the user then the next node in path is assigned
     let nextNodeInPath;
     if (req.query.hints && req.session.hints >= 0) nextNodeInPath = currentArticle.path[currentArticle.path.length - 2];
     else nextNodeInPath = '';

@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router();
 
 
-// GET INDEX
+// GET FINISH
 router.get("/finish", (req, res) => {
     // If the user surrendered, reset the score to 0
     if (req.query.surrender) {
