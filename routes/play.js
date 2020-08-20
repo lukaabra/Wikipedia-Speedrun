@@ -49,6 +49,7 @@ router.get("/generate", middlewareObject.setHints, async (req, res) => {
     req.session.bestPossibleScore = RANDOM_STARTING_ARTICLE.distance;
     // User score set to -1 because it will be increased to 0 when the user enters the '/play/:id' page
     req.session.userScore = -1;
+    req.session.userPath = [];
 
     // Immediately redirects to GET ARTICLE route
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
@@ -79,8 +80,9 @@ router.get("/play/:id", middlewareObject.trackHints, middlewareObject.checkWinni
     if (req.query.hints && req.session.hints >= 0) nextNodeInPath = currentArticle.path[currentArticle.path.length - 2];
     else nextNodeInPath = '';
 
+    // Increase the users score and log the path that the user takes
     req.session.userScore++;
-    console.log(req.session.userScore)
+    req.session.userPath.push(currentArticle.title);
 
     res.render('play/show', {
         article: currentArticle,

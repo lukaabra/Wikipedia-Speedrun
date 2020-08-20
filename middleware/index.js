@@ -1,5 +1,3 @@
-var Article = require('../models/articles');
-
 var middlewareObject = {};
 
 const FINISH_ARTICLE_ID = '5f341062eee9893534cbded3';
@@ -18,6 +16,8 @@ middlewareObject.trackHints = function (req, res, next) {
         // Decrement the user score because it will automatically be incremented in the get route for 'play/:id'
         // Decrementing it here means that the user didn't click on any article, only that he/she took a hint
         req.session.userScore--;
+        // Pop the last element of userPath for the same reason userScore is decremented
+        req.session.userPath.pop();
     }
     if (req.session.hints < 0) req.session.hints = 0
 
