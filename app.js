@@ -10,7 +10,8 @@ var seed = require('./seed/seed');
 // REQUIRING ROUTES
 var indexRoutes = require('./routes/index'),
     playRoutes = require('./routes/play'),
-    finishRoutes = require('./routes/finish');
+    finishRoutes = require('./routes/finish'),
+    topscoresRoutes = require('./routes/topscores');
 
 
 (async () => {
@@ -46,6 +47,7 @@ app.use(session({
 app.use(indexRoutes);
 app.use(playRoutes);
 app.use(finishRoutes);
+app.use(topscoresRoutes);
 
 app.listen(3000, () => {
     console.log("Server starting at port 3000 ...");
