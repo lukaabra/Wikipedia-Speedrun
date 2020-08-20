@@ -20,6 +20,7 @@ middlewareObject.trackHints = function (req, res, next) {
 }
 
 middlewareObject.setHints = function (req, res, next) {
+    req.session.difficulty = req.query.difficulty;
     switch (req.query.difficulty) {
         case 'easy':
             req.session.hints = 10000;

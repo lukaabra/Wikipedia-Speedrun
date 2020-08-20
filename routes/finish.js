@@ -4,7 +4,11 @@ var router = express.Router();
 
 // GET INDEX
 router.get("/finish", (req, res) => {
-    res.render("finish");
+    console.log(req.session)
+    res.render("finish", {
+        shortestPath: req.session.shortestPath,
+        bestPossibleScore: req.session.bestPossibleScore
+    });
 });
 
 module.exports = router;
