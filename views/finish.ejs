@@ -9,7 +9,11 @@
 
 <body>
     <div>
-        <h1>Finished!</h1>
+        <% if (surrender) { %>
+        <h1>You surrendered!</h1>
+        <% } else { %>
+        <h1>You finished!</h1>
+        <% } %>
     </div>
 
     <div>

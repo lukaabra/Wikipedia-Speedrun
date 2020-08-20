@@ -33,6 +33,7 @@
             <% } %>
         </h5>
         <p>HINT: <%= userVisibleHint  %> </p>
+
         <form action="/play/<%= article._id %>" method="get">
             <input type="hidden" name="hints" value="-1">
             <!-- If there are 0 hints left, display the disabled button -->
@@ -41,6 +42,11 @@
             <% } else { %>
             <button type="submit">Get Hint</button>
             <% } %>
+        </form>
+
+        <form action="/finish" method="get">
+            <input type="hidden" name="surrender" value="true">
+            <button type="submit">Surrender</button>
         </form>
     </div>
 
