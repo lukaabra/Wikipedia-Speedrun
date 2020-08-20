@@ -47,8 +47,8 @@ router.get("/generate", middlewareObject.setHints, async (req, res) => {
     req.session.startingArticle = RANDOM_STARTING_ARTICLE.title;
     req.session.shortestPath = RANDOM_STARTING_ARTICLE.path;
     req.session.bestPossibleScore = RANDOM_STARTING_ARTICLE.distance;
-    // User score set to -1 because it will be increased to 0 when the user enters the '/play/:id' page
-    req.session.userScore = -1;
+
+    req.session.userScore = 0;
     req.session.userPath = [];
 
     // Immediately redirects to GET ARTICLE route
