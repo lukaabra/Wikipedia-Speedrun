@@ -2,6 +2,16 @@ var Article = require('../models/articles');
 
 var middlewareObject = {};
 
+const FINISH_ARTICLE_ID = '5f341062eee9893534cbded3';
+
+middlewareObject.checkWinningCondition = function (req, res, next) {
+    if (req.params.id != FINISH_ARTICLE_ID) {
+        return next();
+    } else {
+        res.redirect('/finish');
+    }
+}
+
 middlewareObject.trackHints = function (req, res, next) {
     if (req.query.hints) req.session.hints -= 1;
     if (req.session.hints < 0) req.session.hints = 0
