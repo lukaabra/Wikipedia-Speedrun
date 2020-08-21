@@ -1,5 +1,6 @@
 var express = require('express')
 var router = express.Router();
+var Score = require('../models/scores');
 
 
 // GET TOP SCORES

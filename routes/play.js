@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Article = require('../models/articles');
+
 const middlewareObject = require('../middleware');
 
 // Returns an object inside of an array, wrapped in a Promise --> Promise( [{...}] )
