@@ -47,9 +47,9 @@ router.get("/generate", middlewareObject.setHints, async (req, res) => {
     // Also set the best possible score of the session to be the shortest distance of the random starting article form 'Rijeka'
     req.session.startingArticle = RANDOM_STARTING_ARTICLE.title;
     req.session.shortestPath = RANDOM_STARTING_ARTICLE.path;
-    req.session.bestPossibleScore = RANDOM_STARTING_ARTICLE.distance;
+    req.session.minPossibleSteps = RANDOM_STARTING_ARTICLE.distance;
 
-    req.session.userScore = 0;
+    req.session.userSteps = 0;
     req.session.userPath = [];
     req.session.startingTime = Date.now();
 
@@ -83,7 +83,7 @@ router.get("/play/:id", middlewareObject.trackHints, middlewareObject.checkWinni
     else nextNodeInPath = '';
 
     // Increase the users score and log the path that the user takes
-    req.session.userScore++;
+    req.session.userSteps++;
     req.session.userPath.push(currentArticle.title);
 
     res.render('play/show', {

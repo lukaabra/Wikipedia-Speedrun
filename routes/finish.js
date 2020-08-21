@@ -16,21 +16,26 @@ router.get("/finish", (req, res) => {
 
     // If the user surrendered, reset the score to 0
     if (req.query.surrender) {
-        req.session.userScore = 0;
+        req.session.userSteps = 0;
         req.session.userPath.push('SURRENDERED!');
     } else {
         req.session.userPath.push('Rijeka');
     };
 
-    res.render("finish", {
-        shortestPath: req.session.shortestPath,
-        bestPossibleScore: req.session.bestPossibleScore,
-        startingArticle: req.session.startingArticle,
-        userScore: req.session.userScore,
+    let gameData = {
+        userName: req.session.name,
+        userScore: req.session.score,
         userPath: req.session.userPath,
-        surrender: req.query.surrender,
-        totalRunTime: req.session.totalRunTime,
-        userName: req.session.name
+        shortestPath: req.session.shortestPath,
+        userSteps: req.session.userSteps,
+        minPossibleSteps: req.session.minPossibleSteps,
+        startingArticle: req.session.startingArticle,
+        surrendered: req.query.surrender,
+        totalRunTime: req.session.totalRunTime
+    }
+
+    res.render("finish", {
+        gameData: gameData
     });
 });
 
@@ -49,22 +54,25 @@ router.post("/finish", (req, res) => {
     }
 
     // Calculate the total score
-    let coefficient = Math.floor((timeElapsed * 1000) / req.session.userScore)
-    let calculatedScore = (timeElapsed * 1000) * req.session.userScore + 3 * coefficient;
+    const ARBITRARY_CONSTANT = 3;
+    let coefficient = Math.floor((timeElapsed / 1000) / req.session.userSteps)
+    console.log(coefficient);
+    let calculatedScore = Math.floor((timeElapsed / 1000) * req.session.userSteps + ARBITRARY_CONSTANT * coefficient);
+    req.session.score = calculatedScore;
+    console.log(calculatedScore)
 
     // Construct object to store to DB
     let scoreToSubmit = {
         name: req.session.name,
         time: req.session.totalRunTime,
-        steps: req.session.userScore,
-        minPossibleSteps: req.session.bestPossibleScore,
+        steps: req.session.userSteps,
+        minPossibleSteps: req.session.minPossibleSteps,
         startingArticle: req.session.startingArticle,
         score: calculatedScore
     };
 
     Score.create(scoreToSubmit, (err, submittedScore) => {
         if (err) console.log("SUBMITTING SCORE ERROR: " + err);
-        else console.log(submittedScore);
     });
 
     res.redirect("/finish");

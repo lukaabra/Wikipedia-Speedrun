@@ -9,34 +9,38 @@
 
 <body>
     <div>
-        <% if (surrender) { %>
+        <% if (gameData.surrendered) { %>
         <h1>You surrendered!</h1>
         <% } else { %>
-        <h1>Congrats <%= userName %>! You finished!</h1>
+        <h1>Congrats <%= gameData.userName %>! You finished!</h1>
         <% } %>
     </div>
 
     <div>
-        <h2>Your starting article was: <%= startingArticle %></h2>
+        <h2>Your starting article was: <%= gameData.startingArticle %></h2>
 
-        <h4>Your time: <%= totalRunTime %></h4>
+        <h4>Your time: <%= gameData.totalRunTime %></h4>
 
-        <h4>Your score: <%= userScore %> </h4>
-        <h4>Best possible score: <%= bestPossibleScore %></h4>
+        <h4>Your steps: <%= gameData.userSteps %> </h4>
+        <h4>Minimum possible steps: <%= gameData.minPossibleSteps %></h4>
+
+        <h4>Your score: <%= gameData.userScore %></h4>
 
         <h5>Your path: </h5>
         <ul>
-            <% userPath.forEach((node) => { %>
+            <% gameData.userPath.forEach((node) => { %>
             <li> <%= node %> </li>
             <% }) %>
         </ul>
 
         <h5>The shortest path was:</h5>
         <ul>
-            <% shortestPath.reverse().forEach((node) => { %>
+            <% gameData.shortestPath.reverse().forEach((node) => { %>
             <li> <%= node %> </li>
             <% }) %>
         </ul>
+
+
 
     </div>
 
