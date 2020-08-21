@@ -5,7 +5,14 @@ var Score = require('../models/scores');
 
 // GET TOP SCORES
 router.get("/topscores", (req, res) => {
-    res.render("topscores");
+    Score.find({}, (err, allScores) => {
+        if (err) console.log("FIND SCORES ERROR: " + err);
+        else {
+            res.render("topscores", {
+                scores: allScores
+            });
+        }
+    });
 });
 
 module.exports = router;

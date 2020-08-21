@@ -52,8 +52,6 @@ router.post("/finish", (req, res) => {
     let coefficient = Math.floor((timeElapsed * 1000) / req.session.userScore)
     let calculatedScore = (timeElapsed * 1000) * req.session.userScore + 3 * coefficient;
 
-    console.log(req.query);
-
     // Construct object to store to DB
     let scoreToSubmit = {
         name: req.session.name,
