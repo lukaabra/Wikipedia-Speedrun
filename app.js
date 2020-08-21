@@ -2,6 +2,7 @@ var express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
     session = require('express-session'),
+    bodyParser = require('body-parser'),
     Article = require('./models/articles');
 
 // DATABASE SEEDING
@@ -34,6 +35,10 @@ var indexRoutes = require('./routes/index'),
     // await seed.saveGraphToDb();
 })();
 
+// Express uses the body parser to parse the requests body from URL encodings to JS
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.set("view engine", "ejs");
 
 // Session setup

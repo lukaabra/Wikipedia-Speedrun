@@ -6,7 +6,8 @@ middlewareObject.checkWinningCondition = function (req, res, next) {
     if (req.params.id != FINISH_ARTICLE_ID) {
         return next();
     } else {
-        res.redirect('/finish');
+        // Takes the user to submit a score
+        res.render('submitscore');
     }
 }
 

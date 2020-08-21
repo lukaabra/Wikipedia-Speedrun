@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia speedrun</title>
+</head>
+
+<body>
+    <h1>Congratulations! You finished!</h1>
+
+    <h3>Do you want to submit your score?</h3>
+
+    <form action="/finish" method="post">
+        <label for="name">Your name: </label>
+        <input type="text" name="name" id="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <button><a href="/finish">Skip</a></button>
+
+    <footer>
+        <div>How it works?</div>
+        <a href="https://github.com/lukaabra">Luka Abramovic</a>
+    </footer>
+</body>
+
+</html>
