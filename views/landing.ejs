@@ -26,6 +26,7 @@
                 <th>Steps</th>
                 <th>Min possible steps</th>
                 <th>Starting article</th>
+                <th>Difficulty</th>
                 <th>Total score</th>
             </tr>
             <% scores.forEach((score) => { %>
@@ -35,6 +36,7 @@
                 <td> <%= score.steps %> </td>
                 <td> <%= score.minPossibleSteps %> </td>
                 <td> <%= score.startingArticle %> </td>
+                <td> <%= score.difficulty %> </td>
                 <td> <%= score.score %> </td>
             </tr>
             <% }) %>

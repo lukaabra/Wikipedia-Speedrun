@@ -6,7 +6,9 @@ const scoreSchema = new mongoose.Schema({
     steps: Number,
     minPossibleSteps: Number,
     startingArticle: String,
-    score: Number
+    score: Number,
+    difficulty: String,
+    rank: Number
 });
 
 // First argument is the singular name of the collection

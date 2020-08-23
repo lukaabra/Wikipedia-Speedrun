@@ -48,6 +48,7 @@ router.get("/generate", middlewareObject.setHints, async (req, res) => {
     req.session.startingArticle = RANDOM_STARTING_ARTICLE.title;
     req.session.shortestPath = RANDOM_STARTING_ARTICLE.path;
     req.session.minPossibleSteps = RANDOM_STARTING_ARTICLE.distance;
+    req.session.difficulty = req.query.difficulty;
 
     req.session.userSteps = 0;
     req.session.userPath = [];
