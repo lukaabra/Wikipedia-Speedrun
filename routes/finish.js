@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var Score = require('../models/scores');
 
+const MAX_ALLOWED_RANK = 3;
+
 
 // https://stackoverflow.com/questions/21294302/converting-milliseconds-to-minutes-and-seconds-with-javascript
 function millisToMinutesAndSeconds(millis) {
@@ -82,28 +84,37 @@ router.post("/finish", async (req, res) => {
     }).limit(100).exec();
 
     var rank = calculateRanking(calculatedScore, completeRankingTable);
-    updateRankingTable(rank, completeRankingTable);
 
-    // Construct object to store to DB
-    let scoreToSubmit = {
-        name: req.session.name,
-        time: req.session.totalRunTime,
-        steps: req.session.userSteps,
-        minPossibleSteps: req.session.minPossibleSteps,
-        startingArticle: req.session.startingArticle,
-        score: calculatedScore,
-        difficulty: req.session.difficulty,
-        rank: rank
-    };
+    if (rank <= MAX_ALLOWED_RANK) {
+        console.log("===================");
+        console.log("RANK: " + rank);
+        await updateRankingTable(rank, completeRankingTable);
+        await deleteSurplusScores();
 
-    Score.create(scoreToSubmit, (err, submittedScore) => {
-        if (err) console.log("SUBMITTING SCORE ERROR: " + err);
-        else {
-            // Save the id of the submitted score so the ranking of the player can be shown on the finishing screen
-            req.session.rank = submittedScore.rank;
-            res.redirect("/finish");
-        }
-    });
+        // Construct object to store to DB
+        let scoreToSubmit = {
+            name: req.session.name,
+            time: req.session.totalRunTime,
+            steps: req.session.userSteps,
+            minPossibleSteps: req.session.minPossibleSteps,
+            startingArticle: req.session.startingArticle,
+            score: calculatedScore,
+            difficulty: req.session.difficulty,
+            rank: rank
+        };
+
+        await Score.create(scoreToSubmit, (err, submittedScore) => {
+            if (err) console.log("SUBMITTING SCORE ERROR: " + err);
+            else {
+                console.log("CREATED " + submittedScore.name + "'s score " + submittedScore.score + " at rank " + submittedScore.rank)
+                // Save the id of the submitted score so the ranking of the player can be shown on the finishing screen
+                req.session.rank = submittedScore.rank;
+                res.redirect("/finish");
+            }
+        });
+    } else {
+        res.redirect("/finish");
+    }
 });
 
 function calculateRanking(playerScore, rankingTable) {
@@ -129,7 +140,7 @@ function calculateRanking(playerScore, rankingTable) {
     }
 };
 
-function updateRankingTable(rankFromWhichToUpdate, rankingTable) {
+async function updateRankingTable(rankFromWhichToUpdate, rankingTable) {
     // Rank is larger than the position in the ranking table by 1
     let rankingTableToUpdate = rankingTable.slice(rankFromWhichToUpdate - 1);
     for (let score of rankingTableToUpdate) {
@@ -139,8 +150,24 @@ function updateRankingTable(rankFromWhichToUpdate, rankingTable) {
             }
         }, (err, foundScore) => {
             if (err) console.log("UPDATE RANK ERROR: " + err);
+            else console.log("UPDATED " + foundScore.name + "'s rank " + foundScore.rank + " to " + Number(foundScore.rank + 1).toString());
         });
     }
+};
+
+async function deleteSurplusScores() {
+    let scoresToDelete = await Score.aggregate().match({
+        "rank": {
+            "$gte": MAX_ALLOWED_RANK
+        }
+    }).exec();
+
+    for (let score of scoresToDelete) {
+        Score.findByIdAndDelete(score._id, (err, deletedScore) => {
+            if (err) console.log("DELETING EXTRA SCORE ERROR: " + err);
+            else console.log(deletedScore.name + "'s rank " + deletedScore.rank + " deleted successfully!")
+        });
+    };
 }
 
 module.exports = router;
