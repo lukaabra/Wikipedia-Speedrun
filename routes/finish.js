@@ -82,8 +82,6 @@ router.post("/finish", async (req, res) => {
     }).limit(100).exec();
 
     var rank = calculateRanking(calculatedScore, completeRankingTable);
-    // IF YOU AWAIT updateRankingTable, AND AWAIT THE DB LOOKUP INSIDE THE FUNCTION, FOR SOME REASON IT WILL
-    // INCREASE THE RANK BY 2 INSTEAD OF 1
     updateRankingTable(rank, completeRankingTable);
 
     // Construct object to store to DB
