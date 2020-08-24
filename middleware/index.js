@@ -2,6 +2,20 @@ var middlewareObject = {};
 
 const FINISH_ARTICLE_ID = '5f341062eee9893534cbded3';
 
+middlewareObject.checkIfUserSurrendered = function (req, res, next) {
+    // If the user surrendered, reset the score to 0
+    if (req.query.surrender) {
+        req.session.score = 0;
+        req.session.userSteps = 0;
+        req.session.userPath.push('SURRENDERED!');
+        req.session.totalRunTime = 'No time'
+    } else {
+        req.session.userPath.push('Rijeka');
+    };
+
+    next();
+}
+
 middlewareObject.checkWinningCondition = function (req, res, next) {
     if (req.params.id != FINISH_ARTICLE_ID) {
         return next();

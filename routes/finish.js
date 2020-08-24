@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var Score = require('../models/scores');
 
+const middlewareObject = require('../middleware');
+
 const MAX_ALLOWED_RANK = 3,
     RANK_TABLE_SIZE = 100;
 
@@ -9,17 +11,7 @@ const MAX_ALLOWED_RANK = 3,
 //==================================================
 //              GET FINISH ROUTE
 //==================================================
-router.get("/finish", (req, res) => {
-
-    // If the user surrendered, reset the score to 0
-    if (req.query.surrender) {
-        req.session.score = 0;
-        req.session.userSteps = 0;
-        req.session.userPath.push('SURRENDERED!');
-        req.session.totalRunTime = 'No time'
-    } else {
-        req.session.userPath.push('Rijeka');
-    };
+router.get("/finish", middlewareObject.checkIfUserSurrendered, (req, res) => {
 
     let gameData = {
         userName: req.session.name,
