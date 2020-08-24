@@ -61,22 +61,9 @@ router.post("/finish", async (req, res) => {
         req.session.totalRunTime = millisToMinutesAndSeconds(timeElapsed);
     }
 
-    let difficultyScoreCoefficient;
-    switch (req.session.difficulty) {
-        case 'easy':
-            difficultyScoreCoefficient = 3;
-            break;
-        case 'medium':
-            difficultyScoreCoefficient = 2.5;
-            break;
-        case 'hard':
-            difficultyScoreCoefficient = -1;
-            break;
-    }
-
     // Calculate total score of the run
     let coefficient = Math.floor((timeElapsed / 1000) / req.session.userSteps)
-    let calculatedScore = Math.floor((timeElapsed / 1000) * req.session.userSteps + difficultyScoreCoefficient * coefficient);
+    let calculatedScore = Math.floor((timeElapsed / 1000) * req.session.userSteps + coefficient);
     req.session.score = calculatedScore;
 
     let completeRankingTable = await Score.aggregate().sort({
@@ -99,7 +86,6 @@ router.post("/finish", async (req, res) => {
             minPossibleSteps: req.session.minPossibleSteps,
             startingArticle: req.session.startingArticle,
             score: calculatedScore,
-            difficulty: req.session.difficulty,
             rank: rank
         };
 

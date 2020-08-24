@@ -7,7 +7,6 @@ const scoreSchema = new mongoose.Schema({
     minPossibleSteps: Number,
     startingArticle: String,
     score: Number,
-    difficulty: String,
     rank: Number
 });
 
