@@ -27,6 +27,9 @@ router.get("/finish", middlewareObject.checkIfUserSurrendered, (req, res) => {
         totalRunTime: req.session.totalRunTime
     }
 
+    // Destroy session cookie
+    req.session.destroy();
+
     res.render("finish", {
         gameData: gameData
     });

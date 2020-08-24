@@ -25,21 +25,15 @@ middlewareObject.checkWinningCondition = function (req, res, next) {
     }
 }
 
-middlewareObject.trackHints = function (req, res, next) {
-    if (req.query.hints) {
-        req.session.hints--;
-        // Decrement the user score because it will automatically be incremented in the get route for 'play/:id'
-        // Decrementing it here means that the user didn't click on any article, only that he/she took a hint
-        req.session.userSteps--;
-        // Pop the last element of userPath for the same reason userSteps is decremented
-        req.session.userPath.pop();
-    }
-    if (req.session.hints < 0) req.session.hints = 0
+middlewareObject.initialiseSessionData = function (req, res, next) {
+    req.session.userSteps = 0;
+    req.session.userPath = [];
+    req.session.startingTime = Date.now();
 
     next();
 }
 
-middlewareObject.setHints = function (req, res, next) {
+middlewareObject.initialiseHints = function (req, res, next) {
     req.session.difficulty = req.query.difficulty;
     switch (req.query.difficulty) {
         case 'easy':
@@ -52,6 +46,20 @@ middlewareObject.setHints = function (req, res, next) {
             req.session.hints = 3;
             break;
     }
+
+    next();
+}
+
+middlewareObject.trackHints = function (req, res, next) {
+    if (req.query.hints) {
+        req.session.hints--;
+        // Decrement the user score because it will automatically be incremented in the get route for 'play/:id'
+        // Decrementing it here means that the user didn't click on any article, only that he/she took a hint
+        req.session.userSteps--;
+        // Pop the last element of userPath for the same reason userSteps is decremented
+        req.session.userPath.pop();
+    }
+    if (req.session.hints < 0) req.session.hints = 0
 
     next();
 }
