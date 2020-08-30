@@ -25,7 +25,7 @@ router.get("/generate", middlewareObject.initialiseHints, middlewareObject.initi
 
 
 // GET ARTICLE
-router.get("/play/:id", middlewareObject.trackHints, middlewareObject.checkWinningCondition, async (req, res) => {
+router.get("/play/:id", middlewareObject.checkIfGameIsStarted, middlewareObject.trackHints, middlewareObject.checkWinningCondition, async (req, res) => {
 
     let currentArticle = await Article.findById(req.params.id, (err, foundArticle) => {
         if (err) console.log("GET ARTICLE ERROR: " + err)

@@ -11,7 +11,7 @@ const MAX_ALLOWED_RANK = 3,
 //==================================================
 //              GET FINISH ROUTE
 //==================================================
-router.get("/finish", middlewareObject.checkIfUserSurrendered, (req, res) => {
+router.get("/finish", middlewareObject.checkIfGameIsFinished, middlewareObject.checkIfUserSurrendered, (req, res) => {
 
     let gameData = {
         userName: req.session.name,
@@ -42,6 +42,8 @@ router.get("/finish", middlewareObject.checkIfUserSurrendered, (req, res) => {
 router.post("/finish", async (req, res) => {
     // Save the users submitted name to the session
     req.session.name = req.body.name;
+    // Signal that the game is finished
+    req.session.finished = true;
 
     req.session.finishingTime = Date.now();
     let runTimeInMs = req.session.finishingTime - req.session.startingTime;

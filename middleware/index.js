@@ -2,6 +2,16 @@ var middlewareObject = {};
 
 const FINISH_ARTICLE_ID = '5f341062eee9893534cbded3';
 
+middlewareObject.checkIfGameIsFinished = function (req, res, next) {
+    if (req.session.finished) next();
+    else res.redirect("/");
+}
+
+middlewareObject.checkIfGameIsStarted = function (req, res, next) {
+    if (req.session.started) next();
+    else res.redirect("/");
+}
+
 middlewareObject.checkIfUserSurrendered = function (req, res, next) {
     // If the user surrendered, reset the score to 0
     if (req.query.surrender) {
@@ -29,6 +39,9 @@ middlewareObject.initialiseSessionData = function (req, res, next) {
     req.session.userSteps = 0;
     req.session.userPath = [];
     req.session.startingTime = Date.now();
+
+    req.session.started = true;
+    req.session.finished = false;
 
     next();
 }
