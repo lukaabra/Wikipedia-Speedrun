@@ -2,6 +2,10 @@ var middlewareObject = {};
 
 const FINISH_ARTICLE_ID = '5f341062eee9893534cbded3';
 
+middlewareObject.checkArticleIsConnectedToPrevious = function (req, res, next) {
+
+}
+
 middlewareObject.checkIfGameIsFinished = function (req, res, next) {
     if (req.session.finished) next();
     else res.redirect("/");

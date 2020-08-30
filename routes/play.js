@@ -19,6 +19,9 @@ router.get("/generate", middlewareObject.initialiseHints, middlewareObject.initi
     req.session.shortestPath = RANDOM_STARTING_ARTICLE.path;
     req.session.minPossibleSteps = RANDOM_STARTING_ARTICLE.distance;
 
+    req.session.previousArticleChildren = RANDOM_STARTING_ARTICLE.edges;
+    req.session.currentArticle = RANDOM_STARTING_ARTICLE.title;
+
     // Immediately redirects to GET ARTICLE route
     res.redirect("play/" + RANDOM_STARTING_ARTICLE._id)
 });
@@ -52,14 +55,19 @@ router.get("/play/:id", middlewareObject.checkIfGameIsStarted, middlewareObject.
     req.session.userSteps++;
     req.session.userPath.push(currentArticle.title);
 
-    console.log(req.session);
+    // Prevent the user from advancing by tampering with the URL. Only possible to advance by clicking a link
+    if (req.session.previousArticleChildren.includes(currentArticle.title) || req.session.userSteps == 1) {
+        req.session.previousArticleChildren = currentArticle.edges;
 
-    res.render('play/show', {
-        article: currentArticle,
-        currentArticleEdges: currentArticleEdges,
-        hints: req.session.hints,
-        userVisibleHint: nextNodeInPath
-    });
+        res.render('play/show', {
+            article: currentArticle,
+            currentArticleEdges: currentArticleEdges,
+            hints: req.session.hints,
+            userVisibleHint: nextNodeInPath
+        });
+    } else {
+        res.redirect("/");
+    }
 });
 
 //==================================================
