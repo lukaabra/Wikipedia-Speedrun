@@ -58,7 +58,8 @@ router.post("/finish", async (req, res) => {
 
     var rank = calculateRanking(req.session.score, completeRankingTable);
 
-    if (rank <= MAX_ALLOWED_RANK) {
+    // Only accept games on hard difficulty to be ranked
+    if (rank <= MAX_ALLOWED_RANK && req.session.difficulty == "hard") {
         await updateRankingTable(rank, completeRankingTable);
         await deleteSurplusScores();
 
