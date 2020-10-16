@@ -1,13 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import Header from './Header';
+import GameSessionContext from '../context/GameSessionContext';
 
 class ArticlePage extends React.Component {
+    static contextType = GameSessionContext;
+
     render() {
         return (
             <div>
-                <h3>Title</h3>
+                <Header />
+                <h3>{this.context.currentArticle.title}</h3>
             </div>
         )
     }
