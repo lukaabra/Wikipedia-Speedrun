@@ -6,7 +6,7 @@ var express = require('express'),
     Article = require('./models/articles');
 
 // DATABASE SEEDING
-var seed = require('./seed/seed');
+var seed = require('../seed/seed');
 
 // REQUIRING ROUTES
 var indexRoutes = require('./routes/index'),
