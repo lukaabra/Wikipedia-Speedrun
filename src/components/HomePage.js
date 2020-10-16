@@ -18,6 +18,7 @@ const HomePage = () => (
     <div>
         <h1>{title}</h1>
         <h3>{subtitle}</h3>
+        <Link to={'/instructions'}><p>Play</p></Link>
         <ScoreList scores={scores} topThree={true} />
     </div>
 );
