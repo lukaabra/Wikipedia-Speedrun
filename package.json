@@ -6,7 +6,7 @@
   "scripts": {
     "build:dev": "webpack",
     "build:prod": "webpack -p --env production",
-    "dev-server": "webpack-dev-server"
+    "dev-server": "webpack serve"
   },
   "author": "Luka Abramovic",
   "license": "ISC",
