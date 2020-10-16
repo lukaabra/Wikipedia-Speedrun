@@ -1,13 +1,22 @@
 import React from 'react';
 
-class DifficultyForm extends React.Component {
 
+class DifficultyForm extends React.Component {
     /**
      * Fetches a random article from the database and pushes the user to the component rendering the randomly picked article.
      */
-    async onSubmit() {
-        const randomArticle = await fetch('/api/randomArticle');
-        this.props.history.push(`/play/${randomArticle.id}`);
+    onSubmit = (e) => {
+        e.preventDefault();
+        // const randomArticle = await fetch('/api/randomArticle');
+        const randomArticle = {
+            title: 'Osijek, Croatia',
+            edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
+            distance: 1,
+            path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+            _id: 'h18f8h1bk329r321nf32039'
+        };
+        console.log(this.props);
+        this.props.onSubmit(randomArticle);
     }
 
     render() {
