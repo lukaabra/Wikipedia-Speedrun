@@ -22,10 +22,11 @@ class HomePage extends React.Component {
     componentDidMount() {
         this.context.setStartingArticle({});
         this.context.setStartingArticleEdges([]);
+        this.context.setScore({});
         this.context.setDifficulty('easy');
         this.context.setGameStarted(false);
         this.context.setSurrendered(false);
-    }
+    };
 
     render() {
         return (

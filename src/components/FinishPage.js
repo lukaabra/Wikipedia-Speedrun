@@ -10,6 +10,10 @@ class FinishPage extends React.Component {
         surrendered: this.context.surrendered
     };
 
+    componentDidMount() {
+        console.log(this.context);
+    }
+
     render() {
         return (
             <div>

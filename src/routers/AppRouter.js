@@ -13,42 +13,45 @@ import GameSessionContext from '../context/GameSessionContext';
 class AppRouter extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             startingArticle: {},
             startingArticleEdges: [],
             difficulty: 'easy',
             gameStarted: false,
             surrendered: false,
+            score: {},
             setStartingArticle: this.setStartingArticle,
             setStartingArticleEdges: this.setStartingArticleEdges,
             setDifficulty: this.setDifficulty,
             setGameStarted: this.setGameStarted,
-            setSurrendered: this.setSurrendered
+            setSurrendered: this.setSurrendered,
+            setScore: this.setScore
         }
     };
 
+    setScore = (score) => {
+        this.setState(() => ({ score }));
+    }
+
     setSurrendered = (surrendered) => {
-        this.setState({ surrendered })
+        this.setState(() => ({ surrendered }))
     }
 
     setDifficulty = (difficulty) => {
-        this.setState({ difficulty });
+        this.setState(() => ({ difficulty }));
     }
 
     setStartingArticle = (startingArticle) => {
-        this.setState({ startingArticle });
+        this.setState(() => ({ startingArticle }));
     };
 
-    setStartingArticleEdges = (edges) => {
-        this.setState(() => {
-            return {
-                startingArticleEdges: edges
-            }
-        })
+    setStartingArticleEdges = (startingArticleEdges) => {
+        this.setState(() => ({ startingArticleEdges }));
     };
 
     setGameStarted = (gameStarted) => {
-        this.setState({ gameStarted });
+        this.setState(() => ({ gameStarted }));
     };
 
     render() {
