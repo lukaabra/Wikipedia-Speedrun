@@ -26,6 +26,7 @@ class AppRouter extends React.Component {
             gameStarted: false,
             setStartingArticle: this.setStartingArticle,
             setStartingArticleEdges: this.setStartingArticleEdges,
+            setDifficulty: this.setDifficulty,
             setGameStarted: this.setGameStarted
         }
     };

@@ -7,8 +7,12 @@ import GameSessionContext from '../context/GameSessionContext';
 class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidMount() {
         console.log(this.context);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log(this.context)
         if (this.state.hasWon)
             this.props.history.push('/submitscore');
     }
@@ -16,7 +20,9 @@ class ArticlePage extends React.Component {
     state = {
         currentArticle: this.context.startingArticle,
         currentArticleEdges: this.context.startingArticleEdges,
+        difficulty: this.context.difficulty,
         hasWon: false
+
     }
 
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
