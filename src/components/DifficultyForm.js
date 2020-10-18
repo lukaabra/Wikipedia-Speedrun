@@ -6,7 +6,7 @@ class DifficultyForm extends React.Component {
     /**
      * Fetches a random article and its edges from the database and returns them in an array.
      */
-    onSubmit = (e) => {
+    generateRandom = (e) => {
         e.preventDefault();
         // const randomArticle = await fetch('/api/randomArticle');
         const randomArticle = {
@@ -48,14 +48,16 @@ class DifficultyForm extends React.Component {
             <GameSessionContext.Consumer>
                 {(value) => (
                     <div>
-                        <form onSubmit={(e) => {
-                            const [fetchedArticle, fetchedArticleEdges] = this.onSubmit(e);
-                            value.setStartingArticle(fetchedArticle);
-                            value.setCurrentArticle(fetchedArticle);
-                            value.setCurrentArticleEdges(fetchedArticleEdges);
-                            value.setGameStarted(true);
-                            this.props.onSubmit(fetchedArticle);
-                        }}>
+                        <form onSubmit={
+                            (e) => {
+                                const [fetchedArticle, fetchedArticleEdges] = this.generateRandom(e);
+                                value.setStartingArticle(fetchedArticle);
+                                value.setCurrentArticle(fetchedArticle);
+                                value.setCurrentArticleEdges(fetchedArticleEdges);
+                                value.setGameStarted(true);
+                                this.props.onSubmit(fetchedArticle);
+                            }
+                        }>
                             <input type="radio" value={"easy"} name="difficulty" defaultChecked />
                             <label htmlFor="easy">Easy - unlimited hints</label>
 
