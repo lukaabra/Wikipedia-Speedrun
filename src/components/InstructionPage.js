@@ -7,7 +7,9 @@ import GameSessionContext from '../context/GameSessionContext';
 class InstructionPage extends React.Component {
     static contextType = GameSessionContext;
 
-    onSubmit = (startingArticle) => {
+    onSubmit = (startingArticle, difficulty) => {
+        this.context.difficulty = difficulty;
+        console.log(this.context)
         this.props.history.push(`/article/${startingArticle._id}`);
     }
 

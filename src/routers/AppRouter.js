@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import HomePage from '../components/HomePage';
 import InstructionPage from '../components/InstructionPage';
 import ArticlePage from '../components/ArticlePage';
+import SubmitScorePage from '../components/SubmitScorePage';
+import FinishPage from '../components/FinishPage';
 import NotFoundPage from '../components/NotFoundPage';
 
 import GameSessionContext from '../context/GameSessionContext';
@@ -20,12 +22,17 @@ class AppRouter extends React.Component {
                 _id: ''
             },
             startingArticleEdges: [],
+            difficulty: 'easy',
             gameStarted: false,
             setStartingArticle: this.setStartingArticle,
             setStartingArticleEdges: this.setStartingArticleEdges,
             setGameStarted: this.setGameStarted
         }
     };
+
+    setDifficulty = (difficulty) => {
+        this.setState({ difficulty });
+    }
 
     setStartingArticle = (startingArticle) => {
         this.setState({ startingArticle });
@@ -51,6 +58,8 @@ class AppRouter extends React.Component {
                         <Route path="/" component={HomePage} exact={true} />
                         <Route path="/instructions" component={InstructionPage} exact={true} />
                         <Route path="/article/:id" component={ArticlePage} />
+                        <Route path="/submitscore" component={SubmitScorePage} />
+                        <Route path="/finish" component={FinishPage} />
                         <Route component={NotFoundPage} />
                     </Switch>
                 </BrowserRouter>

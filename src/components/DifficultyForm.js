@@ -3,11 +3,15 @@ import GameSessionContext from '../context/GameSessionContext';
 
 
 class DifficultyForm extends React.Component {
+
+    state = {
+        difficulty: 'easy'
+    };
+
     /**
      * Fetches a random article and its edges from the database and returns them in an array.
      */
-    generateRandom = (e) => {
-        e.preventDefault();
+    generateRandom = () => {
         // const randomArticle = await fetch('/api/randomArticle');
         const randomArticle = {
             title: 'Osijek, Croatia',
@@ -43,12 +47,22 @@ class DifficultyForm extends React.Component {
         return [randomArticle, randomArticleEdges];
     };
 
+    onChange = (e) => {
+        e.persist();
+        this.setState(() => {
+            return {
+                difficulty: e.target.value
+            }
+        });
+    };
+
     onSubmit = (e, value) => {
-        const [fetchedArticle, fetchedArticleEdges] = this.generateRandom(e);
+        e.preventDefault();
+        const [fetchedArticle, fetchedArticleEdges] = this.generateRandom();
         value.setStartingArticle(fetchedArticle);
         value.setStartingArticleEdges(fetchedArticleEdges);
         value.setGameStarted(true);
-        this.props.onSubmit(fetchedArticle);
+        this.props.onSubmit(fetchedArticle, this.state.difficulty);
     };
 
     render() {
@@ -56,14 +70,14 @@ class DifficultyForm extends React.Component {
             <GameSessionContext.Consumer>
                 {(value) => (
                     <div>
-                        <form onSubmit={(e) => this.onSubmit(e, value)}>
-                            <input type="radio" value={"easy"} name="difficulty" defaultChecked />
+                        <form onSubmit={(e) => this.onSubmit(e, value)} >
+                            <input type="radio" value={"easy"} name="difficulty" onChange={this.onChange} defaultChecked />
                             <label htmlFor="easy">Easy - unlimited hints</label>
 
-                            <input type="radio" value={"medium"} name="difficulty" />
+                            <input type="radio" value={"medium"} name="difficulty" onChange={this.onChange} />
                             <label htmlFor="medium">Medium - distance to finish is 3 or 4 steps and 2 hint</label>
 
-                            <input type="radio" value={"hard"} name="difficulty" />
+                            <input type="radio" value={"hard"} name="difficulty" onChange={this.onChange} />
                             <label htmlFor="hard">Hard - distance to finish is 5 steps or more and 3 hints</label>
 
                             <button type="submit">START</button>
