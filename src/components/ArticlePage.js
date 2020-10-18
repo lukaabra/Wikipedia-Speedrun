@@ -10,7 +10,7 @@ class ArticlePage extends React.Component {
     componentDidUpdate() {
         if (this.state.hasWon)
             this.props.history.push('/submitscore');
-    }
+    };
 
     state = {
         currentArticle: this.context.startingArticle,
