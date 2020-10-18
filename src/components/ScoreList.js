@@ -6,7 +6,7 @@ const ScoreList = (props) => (
     <div>
         {
             props.scores.length === 0 ? (
-                <p>Currently there are no scores to show</p>
+                <p>Currently there are no scores to display</p>
             ) : (
                     props.topThree ? (
                         props.scores.slice(0, 3).map((score) => (

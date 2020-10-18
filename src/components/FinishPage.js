@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import FinalScore from './FinalScore';
+
 import GameSessionContext from '../context/GameSessionContext';
 
 class FinishPage extends React.Component {
@@ -10,15 +12,12 @@ class FinishPage extends React.Component {
         surrendered: this.context.surrendered
     };
 
-    componentDidMount() {
-        console.log(this.context);
-    }
-
     render() {
         return (
             <div>
                 <h2>{this.state.surrendered ? 'You surrendered' : 'Congratulations!'}</h2>
-                <p>-- Score table --</p>
+                {this.state.surrendered && <p>Your score until you surrendered:</p>}
+                <FinalScore score={this.context.score} />
                 <Link to={'/'}>
                     <button>Home</button>
                 </Link>

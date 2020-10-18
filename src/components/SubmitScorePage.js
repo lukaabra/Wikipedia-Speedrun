@@ -30,13 +30,18 @@ class SubmitScorePage extends React.Component {
     getScore = async () => {
         // POST method to the server with the session data to save data to databse
         // GET method to receive the calculated score
+
+        // score, rank, userSteps, minPossibleSteps, userPath, and shortestPath is sent from the server
         const score = {
             name: this.state.name,
-            time: '0:28',
-            steps: 8,
-            minPossibleSteps: 6,
             startingArticle: 'Osijek, Croatia',
-            score: 198
+            time: '0:28',
+            userSteps: 8,
+            minPossibleSteps: 6,
+            score: 198,
+            rank: 0,
+            userPath: ['gdjskagh', 'htuiewhge', 'hjfkelsag'],
+            shortestPath: ['ghsduagh', 'ghdjsahgd', 'gjdksaghsd']
         };
         this.setState(() => ({ score }));
     }
