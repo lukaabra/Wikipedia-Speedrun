@@ -8,7 +8,6 @@ class InstructionPage extends React.Component {
     static contextType = GameSessionContext;
 
     onSubmit = (startingArticle) => {
-        console.log(this.context)
         this.props.history.push(`/article/${startingArticle._id}`);
     }
 

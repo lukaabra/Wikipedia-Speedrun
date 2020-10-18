@@ -4,19 +4,43 @@ import GameSessionContext from '../context/GameSessionContext';
 
 class DifficultyForm extends React.Component {
     /**
-     * Fetches a random article from the database and pushes the user to the component rendering the randomly picked article.
+     * Fetches a random article and its edges from the database and returns them in an array.
      */
     onSubmit = (e) => {
         e.preventDefault();
         // const randomArticle = await fetch('/api/randomArticle');
         const randomArticle = {
             title: 'Osijek, Croatia',
-            edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
+            edges: ['Hungary', 'Paris, France'],
             distance: 1,
             path: ['Osijek, Croatia', 'Rijeka, Croatia'],
             _id: 'h18f8h1bk329r321nf32039'
         };
-        return randomArticle;
+        const randomArticleEdges = [
+            {
+                title: 'Hungary',
+                edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
+                distance: 1,
+                path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+                _id: 'h18gds23153fe1f'
+            },
+            {
+                title: 'Paris',
+                edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
+                distance: 1,
+                path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+                _id: 'h18gds235353t4ffr3153fe1f'
+            },
+            {
+                title: 'France',
+                edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
+                distance: 1,
+                path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+                _id: 'h18gds231buidwqov791hcnew53fe1f'
+            }
+        ];
+
+        return [randomArticle, randomArticleEdges];
     }
 
     render() {
@@ -25,11 +49,12 @@ class DifficultyForm extends React.Component {
                 {(value) => (
                     <div>
                         <form onSubmit={(e) => {
-                            const fetchedArticle = this.onSubmit(e);
+                            const [fetchedArticle, fetchedArticleEdges] = this.onSubmit(e);
                             value.setStartingArticle(fetchedArticle);
                             value.setCurrentArticle(fetchedArticle);
+                            value.setCurrentArticleEdges(fetchedArticleEdges);
                             value.setGameStarted(true);
-                            this.props.onSubmit(value.startingArticle);
+                            this.props.onSubmit(fetchedArticle);
                         }}>
                             <input type="radio" value={"easy"} name="difficulty" defaultChecked />
                             <label htmlFor="easy">Easy - unlimited hints</label>
