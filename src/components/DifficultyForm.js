@@ -41,22 +41,22 @@ class DifficultyForm extends React.Component {
         ];
 
         return [randomArticle, randomArticleEdges];
-    }
+    };
+
+    onSubmit = (e, value) => {
+        const [fetchedArticle, fetchedArticleEdges] = this.generateRandom(e);
+        value.setStartingArticle(fetchedArticle);
+        value.setStartingArticleEdges(fetchedArticleEdges);
+        value.setGameStarted(true);
+        this.props.onSubmit(fetchedArticle);
+    };
 
     render() {
         return (
             <GameSessionContext.Consumer>
                 {(value) => (
                     <div>
-                        <form onSubmit={
-                            (e) => {
-                                const [fetchedArticle, fetchedArticleEdges] = this.generateRandom(e);
-                                value.setStartingArticle(fetchedArticle);
-                                value.setStartingArticleEdges(fetchedArticleEdges);
-                                value.setGameStarted(true);
-                                this.props.onSubmit(fetchedArticle);
-                            }
-                        }>
+                        <form onSubmit={(e) => this.onSubmit(e, value)}>
                             <input type="radio" value={"easy"} name="difficulty" defaultChecked />
                             <label htmlFor="easy">Easy - unlimited hints</label>
 

@@ -12,6 +12,8 @@ class ArticlePage extends React.Component {
         currentArticleEdges: this.context.startingArticleEdges
     }
 
+    // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
+
     getClickedArticle = (e) => {
         e.persist();
         const clickedArticle = this.state.currentArticleEdges.filter((edge) => {
