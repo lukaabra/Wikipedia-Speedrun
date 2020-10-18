@@ -14,13 +14,7 @@ class AppRouter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            startingArticle: {
-                title: '',
-                edges: [],
-                distance: 0,
-                path: '',
-                _id: ''
-            },
+            startingArticle: {},
             startingArticleEdges: [],
             difficulty: 'easy',
             gameStarted: false,
