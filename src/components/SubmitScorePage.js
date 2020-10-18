@@ -6,6 +6,7 @@ import Header from './Header';
 class SubmitScorePage extends React.Component {
 
     onSubmit = (e) => {
+        e.preventDefault();
         this.submitScore();
     }
 

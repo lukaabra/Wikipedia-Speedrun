@@ -7,12 +7,7 @@ import GameSessionContext from '../context/GameSessionContext';
 class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
-    componentDidMount() {
-        console.log(this.context);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        console.log(this.context)
+    componentDidUpdate() {
         if (this.state.hasWon)
             this.props.history.push('/submitscore');
     }
@@ -22,10 +17,13 @@ class ArticlePage extends React.Component {
         currentArticleEdges: this.context.startingArticleEdges,
         difficulty: this.context.difficulty,
         hasWon: false
-
     }
 
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
+
+    clickSurrender = (context) => {
+        context.setSurrendered(true);
+    }
 
     getClickedArticle = (e) => {
         e.persist();
@@ -67,6 +65,13 @@ class ArticlePage extends React.Component {
                         </div>
                     ))
                 }
+                <GameSessionContext.Consumer>
+                    {(value) => (
+                        <Link to={'/finish'}>
+                            <button onClick={() => this.clickSurrender(value)} >Surrender</button>
+                        </Link>
+                    )}
+                </GameSessionContext.Consumer>
             </div>
         )
     }

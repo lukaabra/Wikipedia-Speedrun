@@ -5,6 +5,7 @@ import GameSessionContext from '../context/GameSessionContext';
 class DifficultyForm extends React.Component {
     static contextType = GameSessionContext;
 
+    // Set to easy since it is the default checked value
     state = {
         difficulty: 'easy'
     };
@@ -57,14 +58,14 @@ class DifficultyForm extends React.Component {
         });
     };
 
-    onSubmit = (e, value) => {
+    onSubmit = (e, context) => {
         e.preventDefault();
         const [fetchedArticle, fetchedArticleEdges] = this.generateRandom();
 
-        value.setStartingArticle(fetchedArticle);
-        value.setStartingArticleEdges(fetchedArticleEdges);
-        value.setDifficulty(this.state.difficulty);
-        value.setGameStarted(true);
+        context.setStartingArticle(fetchedArticle);
+        context.setStartingArticleEdges(fetchedArticleEdges);
+        context.setDifficulty(this.state.difficulty);
+        context.setGameStarted(true);
 
         this.props.history.push(`/article/${fetchedArticle._id}`);
     };
@@ -84,7 +85,7 @@ class DifficultyForm extends React.Component {
                             <input type="radio" value={"hard"} name="difficulty" onChange={this.onChange} />
                             <label htmlFor="hard">Hard - distance to finish is 5 steps or more and 3 hints</label>
 
-                            <button type="submit">START</button>
+                            <button type="submit">Start</button>
                         </form>
                     </div>
                 )}

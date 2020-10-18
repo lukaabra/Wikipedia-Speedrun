@@ -24,12 +24,18 @@ class AppRouter extends React.Component {
             startingArticleEdges: [],
             difficulty: 'easy',
             gameStarted: false,
+            surrendered: false,
             setStartingArticle: this.setStartingArticle,
             setStartingArticleEdges: this.setStartingArticleEdges,
             setDifficulty: this.setDifficulty,
-            setGameStarted: this.setGameStarted
+            setGameStarted: this.setGameStarted,
+            setSurrendered: this.setSurrendered
         }
     };
+
+    setSurrendered = (surrendered) => {
+        this.setState({ surrendered })
+    }
 
     setDifficulty = (difficulty) => {
         this.setState({ difficulty });
