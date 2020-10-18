@@ -8,8 +8,8 @@ class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
     state = {
-        currentArticle: this.context.currentArticle,
-        currentArticleEdges: this.context.currentArticleEdges
+        currentArticle: this.context.startingArticle,
+        currentArticleEdges: this.context.startingArticleEdges
     }
 
     getClickedArticle = (e) => {

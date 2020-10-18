@@ -52,8 +52,7 @@ class DifficultyForm extends React.Component {
                             (e) => {
                                 const [fetchedArticle, fetchedArticleEdges] = this.generateRandom(e);
                                 value.setStartingArticle(fetchedArticle);
-                                value.setCurrentArticle(fetchedArticle);
-                                value.setCurrentArticleEdges(fetchedArticleEdges);
+                                value.setStartingArticleEdges(fetchedArticleEdges);
                                 value.setGameStarted(true);
                                 this.props.onSubmit(fetchedArticle);
                             }

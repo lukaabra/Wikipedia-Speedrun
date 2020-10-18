@@ -19,18 +19,10 @@ class AppRouter extends React.Component {
                 path: '',
                 _id: ''
             },
-            currentArticle: {
-                title: '',
-                edges: [],
-                distance: 0,
-                path: '',
-                _id: ''
-            },
-            currentArticleEdges: [],
+            startingArticleEdges: [],
             gameStarted: false,
             setStartingArticle: this.setStartingArticle,
-            setCurrentArticle: this.setCurrentArticle,
-            setCurrentArticleEdges: this.setCurrentArticleEdges,
+            setStartingArticleEdges: this.setStartingArticleEdges,
             setGameStarted: this.setGameStarted
         }
     };
@@ -39,14 +31,10 @@ class AppRouter extends React.Component {
         this.setState({ startingArticle });
     };
 
-    setCurrentArticle = (currentArticle) => {
-        this.setState({ currentArticle });
-    };
-
-    setCurrentArticleEdges = (edgesObject) => {
+    setStartingArticleEdges = (edges) => {
         this.setState(() => {
             return {
-                currentArticleEdges: edgesObject
+                startingArticleEdges: edges
             }
         })
     };
