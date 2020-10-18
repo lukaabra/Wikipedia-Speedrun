@@ -2,16 +2,8 @@ import React from 'react';
 
 import Header from './Header';
 import DifficultyForm from './DifficultyForm';
-import GameSessionContext from '../context/GameSessionContext';
 
 class InstructionPage extends React.Component {
-    static contextType = GameSessionContext;
-
-    onSubmit = (startingArticle, difficulty) => {
-        this.context.difficulty = difficulty;
-        console.log(this.context)
-        this.props.history.push(`/article/${startingArticle._id}`);
-    }
 
     render() {
         return (
@@ -27,7 +19,7 @@ class InstructionPage extends React.Component {
                     You will be assigned to a random article. All of the articles have links by which you navigate. The maximum
                     distance to the finish (Rijeka article) is 7 steps.
                 </p>
-                <DifficultyForm onSubmit={this.onSubmit} />
+                <DifficultyForm history={this.props.history} />
             </div>
         )
     }

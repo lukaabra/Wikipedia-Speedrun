@@ -3,6 +3,7 @@ import GameSessionContext from '../context/GameSessionContext';
 
 
 class DifficultyForm extends React.Component {
+    static contextType = GameSessionContext;
 
     state = {
         difficulty: 'easy'
@@ -62,7 +63,9 @@ class DifficultyForm extends React.Component {
         value.setStartingArticle(fetchedArticle);
         value.setStartingArticleEdges(fetchedArticleEdges);
         value.setGameStarted(true);
-        this.props.onSubmit(fetchedArticle, this.state.difficulty);
+
+        this.context.difficulty = this.state.difficulty;
+        this.props.history.push(`/article/${fetchedArticle._id}`);
     };
 
     render() {
