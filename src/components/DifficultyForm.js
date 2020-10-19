@@ -27,21 +27,21 @@ class DifficultyForm extends React.Component {
                 title: 'Hungary',
                 edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
                 distance: 1,
-                path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+                path: ['Rijeka, Croatia', 'Hungary'],
                 _id: 'h18gds23153fe1f'
             },
             {
                 title: 'Paris',
                 edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
                 distance: 1,
-                path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+                path: ['Rijeka, Croatia', 'Paris'],
                 _id: 'h18gds235353t4ffr3153fe1f'
             },
             {
                 title: 'France',
                 edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
                 distance: 1,
-                path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+                path: ['Rijeka, Croatia', 'France'],
                 _id: 'h18gds231buidwqov791hcnew53fe1f'
             }
         ];

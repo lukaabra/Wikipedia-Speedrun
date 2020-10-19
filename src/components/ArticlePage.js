@@ -8,15 +8,16 @@ class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
     componentDidMount() {
+        this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
         switch (this.state.difficulty) {
             case 'easy':
-                this.setState(() => ({ hints: Number.MAX_SAFE_INTEGER }));
+                this.setState(() => ({ numOfHints: Number.MAX_SAFE_INTEGER }));
                 break;
             case 'medium':
-                this.setState(() => ({ hints: 2 }));
+                this.setState(() => ({ numOfHints: 2 }));
                 break;
             case 'hard':
-                this.setState(() => ({ hints: 3 }));
+                this.setState(() => ({ numOfHints: 3 }));
                 break;
         };
     };
@@ -31,13 +32,39 @@ class ArticlePage extends React.Component {
         currentArticleEdges: this.context.startingArticleEdges,
         difficulty: this.context.difficulty,
         hasWon: false,
-        hints: Number.MAX_SAFE_INTEGER
+        numOfHints: Number.MAX_SAFE_INTEGER,
+        key: Math.floor(Math.random() * 26) + 1,
+        hint: '',
+        showHint: false
     };
 
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
 
     clickSurrender = (context) => {
         context.setSurrendered(true);
+    }
+
+    encodeHint = (hintToEncode) => {
+        let encodedHint = '';
+        hintToEncode.split('').forEach((char) => {
+            const code = char.charCodeAt() + this.state.key;
+            encodedHint += String.fromCharCode(code);
+        });
+
+        this.setState(() => ({ hint: encodedHint }));
+    };
+
+    decodeHint = (hintToDecode) => {
+        let decodedHint = '';
+        console.log(hintToDecode)
+        hintToDecode.split('').forEach((codeChar) => {
+            const code = codeChar.charCodeAt() - this.state.key;
+            decodedHint += String.fromCharCode(code);
+        });
+
+        console.log(decodedHint);
+
+        this.setState(() => ({ hint: decodedHint }));
     }
 
     getClickedArticle = (e) => {
@@ -51,23 +78,31 @@ class ArticlePage extends React.Component {
             title: 'fdsafds',
             edges: ['fdsafdsa', 'Pfaris, Franfdsaghce'],
             distance: 1,
-            path: ['Osijek, Croatia', 'Rijeka, Croatia'],
+            path: ['Rijeka, Croatia', 'fdsafds'],
             _id: 'h18f8h1bk32gdsagdsa9r321nf32039'
         }];
 
+        // Last item (path.length - 1) in the path array is the clickedArticle
+        // Second (path.length - 2) is the hint
+        this.encodeHint(clickedArticle.path[clickedArticle.path.length - 2]);
+
         // Check winning condition from the fetched object
-        const hasWon = true;
+        const hasWon = false;
 
         this.setState(() => ({
             currentArticle: clickedArticle,
             currentArticleEdges: clickedArticleEdges,
-            hasWon
+            hasWon,
+            showHint: false
         }));
     };
 
     useHint = () => {
-        if (this.state.difficulty !== 'easy')
-            this.setState((prevState) => ({ hints: prevState.hints - 1 }))
+        if (this.state.difficulty !== 'easy') {
+            this.setState((prevState) => ({ numOfHints: prevState.numOfHints - 1 }));
+        }
+        this.decodeHint(this.state.hint);
+        this.setState(() => ({ showHint: true }));
     }
 
     render() {
@@ -75,6 +110,7 @@ class ArticlePage extends React.Component {
             <div>
                 <Header />
                 <h4>{this.state.currentArticle.title}</h4>
+
                 {
                     this.state.currentArticleEdges.map((edge) => (
                         <div>
@@ -83,16 +119,19 @@ class ArticlePage extends React.Component {
                         </div>
                     ))
                 }
+
                 <div>
+                    {this.state.showHint && <p>{this.state.hint}</p>}
                     {
-                        this.state.hints === Number.MAX_SAFE_INTEGER ? (
+                        this.state.difficulty === 'easy' ? (
                             <p>Infinite hints left</p>
                         ) : (
-                                <p>{this.state.hints} {this.state.hints === 1 ? 'hint' : 'hints'} left</p>
+                                <p>{this.state.numOfHints} {this.state.numOfHints === 1 ? 'hint' : 'hints'} left</p>
                             )
                     }
-                    <button onClick={this.useHint} disabled={!this.state.hints}>Use hint</button>
+                    <button onClick={this.useHint} disabled={!this.state.numOfHints || this.state.showHint}>Use hint</button>
                 </div>
+
                 <GameSessionContext.Consumer>
                     {(value) => (
                         <Link to={'/finish'}>
@@ -100,7 +139,7 @@ class ArticlePage extends React.Component {
                         </Link>
                     )}
                 </GameSessionContext.Consumer>
-            </div >
+            </div>
         )
     }
 };
