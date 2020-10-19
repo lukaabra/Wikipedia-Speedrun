@@ -7,6 +7,20 @@ import GameSessionContext from '../context/GameSessionContext';
 class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
+    componentDidMount() {
+        switch (this.state.difficulty) {
+            case 'easy':
+                this.setState(() => ({ hints: Number.MAX_SAFE_INTEGER }));
+                break;
+            case 'medium':
+                this.setState(() => ({ hints: 2 }));
+                break;
+            case 'hard':
+                this.setState(() => ({ hints: 3 }));
+                break;
+        };
+    };
+
     componentDidUpdate() {
         if (this.state.hasWon)
             this.props.history.push('/submitscore');
@@ -16,8 +30,9 @@ class ArticlePage extends React.Component {
         currentArticle: this.context.startingArticle,
         currentArticleEdges: this.context.startingArticleEdges,
         difficulty: this.context.difficulty,
-        hasWon: false
-    }
+        hasWon: false,
+        hints: Number.MAX_SAFE_INTEGER
+    };
 
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
 
@@ -43,14 +58,17 @@ class ArticlePage extends React.Component {
         // Check winning condition from the fetched object
         const hasWon = true;
 
-        this.setState(() => {
-            return {
-                currentArticle: clickedArticle,
-                currentArticleEdges: clickedArticleEdges,
-                hasWon
-            }
-        });
+        this.setState(() => ({
+            currentArticle: clickedArticle,
+            currentArticleEdges: clickedArticleEdges,
+            hasWon
+        }));
     };
+
+    useHint = () => {
+        if (this.state.difficulty !== 'easy')
+            this.setState((prevState) => ({ hints: prevState.hints - 1 }))
+    }
 
     render() {
         return (
@@ -65,14 +83,24 @@ class ArticlePage extends React.Component {
                         </div>
                     ))
                 }
+                <div>
+                    {
+                        this.state.hints === Number.MAX_SAFE_INTEGER ? (
+                            <p>Infinite hints left</p>
+                        ) : (
+                                <p>{this.state.hints} {this.state.hints === 1 ? 'hint' : 'hints'} left</p>
+                            )
+                    }
+                    <button onClick={this.useHint} disabled={!this.state.hints}>Use hint</button>
+                </div>
                 <GameSessionContext.Consumer>
                     {(value) => (
                         <Link to={'/finish'}>
-                            <button onClick={() => this.clickSurrender(value)} >Surrender</button>
+                            <button onClick={() => this.clickSurrender(value)}>Surrender</button>
                         </Link>
                     )}
                 </GameSessionContext.Consumer>
-            </div>
+            </div >
         )
     }
 };
