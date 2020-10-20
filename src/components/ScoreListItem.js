@@ -16,8 +16,8 @@ const ScoreListItem = (props) => (
             <tbody>
                 <tr>
                     {
-                        Object.values(props.score).map((data) => (
-                            <td>{data}</td>
+                        Object.values(props.score).map((data, index) => (
+                            <td key={props.score.score * index}>{data}</td>
                         ))
                     }
                 </tr>

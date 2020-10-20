@@ -10,11 +10,11 @@ const ScoreList = (props) => (
             ) : (
                     props.topThree ? (
                         props.scores.slice(0, 3).map((score) => (
-                            <ScoreListItem score={score} />
+                            <ScoreListItem score={score} key={score._id} />
                         ))
                     ) : (
                             props.scores.map((score) => (
-                                <ScoreListItem score={score} />
+                                <ScoreListItem score={score} key={score._id} />
                             ))
                         )
                 )

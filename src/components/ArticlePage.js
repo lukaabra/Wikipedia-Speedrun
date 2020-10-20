@@ -8,18 +8,23 @@ class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
     componentDidMount() {
-        this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
-        switch (this.state.difficulty) {
-            case 'easy':
-                this.setState(() => ({ numOfHints: Number.MAX_SAFE_INTEGER }));
-                break;
-            case 'medium':
-                this.setState(() => ({ numOfHints: 2 }));
-                break;
-            case 'hard':
-                this.setState(() => ({ numOfHints: 3 }));
-                break;
-        };
+        console.log(this.context)
+        if (!this.context.gameStarted) {
+            this.props.history.push('/');
+        } else {
+            this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
+            switch (this.state.difficulty) {
+                case 'easy':
+                    this.setState(() => ({ numOfHints: Number.MAX_SAFE_INTEGER }));
+                    break;
+                case 'medium':
+                    this.setState(() => ({ numOfHints: 2 }));
+                    break;
+                case 'hard':
+                    this.setState(() => ({ numOfHints: 3 }));
+                    break;
+            };
+        }
     };
 
     componentDidUpdate() {
@@ -30,6 +35,7 @@ class ArticlePage extends React.Component {
     state = {
         currentArticle: this.context.startingArticle,
         currentArticleEdges: this.context.startingArticleEdges,
+        prevArticleEdges: this.context.startingArticleEdges,
         difficulty: this.context.difficulty,
         hasWon: false,
         numOfHints: Number.MAX_SAFE_INTEGER,
@@ -113,7 +119,7 @@ class ArticlePage extends React.Component {
 
                 {
                     this.state.currentArticleEdges.map((edge) => (
-                        <div>
+                        <div key={edge._id}>
                             <Link to={`/article/${edge._id}`} onClick={this.getClickedArticle}>{edge.title}</Link>
                              - {edge.edges.length} links
                         </div>

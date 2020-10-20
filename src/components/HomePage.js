@@ -13,7 +13,8 @@ const scores = [{
     steps: 8,
     minPossibleSteps: 6,
     startingArticle: 'Osijek, Croatia',
-    score: 198
+    score: 198,
+    _id: 'ghdsah3801h438379g37437g4n38g4'
 }];
 
 class HomePage extends React.Component {

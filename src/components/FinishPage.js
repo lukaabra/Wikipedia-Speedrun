@@ -37,7 +37,7 @@ class FinishPage extends React.Component {
                         <h4>The shortest possible path was:</h4>
                         <ul>
                             {this.state.shortestPath.map((article) => (
-                                <li>{article}</li>
+                                <li key={article}>{article}</li>
                             ))}
                         </ul>
                     </div>

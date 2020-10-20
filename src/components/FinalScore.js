@@ -33,7 +33,7 @@ const FinalScore = (props) => (
         <ul>
             {
                 Object.values(props.score.userPath).map((article) => (
-                    <li>{article}</li>
+                    <li key={article}>{article}</li>
                 ))
             }
         </ul>
@@ -41,8 +41,8 @@ const FinalScore = (props) => (
         <h4>Shortest possible path:</h4>
         <ul>
             {
-                Object.values(props.score.shortestPath).map((article) => (
-                    <li>{article}</li>
+                Object.values(props.score.shortestPath).map((article, index) => (
+                    <li key={index}>{article}</li>
                 ))
             }
         </ul>
