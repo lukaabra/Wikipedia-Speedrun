@@ -1,8 +1,8 @@
-const wiki = require("./wikiapi.js");
+const wiki = require("./wikiapi");
 const graph = require('./graph');
 const fs = require('fs');
 
-const Article = require('../models/articles.js');
+const Article = require('../server/models/articles.js');
 
 
 /**

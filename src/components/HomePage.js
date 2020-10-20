@@ -7,15 +7,6 @@ import GameSessionContext from '../context/GameSessionContext';
 
 const title = 'Wikipedia Speedrun'
 const subtitle = 'Reach the Wikipedia article for the city of Rijeka, Croatia as fast as you can!'
-const scores = [{
-    name: 'Luka',
-    time: '0:28',
-    steps: 8,
-    minPossibleSteps: 6,
-    startingArticle: 'Osijek, Croatia',
-    score: 198,
-    _id: 'ghdsah3801h438379g37437g4n38g4'
-}];
 
 class HomePage extends React.Component {
     static contextType = GameSessionContext;
@@ -35,7 +26,7 @@ class HomePage extends React.Component {
                 <h1>{title}</h1>
                 <h3>{subtitle}</h3>
                 <Link to={'/instructions'}><p>Play</p></Link>
-                <ScoreList scores={scores} topThree={true} />
+                <ScoreList topThree={true} />
             </div>
         );
     };

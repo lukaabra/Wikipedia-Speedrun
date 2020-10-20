@@ -1,18 +1,14 @@
-var express = require('express'),
+const express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
-    session = require('express-session'),
-    bodyParser = require('body-parser'),
+    cors = require('cors'),
     Article = require('./models/articles');
 
 // DATABASE SEEDING
-var seed = require('../seed/seed');
+// const seed = require('../seed/seed');
 
 // REQUIRING ROUTES
-var indexRoutes = require('./routes/index'),
-    playRoutes = require('./routes/play'),
-    finishRoutes = require('./routes/finish'),
-    topscoresRoutes = require('./routes/topscores');
+const apiRouter = require('./routes/api');
 
 
 (async () => {
@@ -36,25 +32,10 @@ var indexRoutes = require('./routes/index'),
     // await seed.saveGraphToDb();
 })();
 
-// Express uses the body parser to parse the requests body from URL encodings to JS
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.set("view engine", "ejs");
 
-// Session setup
-app.use(session({
-    secret: 'Speedrunning is my passion',
-    maxAge: 3600000,
-    resave: false,
-    saveUninitialized: false
-}));
+app.use(cors());
+app.use(apiRouter);
 
-app.use(indexRoutes);
-app.use(playRoutes);
-app.use(finishRoutes);
-app.use(topscoresRoutes);
-
-app.listen(3000, () => {
-    console.log("Server starting at port 3000 ...");
+app.listen(3001, () => {
+    console.log("Server starting at port 3001 ...");
 });
