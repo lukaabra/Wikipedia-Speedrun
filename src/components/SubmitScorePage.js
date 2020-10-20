@@ -10,20 +10,28 @@ class SubmitScorePage extends React.Component {
 
     state = {
         name: '',
-        score: {}
+        score: {},
+        error: ''
     };
 
     goToFinish = async (e, context) => {
         if (e)
             e.preventDefault();
 
-        await this.getScore();
-        await context.setScore(this.state.score);
+        // If e is present, that means that the user is trying to submit the form
+        // If there is no e, that means that the user is trying to skip
+        if (!this.state.name && e) {
+            const error = "Please enter a name";
+            this.setState(() => ({ error }));
+        } else {
+            await this.getScore();
+            await context.setScore(this.state.score);
 
-        // if (e)
-        // await this.postScore();
+            // if (e)
+            // await this.postScore();
 
-        this.props.history.push('/finish');
+            this.props.history.push('/finish');
+        }
     };
 
     onChange = (e) => {
@@ -65,6 +73,7 @@ class SubmitScorePage extends React.Component {
                 <GameSessionContext.Consumer>
                     {(value) => (
                         <div>
+                            {this.state.error && <h4>{this.state.error}</h4>}
                             <form onSubmit={(e) => this.goToFinish(e, value)}>
                                 <input type="text" autoFocus placeholder="Your name" onChange={this.onChange} />
                                 <button>Submit score</button>
