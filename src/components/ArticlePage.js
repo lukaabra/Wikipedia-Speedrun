@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Header from './Header';
+import Article from './Article';
 import GameSessionContext from '../context/GameSessionContext';
 
 class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
     componentDidMount() {
-        console.log(this.context)
         if (!this.context.gameStarted) {
             this.props.history.push('/');
         } else {
@@ -115,16 +115,11 @@ class ArticlePage extends React.Component {
         return (
             <div>
                 <Header />
-                <h4>{this.state.currentArticle.title}</h4>
-
-                {
-                    this.state.currentArticleEdges.map((edge) => (
-                        <div key={edge._id}>
-                            <Link to={`/article/${edge._id}`} onClick={this.getClickedArticle}>{edge.title}</Link>
-                             - {edge.edges.length} links
-                        </div>
-                    ))
-                }
+                <Article
+                    getClickedArticle={this.getClickedArticle}
+                    currentArticle={this.state.currentArticle}
+                    currentArticleEdges={this.state.currentArticleEdges}
+                />
 
                 <div>
                     {this.state.showHint && <p>{this.state.hint}</p>}
