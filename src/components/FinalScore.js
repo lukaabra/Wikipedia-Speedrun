@@ -2,7 +2,14 @@ import React from 'react';
 
 const FinalScore = (props) => (
     <div>
-        <h1>{props.score.name}</h1>
+        {
+            props.score.name && (
+                <div>
+                    <h1>{props.score.name}</h1>
+                    <p>Your score has been submitted</p>
+                </div>
+            )
+        }
 
         <h3>Starting Article:</h3>
         <p>{props.score.startingArticle}</p>

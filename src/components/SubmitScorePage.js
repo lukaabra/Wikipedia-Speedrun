@@ -13,11 +13,15 @@ class SubmitScorePage extends React.Component {
         score: {}
     };
 
-    onSubmit = async (e, context) => {
-        e.preventDefault();
+    goToFinish = async (e, context) => {
+        if (e)
+            e.preventDefault();
 
         await this.getScore();
         await context.setScore(this.state.score);
+
+        // if (e)
+        // await this.postScore();
 
         this.props.history.push('/finish');
     };
@@ -28,7 +32,6 @@ class SubmitScorePage extends React.Component {
     };
 
     getScore = async () => {
-        // POST method to the server with the session data to save data to databse
         // GET method to receive the calculated score
 
         // score, rank, userSteps, minPossibleSteps, userPath, and shortestPath is sent from the server
@@ -44,7 +47,15 @@ class SubmitScorePage extends React.Component {
             shortestPath: ['ghsduagh', 'ghdjsahgd', 'gjdksaghsd']
         };
         this.setState(() => ({ score }));
-    }
+    };
+
+    // // TODO: Refactor skipSubmit and goToFinish to not have any duplications
+    // skipSubmit = async (context) => {
+    //     await this.getScore();
+    //     await context.setScore(this.state.score);
+
+    //     this.props.history.push('/finish');
+    // };
 
     render() {
         return (
@@ -53,15 +64,15 @@ class SubmitScorePage extends React.Component {
                 <p>Would you like to submit your score?</p>
                 <GameSessionContext.Consumer>
                     {(value) => (
-                        <form onSubmit={(e) => this.onSubmit(e, value)}>
-                            <input type="text" autoFocus placeholder="Your name" onChange={this.onChange} />
-                            <button>Submit score</button>
-                        </form>
+                        <div>
+                            <form onSubmit={(e) => this.goToFinish(e, value)}>
+                                <input type="text" autoFocus placeholder="Your name" onChange={this.onChange} />
+                                <button>Submit score</button>
+                            </form>
+                            <button onClick={() => this.goToFinish(undefined, value)}>Skip</button>
+                        </div>
                     )}
                 </GameSessionContext.Consumer>
-                <Link to={'/finish'}>
-                    <button>Skip</button>
-                </Link>
             </div>
         )
     }

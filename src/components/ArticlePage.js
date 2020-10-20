@@ -87,7 +87,7 @@ class ArticlePage extends React.Component {
         this.encodeHint(clickedArticle.path[clickedArticle.path.length - 2]);
 
         // Check winning condition from the fetched object
-        const hasWon = false;
+        const hasWon = true;
 
         this.setState(() => ({
             currentArticle: clickedArticle,
