@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import Header from './Header';
 import Article from './Article';
+import Hints from './Hints';
 import GameSessionContext from '../context/GameSessionContext';
 
 class ArticlePage extends React.Component {
@@ -120,19 +121,10 @@ class ArticlePage extends React.Component {
                     currentArticle={this.state.currentArticle}
                     currentArticleEdges={this.state.currentArticleEdges}
                 />
-
-                <div>
-                    {this.state.showHint && <p>{this.state.hint}</p>}
-                    {
-                        this.state.difficulty === 'easy' ? (
-                            <p>Infinite hints left</p>
-                        ) : (
-                                <p>{this.state.numOfHints} {this.state.numOfHints === 1 ? 'hint' : 'hints'} left</p>
-                            )
-                    }
-                    <button onClick={this.useHint} disabled={!this.state.numOfHints || this.state.showHint}>Use hint</button>
-                </div>
-
+                <Hints
+                    useHint={this.useHint}
+                    {...this.state}
+                />
                 <GameSessionContext.Consumer>
                     {(value) => (
                         <Link to={'/finish'}>
