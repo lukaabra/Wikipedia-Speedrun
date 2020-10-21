@@ -79,10 +79,13 @@ class ArticlePage extends React.Component {
     };
 
     getArticleEdges = async () => {
-        const res = await fetch(`http://localhost:3001/api/article/edges/${this.state.currentArticle.edges}`);
-        const clickedArticleEdges = await res.json();
-
-        this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));
+        try {
+            const res = await fetch(`http://localhost:3001/api/article/edges/${this.state.currentArticle.edges}`);
+            const clickedArticleEdges = await res.json();
+            this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));
+        } catch (error) {
+            console.log(res);
+        }
     };
 
     getClickedArticle = async (e) => {
