@@ -8,7 +8,7 @@ const express = require('express'),
 // const seed = require('../seed/seed');
 
 // REQUIRING ROUTES
-const apiRouter = require('./routes/api');
+const apiRouter = require('./api/scores');
 
 
 (async () => {

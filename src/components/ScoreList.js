@@ -19,8 +19,6 @@ class ScoreList extends React.Component {
         const res = await fetch(`http://localhost:3001/api/scores?topThree=${this.props.topThree}`);
         const scores = await res.json();
 
-        console.log(scores);
-
         this.setState(() => ({ scores }));
     };
 
