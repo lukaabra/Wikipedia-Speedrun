@@ -70,38 +70,6 @@ router.get("/play/:id", middlewareObject.checkIfGameIsStarted, middlewareObject.
     }
 });
 
-//==================================================
-//              HELPER FUNCTIONS
-//==================================================
 
-// Returns an object inside of an array, wrapped in a Promise --> Promise( [{...}] )
-function generateRandomArticle(difficulty) {
-
-    let distGT, distLT;
-    switch (difficulty) {
-        case 'easy':
-            distGT = 1;
-            distLT = 8
-            break;
-        case 'medium':
-            distGT = 2;
-            distLT = 5;
-            break;
-        case 'hard':
-            distGT = 4;
-            distLT = 8;
-            break;
-    }
-
-    // Returns a Promise
-    let randomArticle = Article.aggregate().match({
-        "distance": { // Check if distance is in accordance with the selected difficulty
-            "$gt": distGT,
-            "$lt": distLT
-        }
-    }).sample(1).exec();
-
-    return randomArticle
-}
 
 module.exports = router;

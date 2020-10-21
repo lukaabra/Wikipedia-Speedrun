@@ -13,38 +13,12 @@ class DifficultyForm extends React.Component {
     /**
      * Fetches a random article and its edges from the database and returns them in an array.
      */
-    generateRandom = () => {
-        // const randomArticle = await fetch('/api/randomArticle');
-        const randomArticle = {
-            title: 'Osijek, Croatia',
-            edges: ['Hungary', 'Paris, France'],
-            distance: 1,
-            path: ['Osijek, Croatia', 'Rijeka, Croatia'],
-            _id: 'h18f8h1bk329r321nf32039'
-        };
-        const randomArticleEdges = [
-            {
-                title: 'Hungary',
-                edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
-                distance: 1,
-                path: ['Rijeka, Croatia', 'Hungary'],
-                _id: 'h18gds23153fe1f'
-            },
-            {
-                title: 'Paris',
-                edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
-                distance: 1,
-                path: ['Rijeka, Croatia', 'Paris'],
-                _id: 'h18gds235353t4ffr3153fe1f'
-            },
-            {
-                title: 'France',
-                edges: ['Hungary', 'Paris, France', 'Rijeka, Croatia'],
-                distance: 1,
-                path: ['Rijeka, Croatia', 'France'],
-                _id: 'h18gds231buidwqov791hcnew53fe1f'
-            }
-        ];
+    generateRandom = async () => {
+        let res = await fetch(`http://localhost:3001/api/generate-random/${this.state.difficulty}`);
+        const randomArticle = await res.json();
+
+        res = await fetch(`http://localhost:3001/api/article/edges/${randomArticle.edges}`);
+        const randomArticleEdges = await res.json();
 
         return [randomArticle, randomArticleEdges];
     };
@@ -58,9 +32,9 @@ class DifficultyForm extends React.Component {
         });
     };
 
-    onSubmit = (e, context) => {
+    onSubmit = async (e, context) => {
         e.preventDefault();
-        const [fetchedArticle, fetchedArticleEdges] = this.generateRandom();
+        const [fetchedArticle, fetchedArticleEdges] = await this.generateRandom();
 
         context.setStartingArticle(fetchedArticle);
         context.setStartingArticleEdges(fetchedArticleEdges);

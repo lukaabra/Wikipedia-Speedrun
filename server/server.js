@@ -8,7 +8,9 @@ const express = require('express'),
 // const seed = require('../seed/seed');
 
 // REQUIRING ROUTES
-const apiRouter = require('./api/scores');
+const scoresRouter = require('./api/scores');
+const randomArticleRouter = require('./api/generateRandom');
+const articleRouter = require('./api/article');
 
 
 (async () => {
@@ -34,7 +36,9 @@ const apiRouter = require('./api/scores');
 
 
 app.use(cors());
-app.use(apiRouter);
+app.use(scoresRouter);
+app.use(randomArticleRouter);
+app.use(articleRouter);
 
 app.listen(3001, () => {
     console.log("Server starting at port 3001 ...");
