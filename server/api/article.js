@@ -15,13 +15,20 @@ router.get('/api/article/edges/:edges', async (req, res) => {
     let articleEdges = [];
 
     for (let edge of edges) {
-        let edgeRecord = await Article.findOne({
+        await Article.findOne({
             'title': edge
-        }, (err) => {
-            if (err) console.log("Get article edge error: " + err)
-        });
+        }, (err, edgeRecord) => {
+            if (err) {
+                console.log("Get article edge error: " + err);
+            } else {
+                if (edgeRecord !== null)
+                    articleEdges.push(edgeRecord);
+            }
 
-        articleEdges.push(edgeRecord);
+            // Only add edges that are stored as articles in the database
+            if (edgeRecord === null)
+                console.log(edge + " --- " + edgeRecord);
+        });
     };
 
     res.json(articleEdges);

@@ -49,7 +49,17 @@ class ArticlePage extends React.Component {
 
     clickSurrender = (context) => {
         context.setSurrendered(true);
-    }
+    };
+
+    decodeHint = (hintToDecode) => {
+        let decodedHint = '';
+        hintToDecode.split('').forEach((codeChar) => {
+            const code = codeChar.charCodeAt() - this.state.key;
+            decodedHint += String.fromCharCode(code);
+        });
+
+        this.setState(() => ({ hint: decodedHint }));
+    };
 
     encodeHint = (hintToEncode) => {
         let encodedHint = '';
@@ -61,44 +71,34 @@ class ArticlePage extends React.Component {
         this.setState(() => ({ hint: encodedHint }));
     };
 
-    decodeHint = (hintToDecode) => {
-        let decodedHint = '';
-        console.log(hintToDecode)
-        hintToDecode.split('').forEach((codeChar) => {
-            const code = codeChar.charCodeAt() - this.state.key;
-            decodedHint += String.fromCharCode(code);
-        });
-
-        console.log(decodedHint);
-
-        this.setState(() => ({ hint: decodedHint }));
-    }
-
-    getClickedArticle = (e) => {
-        e.persist();
+    getArticle = async (e) => {
         const clickedArticle = this.state.currentArticleEdges.filter((edge) => {
             return edge.title === e.target.innerText
         })[0];
+        this.setState(() => ({ currentArticle: clickedArticle }));
+    };
 
-        // Fetch clicked Article edges
-        const clickedArticleEdges = [{
-            title: 'fdsafds',
-            edges: ['fdsafdsa', 'Pfaris, Franfdsaghce'],
-            distance: 1,
-            path: ['Rijeka, Croatia', 'fdsafds'],
-            _id: 'h18f8h1bk32gdsagdsa9r321nf32039'
-        }];
+    getArticleEdges = async () => {
+        const res = await fetch(`http://localhost:3001/api/article/edges/${this.state.currentArticle.edges}`);
+        const clickedArticleEdges = await res.json();
+
+        this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));
+    };
+
+    getClickedArticle = async (e) => {
+        e.persist();
+
+        await this.getArticle(e);
+        await this.getArticleEdges();
 
         // Last item (path.length - 1) in the path array is the clickedArticle
         // Second (path.length - 2) is the hint
-        this.encodeHint(clickedArticle.path[clickedArticle.path.length - 2]);
+        this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
 
         // Check winning condition from the fetched object
-        const hasWon = true;
+        const hasWon = false;
 
         this.setState(() => ({
-            currentArticle: clickedArticle,
-            currentArticleEdges: clickedArticleEdges,
             hasWon,
             showHint: false
         }));
