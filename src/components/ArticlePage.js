@@ -29,7 +29,7 @@ class ArticlePage extends React.Component {
     };
 
     componentDidUpdate() {
-        if (this.state.hasWon)
+        if (this.state.hasWon === true)
             this.props.history.push('/submitscore');
     };
 
@@ -46,6 +46,17 @@ class ArticlePage extends React.Component {
     };
 
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
+    checkIfGameWon = async () => {
+        try {
+            const res = await fetch(`http://localhost:3001/api/article/${this.state.currentArticle._id}`);
+            const hasWon = await res.text();
+
+            this.setState(() => ({ hasWon }));
+        } catch (error) {
+            console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle}`);
+            console.log(`Response object:\n ${res}\n`);
+        }
+    }
 
     clickSurrender = (context) => {
         context.setSurrendered(true);
@@ -75,6 +86,7 @@ class ArticlePage extends React.Component {
         const clickedArticle = this.state.currentArticleEdges.filter((edge) => {
             return edge.title === e.target.innerText
         })[0];
+
         this.setState(() => ({ currentArticle: clickedArticle }));
     };
 
@@ -83,10 +95,11 @@ class ArticlePage extends React.Component {
             const res = await fetch(`http://localhost:3001/api/article/edges/
                 ${this.state.currentArticle.edges}?article=${this.state.currentArticle}`);
             const clickedArticleEdges = await res.json();
+
             this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));
         } catch (error) {
-            console.log(`Error in fetching following articles edges:\n\t '${this.state.currentArticle}`);
-            console.log(`Response object:\n ${res}`);
+            console.log(`\nError in fetching following articles edges:\n\t '${this.state.currentArticle}`);
+            console.log(`Response object:\n ${res}\n`);
         }
     };
 
@@ -99,14 +112,11 @@ class ArticlePage extends React.Component {
         // Last item (path.length - 1) in the path array is the clickedArticle
         // Second (path.length - 2) is the hint
         this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
+        this.checkIfGameWon();
 
-        // Check winning condition from the fetched object
-        const hasWon = false;
+        console.log(this.state);
 
-        this.setState(() => ({
-            hasWon,
-            showHint: false
-        }));
+        this.setState(() => ({ showHint: false }));
     };
 
     useHint = () => {

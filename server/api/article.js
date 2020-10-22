@@ -1,14 +1,31 @@
 const express = require('express');
+const {
+    update
+} = require('../models/articles');
 const router = express.Router();
 const Article = require('../models/articles');
 
-router.get('/api/article/:id', async (req, res) => {
-    const article = await Article.findById(req.params.id, (err, foundArticle) => {
-        if (err) console.log("Get article error: " + err)
-    });
+const winningArticleId = '5f341062eee9893534cbded3';
 
-    res.json(article);
+router.get('/api/article/:id', async (req, res) => {
+    if (req.params.id === winningArticleId)
+        res.send(true);
+    else {
+        const article = await Article.findById(req.params.id, (error) => {
+            if (error)
+                console.log('Get article error: ' + error);
+        })
+        // TODO: Fix Session not being remembered
+        // updateGameSession(req, article);
+        res.send(false);
+    }
 });
+
+updateGameSession = async (req, article) => {
+    req.session.steps += 1;
+    req.session.path.push(article.title);
+    req.session.save();
+};
 
 router.get('/api/article/edges/:edges', async (req, res) => {
     const edges = req.params.edges.split(',');
@@ -21,8 +38,7 @@ router.get('/api/article/edges/:edges', async (req, res) => {
             if (err) {
                 console.log("Get article edge error: " + err);
             } else {
-                // Only add edges that are stored as articles in the database
-                // A lot of the times around 20% of links are missing
+                // TODO: A lot of the times around 20% of links are missing
                 if (edgeRecord !== null)
                     articleEdges.push(edgeRecord);
             }
@@ -34,11 +50,5 @@ router.get('/api/article/edges/:edges', async (req, res) => {
 
     res.json(articleEdges);
 });
-
-updateGameSession = async (req) => {
-    req.session.steps += 1;
-    req.session.path.push(req.query.article);
-    req.session.save();
-};
 
 module.exports = router;
