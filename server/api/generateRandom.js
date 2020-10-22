@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/articles');
-const middlewareObject = require('../middleware');
 
-router.get('/api/generate-random/:difficulty', middlewareObject.initializeGameSession, async (req, res) => {
+router.get('/api/generate-random/:difficulty', async (req, res) => {
     // Since the user is starting the game, destroy the session of the previous game
     // req.session.destroy();
 
@@ -45,6 +44,11 @@ generateRandomArticle = async (difficulty) => {
     return randomArticle;
 };
 
-
+initializeGameSession = (req) => {
+    req.session.steps = 0;
+    req.session.path = [];
+    req.session.save();
+    console.log(req.session);
+};
 
 module.exports = router;

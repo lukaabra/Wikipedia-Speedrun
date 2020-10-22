@@ -35,12 +35,15 @@ const articleRouter = require('./api/article');
     // await seed.saveGraphToDb();
 })();
 
-// Session setup
+// Session is not initalized properly:
+// Session {
+//   cookie: { path: '/', _expires: null, originalMaxAge: null, httpOnly: true }
+// }
 app.use(session({
     secret: 'Speedrunning is my passion',
     maxAge: 3600000,
-    resave: false,
-    saveUninitialized: false
+    resave: true,
+    saveUninitialized: true
 }));
 
 app.use(cors());

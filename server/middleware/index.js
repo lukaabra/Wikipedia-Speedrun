@@ -2,14 +2,6 @@ let middlewareObject = {};
 
 const FINISH_ARTICLE_ID = '5f341062eee9893534cbded3';
 
-middlewareObject.initializeGameSession = async (req, res, next) => {
-    req.session.steps = 0;
-    req.session.path = [];
-    await req.session.save();
-
-    next();
-};
-
 module.exports = middlewareObject;
 
 // middlewareObject.checkIfGameIsFinished = function (req, res, next) {
