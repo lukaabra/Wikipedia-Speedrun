@@ -21,14 +21,11 @@ router.get('/api/article/edges/:edges', async (req, res) => {
             if (err) {
                 console.log("Get article edge error: " + err);
             } else {
+                // Only add edges that are stored as articles in the database
+                // A lot of the times around 20% of links are missing
                 if (edgeRecord !== null)
                     articleEdges.push(edgeRecord);
             }
-
-            // Only add edges that are stored as articles in the database
-            // A lot of the times around 20% of links are missing
-            if (edgeRecord === null)
-                console.log(edge + " --- " + edgeRecord);
         });
     };
 

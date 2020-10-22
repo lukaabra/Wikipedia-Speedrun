@@ -84,7 +84,8 @@ class ArticlePage extends React.Component {
             const clickedArticleEdges = await res.json();
             this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));
         } catch (error) {
-            console.log(res);
+            console.log(`Error in fetching following articles edges:\n\t '${this.state.currentArticle}`);
+            console.log(`Response object:\n ${res}`);
         }
     };
 
