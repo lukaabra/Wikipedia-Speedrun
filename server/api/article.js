@@ -29,7 +29,16 @@ router.get('/api/article/edges/:edges', async (req, res) => {
         });
     };
 
+    // await updateGameSession(req);
+    console.log(req.session);
+
     res.json(articleEdges);
 });
+
+updateGameSession = async (req) => {
+    req.session.steps += 1;
+    req.session.path.push(req.query.article);
+    req.session.save();
+};
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require('express'),
     app = express(),
+    session = require('express-session'),
     mongoose = require('mongoose'),
     cors = require('cors'),
     Article = require('./models/articles');
@@ -34,6 +35,13 @@ const articleRouter = require('./api/article');
     // await seed.saveGraphToDb();
 })();
 
+// Session setup
+app.use(session({
+    secret: 'Speedrunning is my passion',
+    maxAge: 3600000,
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use(cors());
 app.use(scoresRouter);
