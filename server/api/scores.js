@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Score = require('../models/scores');
 
-router.get("/api/scores", async (req, res) => {
+router.get("/api/score-table", async (req, res) => {
     let scores;
     if (req.query.topThree) {
         scores = await Score.aggregate().sort({

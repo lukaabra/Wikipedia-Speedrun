@@ -16,7 +16,7 @@ class ScoreList extends React.Component {
     }
 
     getScores = async () => {
-        const res = await fetch(`http://localhost:3001/api/scores?topThree=${this.props.topThree}`);
+        const res = await fetch(`http://localhost:3001/api/score-table?topThree=${this.props.topThree}`);
         const scores = await res.json();
 
         this.setState(() => ({ scores }));

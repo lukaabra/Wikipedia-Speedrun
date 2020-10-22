@@ -8,9 +8,9 @@ const Article = require('../models/articles');
 const winningArticleId = '5f341062eee9893534cbded3';
 
 router.get('/api/article/:id', async (req, res) => {
-    if (req.params.id === winningArticleId)
+    if (req.params.id !== winningArticleId) {
         res.send(true);
-    else {
+    } else {
         const article = await Article.findById(req.params.id, (error) => {
             if (error)
                 console.log('Get article error: ' + error);

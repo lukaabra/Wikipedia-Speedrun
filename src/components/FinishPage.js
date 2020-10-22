@@ -19,7 +19,6 @@ class FinishPage extends React.Component {
     };
 
     getShortestPath = () => {
-        // Make a GET request only for the shortest path
         if (this.state.surrendered) {
             const shortestPath = this.context.startingArticle.path;
             this.setState(() => ({ shortestPath }));
