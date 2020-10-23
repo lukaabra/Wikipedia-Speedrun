@@ -20,13 +20,10 @@ router.get("/api/score-table", async (req, res) => {
 
 // Consider calculating the time on the server.
 // In such a case, a fail might occur where the rendered timer in react and the server timer don't match.
-router.get('/api/calculate-score/:time', async (req, res) => {
-    const runTimeMs = req.params.time;
+router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
     // const steps = req.session.steps;
     const steps = 15;
-
-    const coefficient = Math.floor((runTimeMs / 1000) / steps);
-    const runScore = Math.floor((runTimeMs / 1000) * steps) + (2 * coefficient);
+    const runScore = calculateScore(req.params.difficulty, req.params.time, steps);
 
     const score = {
         runScore,
@@ -35,5 +32,29 @@ router.get('/api/calculate-score/:time', async (req, res) => {
     };
     res.json(score);
 });
+
+//==================================================
+//              HELPER FUNCTIONS
+//==================================================
+
+calculateScore = (difficulty, runTimeMs, steps) => {
+    let difficultyCoefficient;
+    switch (difficulty) {
+        case 'easy':
+            difficultyCoefficient = 7;
+            break;
+        case 'medium':
+            difficultyCoefficient = 3;
+            break;
+        case 'hard':
+            difficultyCoefficient = 1;
+            break;
+    };
+
+    const timePerStep = ((runTimeMs / 1000) / steps).toFixed(2);
+    return (
+        steps + (timePerStep * 2) * difficultyCoefficient
+    ).toFixed(2);
+};
 
 module.exports = router;
