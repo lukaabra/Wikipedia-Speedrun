@@ -41,6 +41,11 @@ router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
     res.json(score);
 });
 
+// Finish submit score
+router.post('/api/score', async (req, res) => {
+    await submitScore(score);
+});
+
 //==================================================
 //              HELPER FUNCTIONS
 //==================================================
@@ -107,6 +112,13 @@ getRankingTable = () => {
         'score': 'asc'
     }).limit(RANK_TABLE_SIZE).exec();
 };
+
+submitScore = (score) => {
+    return Score.create(score, (err, submittedScore) => {
+        if (err)
+            console.log("SUBMITTING SCORE ERROR: " + err);
+    });
+}
 
 updateRankingTable = (rankFromWhichToUpdate, rankingTable) => {
     // Rank is larger than the position in the ranking table by 1
