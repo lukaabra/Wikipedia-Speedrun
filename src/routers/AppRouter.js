@@ -21,12 +21,14 @@ class AppRouter extends React.Component {
             gameStarted: false,
             surrendered: false,
             score: {},
+            startTime: 0,
             setStartingArticle: this.setStartingArticle,
             setStartingArticleEdges: this.setStartingArticleEdges,
             setDifficulty: this.setDifficulty,
             setGameStarted: this.setGameStarted,
             setSurrendered: this.setSurrendered,
-            setScore: this.setScore
+            setScore: this.setScore,
+            setStartTime: this.setStartTime
         }
     };
 
@@ -52,6 +54,10 @@ class AppRouter extends React.Component {
 
     setGameStarted = (gameStarted) => {
         this.setState(() => ({ gameStarted }));
+    };
+
+    setStartTime = (startTime) => {
+        this.setState(() => ({ startTime }));
     };
 
     render() {

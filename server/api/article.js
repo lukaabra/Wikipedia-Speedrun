@@ -1,14 +1,11 @@
 const express = require('express');
-const {
-    update
-} = require('../models/articles');
 const router = express.Router();
 const Article = require('../models/articles');
 
 const winningArticleId = '5f341062eee9893534cbded3';
 
 router.get('/api/article/:id', async (req, res) => {
-    if (req.params.id !== winningArticleId) {
+    if (req.params.id === winningArticleId) {
         res.send(true);
     } else {
         const article = await Article.findById(req.params.id, (error) => {

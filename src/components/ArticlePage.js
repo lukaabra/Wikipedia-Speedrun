@@ -13,6 +13,7 @@ class ArticlePage extends React.Component {
         if (!this.context.gameStarted) {
             this.props.history.push('/');
         } else {
+            this.context.setStartTime(Date.now());
             this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
             switch (this.state.difficulty) {
                 case 'easy':
@@ -50,8 +51,9 @@ class ArticlePage extends React.Component {
         try {
             const res = await fetch(`http://localhost:3001/api/article/${this.state.currentArticle._id}`);
             const hasWon = await res.text();
+            console.log(hasWon)
 
-            this.setState(() => ({ hasWon }));
+            this.setState(() => ({ hasWon: !!hasWon }));
         } catch (error) {
             console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle}`);
             console.log(`Response object:\n ${res}\n`);

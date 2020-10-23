@@ -8,10 +8,15 @@ import GameSessionContext from '../context/GameSessionContext';
 class SubmitScorePage extends React.Component {
     static contextType = GameSessionContext;
 
+    componentDidMount() {
+        this.setState(() => ({ runTime: this.millisToMinutesAndSeconds(Date.now() - this.context.startTime) }));
+    };
+
     state = {
         name: '',
         score: {},
-        error: ''
+        error: '',
+        runTime: ''
     };
 
     goToFinish = async (e, context) => {
@@ -57,13 +62,12 @@ class SubmitScorePage extends React.Component {
         this.setState(() => ({ score }));
     };
 
-    // // TODO: Refactor skipSubmit and goToFinish to not have any duplications
-    // skipSubmit = async (context) => {
-    //     await this.getScore();
-    //     await context.setScore(this.state.score);
-
-    //     this.props.history.push('/finish');
-    // };
+    // https://stackoverflow.com/questions/21294302/converting-milliseconds-to-minutes-and-seconds-with-javascript
+    millisToMinutesAndSeconds = (millis) => {
+        let minutes = Math.floor(millis / 60000);
+        let seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    };
 
     render() {
         return (
