@@ -9,14 +9,14 @@ class SubmitScorePage extends React.Component {
     static contextType = GameSessionContext;
 
     componentDidMount() {
-        this.setState(() => ({ runTime: this.millisToMinutesAndSeconds(Date.now() - this.context.startTime) }));
+        this.setState(() => ({ runTimeMs: Date.now() - this.context.startTime }));
     };
 
     state = {
         name: '',
         score: {},
         error: '',
-        runTime: ''
+        runTimeMs: ''
     };
 
     goToFinish = async (e, context) => {
@@ -43,20 +43,27 @@ class SubmitScorePage extends React.Component {
 
     calculateScore = async () => {
         // Send the score to the server. The server calculates the score and saves it in the db
+        const res = await fetch(`http://localhost:3001/api/calculate-score/${this.state.runTimeMs}`);
+        const runScore = await res.json();
+        console.log(runScore);
+
+        const runTimeString = this.millisToMinutesAndSeconds(this.state.runTimeMs);
 
         // score, rank, userSteps, minPossibleSteps, userPath, and shortestPath is sent from the server
-        const score = {
+        const scoreObject = {
             name: this.state.name,
-            startingArticle: 'Osijek, Croatia',
-            time: '0:28',
-            userSteps: 8,
-            minPossibleSteps: 6,
-            score: 198,
+            startingArticle: this.context.startingArticle.title,
+            time: runTimeString,
+            userSteps: runScore.steps,
+            minPossibleSteps: this.context.startingArticle.path.length,
+            score: runScore.runScore,
+            // Sent from the server
             rank: 0,
+            // User path is sent from the server. Will work when sessions are fixed.
             userPath: ['gdjskagh', 'htuiewhge', 'hjfkelsag'],
-            shortestPath: ['ghsduagh', 'ghdjsahgd', 'gjdksaghsd']
+            shortestPath: this.context.startingArticle.path
         };
-        this.setState(() => ({ score }));
+        this.setState(() => ({ score: scoreObject }));
     };
 
     // https://stackoverflow.com/questions/21294302/converting-milliseconds-to-minutes-and-seconds-with-javascript
