@@ -15,6 +15,10 @@ class FinishPage extends React.Component {
     };
 
     componentDidMount() {
+        console.log(this.props);
+        if (!this.context.gameStarted)
+            this.props.history.push('/');
+
         this.getShortestPath();
     };
 
@@ -29,7 +33,7 @@ class FinishPage extends React.Component {
         return (
             <div>
                 <h2>{this.state.surrendered ? 'You surrendered' : 'Congratulations!'}</h2>
-                {!this.state.surrendered && <FinalScore score={this.state.score} />}
+                {!this.state.surrendered && this.context.gameStarted && <FinalScore score={this.state.score} />}
                 {
                     this.state.surrendered &&
                     <div>

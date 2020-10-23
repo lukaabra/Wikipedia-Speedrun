@@ -9,6 +9,9 @@ class SubmitScorePage extends React.Component {
     static contextType = GameSessionContext;
 
     componentDidMount() {
+        if (!this.context.gameStarted)
+            this.props.history.push('/');
+
         this.setState(() => ({ runTimeMs: Date.now() - this.context.startTime }));
     };
 
@@ -43,7 +46,9 @@ class SubmitScorePage extends React.Component {
 
     calculateScore = async () => {
         // Send the score to the server. The server calculates the score and saves it in the db
-        const res = await fetch(`http://localhost:3001/api/calculate-score/${this.state.runTimeMs}`);
+        const url = `http://localhost:3001/api/calculate-score/${this.context.difficulty}/${this.state.runTimeMs}`
+        console.log(url);
+        const res = await fetch(url);
         const runScore = await res.json();
         console.log(runScore);
 
