@@ -29,11 +29,8 @@ class SubmitScorePage extends React.Component {
             const error = "Please enter a name";
             this.setState(() => ({ error }));
         } else {
-            await this.getScore();
+            await this.calculateScore();
             await context.setScore(this.state.score);
-
-            // if (e)
-            // await this.postScore();
 
             this.props.history.push('/finish');
         }
@@ -44,8 +41,8 @@ class SubmitScorePage extends React.Component {
         this.setState(() => ({ name }));
     };
 
-    getScore = async () => {
-        // GET method to receive the calculated score
+    calculateScore = async () => {
+        // Send the score to the server. The server calculates the score and saves it in the db
 
         // score, rank, userSteps, minPossibleSteps, userPath, and shortestPath is sent from the server
         const score = {

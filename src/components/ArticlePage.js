@@ -30,7 +30,7 @@ class ArticlePage extends React.Component {
     };
 
     componentDidUpdate() {
-        if (this.state.hasWon === true)
+        if (this.state.hasWon === true || this.state.hasWon === 'true')
             this.props.history.push('/submitscore');
     };
 
@@ -51,9 +51,8 @@ class ArticlePage extends React.Component {
         try {
             const res = await fetch(`http://localhost:3001/api/article/${this.state.currentArticle._id}`);
             const hasWon = await res.text();
-            console.log(hasWon)
 
-            this.setState(() => ({ hasWon: !!hasWon }));
+            this.setState(() => ({ hasWon }));
         } catch (error) {
             console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle}`);
             console.log(`Response object:\n ${res}\n`);
