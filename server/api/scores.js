@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Score = require('../models/scores');
 
+const RANK_TABLE_SIZE = 100;
+
 router.get("/api/score-table", async (req, res) => {
     let scores;
     if (req.query.topThree) {
@@ -25,6 +27,12 @@ router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
     const steps = 15;
     const runScore = calculateScore(req.params.difficulty, req.params.time, steps);
 
+    const rankingTable = await getRankingTable();
+    const rank = calculateRanking(runScore, rankingTable);
+
+    await updateRankingTable(rank, rankingTable);
+    await deleteSurplusScores(RANK_TABLE_SIZE);
+
     const score = {
         runScore,
         steps
@@ -36,6 +44,29 @@ router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
 //==================================================
 //              HELPER FUNCTIONS
 //==================================================
+
+calculateRanking = (playerScore, rankingTable) => {
+    // Check if array is empty (any ranks at all): 
+    // https://stackoverflow.com/questions/24403732/how-to-check-if-array-is-empty-or-does-not-exist
+    if (rankingTable && rankingTable.length) {
+        // Perform a rank query using binary search for finding the left-most element
+        let low = 0;
+        let high = rankingTable.length;
+
+        while (low < high) {
+            let mid = Math.floor((low + high) / 2);
+
+            if (rankingTable[mid].score < playerScore)
+                low = mid + 1;
+            else
+                high = mid;
+        }
+        // low is the index where the playerScore should be in rankingTable. Adding 1 will give the real rank in the table
+        return low + 1
+    } else {
+        return 1
+    }
+};
 
 calculateScore = (difficulty, runTimeMs, steps) => {
     let difficultyCoefficient;
@@ -55,6 +86,40 @@ calculateScore = (difficulty, runTimeMs, steps) => {
     return (
         steps + (timePerStep * 2) * difficultyCoefficient
     ).toFixed(2);
+};
+
+deleteSurplusScores = async (MAX_ALLOWED_RANK) => {
+    const scoresToDelete = await Score.aggregate().match({
+        "rank": {
+            "$gte": MAX_ALLOWED_RANK
+        }
+    }).exec();
+
+    for (let score of scoresToDelete) {
+        Score.findByIdAndDelete(score._id, (err, deletedScore) => {
+            if (err) console.log("DELETING EXTRA SCORE ERROR: " + err);
+        });
+    };
+};
+
+getRankingTable = () => {
+    return Score.aggregate().sort({
+        'score': 'asc'
+    }).limit(RANK_TABLE_SIZE).exec();
+};
+
+updateRankingTable = (rankFromWhichToUpdate, rankingTable) => {
+    // Rank is larger than the position in the ranking table by 1
+    const rankingTableToUpdate = rankingTable.slice(rankFromWhichToUpdate - 1);
+    for (let score of rankingTableToUpdate) {
+        Score.findByIdAndUpdate(score._id, {
+            '$inc': {
+                'rank': 1
+            }
+        }, (err, foundScore) => {
+            if (err) console.log("UPDATE RANK ERROR: " + err);
+        });
+    }
 };
 
 module.exports = router;
