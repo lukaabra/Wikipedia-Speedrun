@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import HomePage from '../components/HomePage';
+import RankPage from '../components/RankPage';
 import InstructionPage from '../components/InstructionPage';
 import ArticlePage from '../components/ArticlePage';
 import SubmitScorePage from '../components/SubmitScorePage';
@@ -66,6 +67,7 @@ class AppRouter extends React.Component {
                 <BrowserRouter>
                     <Switch>
                         <Route path="/" component={HomePage} exact={true} />
+                        <Route path="/ranks" component={RankPage} exact={true} />
                         <Route path="/instructions" component={InstructionPage} exact={true} />
                         <Route path="/article/:id" component={ArticlePage} />
                         <Route path="/submitscore" component={SubmitScorePage} />

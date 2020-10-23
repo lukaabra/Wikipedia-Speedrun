@@ -26,6 +26,7 @@ class HomePage extends React.Component {
                 <h1>{title}</h1>
                 <h3>{subtitle}</h3>
                 <Link to={'/instructions'}><p>Play</p></Link>
+                <Link to={'/ranks'}><p>Ranks</p></Link>
                 <ScoreList topThree={true} />
             </div>
         );
