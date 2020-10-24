@@ -18,14 +18,15 @@ router.get('/api/article/:id', async (req, res) => {
     }
 });
 
-updateGameSession = async (req, article) => {
+updateGameSession = async (req, articleTitle) => {
     req.session.steps += 1;
-    // req.session.path.push(article.title);
+    req.session.path.push(articleTitle);
     req.session.save();
 };
 
-router.get('/api/article/edges/:edges', async (req, res) => {
+router.get('/api/article/edges/:edges/:article', async (req, res) => {
     const edges = req.params.edges.split(',');
+    const articleTitle = req.params.article;
     let articleEdges = [];
 
     for (let edge of edges) {
@@ -42,7 +43,7 @@ router.get('/api/article/edges/:edges', async (req, res) => {
         });
     };
 
-    await updateGameSession(req);
+    await updateGameSession(req, articleTitle);
     console.log(req.session);
 
     res.json(articleEdges);
