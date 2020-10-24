@@ -39,14 +39,23 @@ const articleRouter = require('./api/article');
 // Session {
 //   cookie: { path: '/', _expires: null, originalMaxAge: null, httpOnly: true }
 // }
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
+
 app.use(session({
     secret: 'Speedrunning is my passion',
     maxAge: 3600000,
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 3600000,
+        secure: false
+    }
 }));
 
-app.use(cors());
 app.use(scoresRouter);
 app.use(randomArticleRouter);
 app.use(articleRouter);

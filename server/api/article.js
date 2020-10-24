@@ -20,7 +20,7 @@ router.get('/api/article/:id', async (req, res) => {
 
 updateGameSession = async (req, article) => {
     req.session.steps += 1;
-    req.session.path.push(article.title);
+    // req.session.path.push(article.title);
     req.session.save();
 };
 
@@ -42,7 +42,7 @@ router.get('/api/article/edges/:edges', async (req, res) => {
         });
     };
 
-    // await updateGameSession(req);
+    await updateGameSession(req);
     console.log(req.session);
 
     res.json(articleEdges);

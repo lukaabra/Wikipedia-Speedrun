@@ -14,10 +14,10 @@ class DifficultyForm extends React.Component {
      * Fetches a random article and its edges from the database and returns them in an array.
      */
     generateRandom = async () => {
-        let res = await fetch(`http://localhost:3001/api/generate-random/${this.state.difficulty}`);
+        let res = await fetch(`http://localhost:3001/api/generate-random/${this.state.difficulty}`, { credentials: 'include' });
         const randomArticle = await res.json();
 
-        res = await fetch(`http://localhost:3001/api/article/edges/${randomArticle.edges}`);
+        res = await fetch(`http://localhost:3001/api/article/edges/${randomArticle.edges}`, { credentials: 'include' });
         const randomArticleEdges = await res.json();
 
         return [randomArticle, randomArticleEdges];
