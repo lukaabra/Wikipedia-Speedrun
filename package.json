@@ -4,9 +4,8 @@
   "description": "Find shortest path from starting Wikipedia article to target article.",
   "main": "app.js",
   "scripts": {
-    "build:dev": "webpack",
-    "build:prod": "webpack --env production",
-    "dev-server": "webpack serve"
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack serve --config webpack.dev.js"
   },
   "author": "Luka Abramovic",
   "license": "ISC",
@@ -34,6 +33,7 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.1.2",
     "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.2.0"
   }
 }
