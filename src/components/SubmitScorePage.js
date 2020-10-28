@@ -86,7 +86,7 @@ class SubmitScorePage extends React.Component {
                 <GameSessionContext.Consumer>
                     {(value) => (
                         <div>
-                            {this.state.error && <h4>{this.state.error}</h4>}
+                            {this.state.error && <h4 className="error">{this.state.error}</h4>}
                             <form onSubmit={(e) => this.goToFinish(e, value)} >
                                 <input
                                     type="text"

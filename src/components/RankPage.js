@@ -9,7 +9,7 @@ class RankPage extends React.Component {
         return (
             <div>
                 <Header />
-                <h3>Top 100 ranks</h3>
+                <h3 className="submitscore__title">Top 100 ranks</h3>
                 <ScoreList topThree={false} />
             </div>
         );

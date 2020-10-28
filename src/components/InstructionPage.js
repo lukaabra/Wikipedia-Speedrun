@@ -12,7 +12,7 @@ class InstructionPage extends React.Component {
                 <div className="instructions">
                     <p>
                         The goal of the game is to reach the Wikipedia article for <span><a
-                            href="https://en.wikipedia.org/wiki/Rijeka">Rijeka, Croatia</a></span> only by clicking the links of
+                            href="https://en.wikipedia.org/wiki/Rijeka" target="_blank">Rijeka, Croatia</a></span> only by clicking the links of
                 each article in the shortest amount of
                 steps possible.
                     </p>

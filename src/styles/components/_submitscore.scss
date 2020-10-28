@@ -20,3 +20,9 @@
     box-shadow: 0 0.3rem $button-background-hover;
     box-sizing: border-box;
 }
+
+.error {
+    text-align: center;
+    font-size: 1.2rem;
+    color: $error;
+}
