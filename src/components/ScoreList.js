@@ -30,16 +30,16 @@ class ScoreList extends React.Component {
                         <p>Currently there are no scores to display</p>
                     ) : (
                             <div>
-                                <table className="score-table">
-                                    <thead className="score-table__head">
+                                <table className="table">
+                                    <thead className="table__head">
                                         <tr>
-                                            <th className="score-table__cell">Rank</th>
-                                            <th className="score-table__cell">Name</th>
-                                            <th className="score-table__cell">Time</th>
-                                            <th className="score-table__cell">Steps</th>
-                                            <th className="score-table__cell">Min possible steps</th>
-                                            <th className="score-table__cell">Starting article</th>
-                                            <th className="score-table__cell">Total score</th>
+                                            <th className="table__cell">Rank</th>
+                                            <th className="table__cell">Name</th>
+                                            <th className="table__cell">Time</th>
+                                            <th className="table__cell">Steps</th>
+                                            <th className="table__cell">Min possible steps</th>
+                                            <th className="table__cell">Starting article</th>
+                                            <th className="table__cell">Total score</th>
                                         </tr>
                                     </thead>
                                     {
