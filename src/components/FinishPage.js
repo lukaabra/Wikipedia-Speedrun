@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
+import Header from './Header';
 import FinalScore from './FinalScore';
 
 import GameSessionContext from '../context/GameSessionContext';
@@ -32,6 +32,7 @@ class FinishPage extends React.Component {
     render() {
         return (
             <div>
+                <Header />
                 <h2 className="finish__title">{this.state.surrendered ? 'You surrendered' : 'Congratulations!'}</h2>
                 {!this.state.surrendered && this.context.gameStarted && <FinalScore score={this.state.score} />}
                 {
@@ -45,9 +46,6 @@ class FinishPage extends React.Component {
                         </ul>
                     </div>
                 }
-                <Link to={'/'} className="finish__home-button">
-                    <button className="button">Home</button>
-                </Link>
             </div>
         )
     }
