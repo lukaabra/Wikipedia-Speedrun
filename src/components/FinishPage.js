@@ -32,12 +32,12 @@ class FinishPage extends React.Component {
     render() {
         return (
             <div>
-                <h2>{this.state.surrendered ? 'You surrendered' : 'Congratulations!'}</h2>
+                <h2 className="finish__title">{this.state.surrendered ? 'You surrendered' : 'Congratulations!'}</h2>
                 {!this.state.surrendered && this.context.gameStarted && <FinalScore score={this.state.score} />}
                 {
                     this.state.surrendered &&
-                    <div>
-                        <h4>The shortest possible path was:</h4>
+                    <div className="finish__surrender-path">
+                        <h4 className="finish__surrender-path__title">The shortest possible path was:</h4>
                         <ul>
                             {this.state.shortestPath.map((article) => (
                                 <li key={article}>{article}</li>
@@ -45,8 +45,8 @@ class FinishPage extends React.Component {
                         </ul>
                     </div>
                 }
-                <Link to={'/'}>
-                    <button>Home</button>
+                <Link to={'/'} className="finish__home-button">
+                    <button className="button">Home</button>
                 </Link>
             </div>
         )

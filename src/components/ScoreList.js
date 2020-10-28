@@ -27,7 +27,7 @@ class ScoreList extends React.Component {
             <div>
                 {
                     this.state.scores.length === 0 ? (
-                        <p>Currently there are no scores to display</p>
+                        <p className="no-scores">Currently there are no scores to display</p>
                     ) : (
                             <div>
                                 <table className="table">
