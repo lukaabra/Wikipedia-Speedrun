@@ -7,6 +7,7 @@ module.exports = {
         path: path.join(__dirname, 'public', 'dist'), // absolute path
         filename: 'bundle.js'
     },
+    plugins: [new MiniCssExtractPlugin()],
     module: {
         rules: [{
             test: /\.m?js$/,
@@ -27,6 +28,5 @@ module.exports = {
                 }
             }]
         }]
-    },
-    plugins: [new MiniCssExtractPlugin()]
+    }
 };

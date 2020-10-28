@@ -24,7 +24,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "got": "^11.5.1",
-    "mini-css-extract-plugin": "^1.0.0",
+    "mini-css-extract-plugin": "^1.2.0",
     "mongoose": "^5.9.26",
     "raf": "^3.4.1",
     "react": "^16.14.0",
