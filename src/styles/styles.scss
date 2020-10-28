@@ -5,10 +5,10 @@
 @import './components/scorelist';
 @import './components/instructionspage';
 @import './components/difficultyform';
-@import './components/articlepage';
 @import './components/hints';
 @import './components/article';
 @import './components/finishpage';
+@import './components/submitscore';
 
 // There are no style sheets for ScoreList or ScoreListItem since the table
 // used there is styles in _base.scss. That is because the table is reused elsewhere.

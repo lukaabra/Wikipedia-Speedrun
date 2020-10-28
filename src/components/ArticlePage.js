@@ -52,7 +52,7 @@ class ArticlePage extends React.Component {
             const res = await fetch(`http://localhost:3001/api/article/${this.state.currentArticle._id}`);
             const hasWon = await res.text();
 
-            this.setState(() => ({ hasWon }));
+            this.setState(() => ({ hasWon: !!hasWon }));
         } catch (error) {
             console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle}`);
             console.log(`Response object:\n ${res}\n`);
@@ -142,12 +142,12 @@ class ArticlePage extends React.Component {
                 />
                 <GameSessionContext.Consumer>
                     {(value) => (
-                        <Link to={'/finish'} className="surrender-button">
+                        <Link to={'/finish'} className="no-decoration">
                             <button onClick={() => this.clickSurrender(value)} className="button">Surrender</button>
                         </Link>
                     )}
                 </GameSessionContext.Consumer>
-            </div>
+            </div >
         )
     }
 };

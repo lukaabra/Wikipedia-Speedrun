@@ -82,16 +82,21 @@ class SubmitScorePage extends React.Component {
         return (
             <div>
                 <Header />
-                <p>Would you like to submit your score?</p>
+                <p className="submitscore__title">Would you like to submit your score?</p>
                 <GameSessionContext.Consumer>
                     {(value) => (
                         <div>
                             {this.state.error && <h4>{this.state.error}</h4>}
-                            <form onSubmit={(e) => this.goToFinish(e, value)}>
-                                <input type="text" autoFocus placeholder="Your name" onChange={this.onChange} />
-                                <button>Submit score</button>
+                            <form onSubmit={(e) => this.goToFinish(e, value)} >
+                                <input
+                                    type="text"
+                                    autoFocus placeholder="Your name"
+                                    onChange={this.onChange}
+                                    className="submitscore__form__input"
+                                />
+                                <button className="button" className="button">Submit score</button>
                             </form>
-                            <button onClick={() => this.goToFinish(undefined, value)}>Skip</button>
+                            <button onClick={() => this.goToFinish(undefined, value)} className="button">Skip</button>
                         </div>
                     )}
                 </GameSessionContext.Consumer>

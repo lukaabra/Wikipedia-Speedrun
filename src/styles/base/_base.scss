@@ -8,16 +8,18 @@ body {
 // Custom button
 
 .button {
+    display: block;
     background-color: $button-background;
     color: $font-color;
     width: 7rem;
-    margin: 1rem auto;
+    margin: 2rem auto;
     padding: 0.3rem 0.7rem;
     text-align: center;
     box-shadow: 0.05rem 0.1rem $button-shadow;
     transition: background-color 0.3s, box-shadow 0.3s;
     border: none;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .button:hover {
@@ -59,4 +61,8 @@ body {
 
 .table-item-cell__link:hover {
     border-bottom: 0.1rem solid $link-color;
+}
+
+.no-decoration {
+    text-decoration: none;
 }

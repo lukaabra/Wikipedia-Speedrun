@@ -1,0 +1,22 @@
+.submitscore__title {
+    font-size: 2rem;
+    text-align: center;
+    margin: 3rem auto;
+}
+
+.submitscore__form__input {
+    display: block;
+    margin: 1rem auto;
+    outline: none;
+    border: none;
+    box-shadow: 0 0.3rem $font-color;
+    transition: box-shadow 0.3s;
+    font-size: 1.3rem;
+}
+
+.submitscore__form__input:focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 0.3rem $button-background-hover;
+    box-sizing: border-box;
+}
