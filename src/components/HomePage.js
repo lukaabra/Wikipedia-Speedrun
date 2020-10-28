@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import ScoreList from './ScoreList';
 
 import GameSessionContext from '../context/GameSessionContext';
+import Header from './Header';
 
-const title = 'Wikipedia Speedrun'
 const subtitle = 'Reach the Wikipedia article for the city of Rijeka, Croatia as fast as you can!'
 
 class HomePage extends React.Component {
@@ -22,11 +22,10 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div>
-                <h1>{title}</h1>
-                <h3>{subtitle}</h3>
-                <Link to={'/instructions'}><p>Play</p></Link>
-                <Link to={'/ranks'}><p>Ranks</p></Link>
+            <div className="home">
+                <Header subtitle={subtitle} />
+                <Link to={'/instructions'} className="home__link"><p className="button">Play</p></Link>
+                <Link to={'/ranks'} className="home__link"><p className="button">Ranks</p></Link>
                 <ScoreList topThree={true} />
             </div>
         );

@@ -1,0 +1,22 @@
+body {
+    color: $font-color;
+    background-color: $body-background;
+    margin: 0;
+    padding: 0;
+}
+
+.button {
+    background-color: $button-background;
+    color: $font-color;
+    width: 7rem;
+    margin: 1rem auto;
+    padding: 0.3rem 0.7rem;
+    text-align: center;
+    box-shadow: 0.05rem 0.1rem $button-shadow;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.button:hover {
+    background-color: $button-background-hover;
+    box-shadow: 0.05rem 0.1rem $button-shadow-hover;
+}
