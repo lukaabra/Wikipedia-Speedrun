@@ -29,15 +29,26 @@ class ScoreList extends React.Component {
                     this.state.scores.length === 0 ? (
                         <p>Currently there are no scores to display</p>
                     ) : (
-                            this.props.topThree ? (
-                                this.state.scores.slice(0, 3).map((score) => (
-                                    <ScoreListItem score={score} key={score._id} />
-                                ))
-                            ) : (
-                                    this.state.scores.map((score) => (
-                                        <ScoreListItem score={score} key={score._id} />
-                                    ))
-                                )
+                            <div>
+                                <table className="score-table">
+                                    <thead className="score-table__head">
+                                        <tr>
+                                            <th className="score-table__cell">Rank</th>
+                                            <th className="score-table__cell">Name</th>
+                                            <th className="score-table__cell">Time</th>
+                                            <th className="score-table__cell">Steps</th>
+                                            <th className="score-table__cell">Min possible steps</th>
+                                            <th className="score-table__cell">Starting article</th>
+                                            <th className="score-table__cell">Total score</th>
+                                        </tr>
+                                    </thead>
+                                    {
+                                        this.state.scores.map((score) => (
+                                            <ScoreListItem score={score} key={score._id} />
+                                        ))
+                                    }
+                                </table>
+                            </div>
                         )
                 }
             </div>
