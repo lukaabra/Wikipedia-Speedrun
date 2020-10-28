@@ -51,17 +51,17 @@ class DifficultyForm extends React.Component {
             <GameSessionContext.Consumer>
                 {(value) => (
                     <div>
-                        <form onSubmit={(e) => this.onSubmit(e, value)} >
+                        <form onSubmit={(e) => this.onSubmit(e, value)} className="difficulty-form">
                             <input type="radio" value={"easy"} name="difficulty" onChange={this.onChange} defaultChecked />
-                            <label htmlFor="easy">Easy - unlimited hints</label>
+                            <label htmlFor="easy" className="difficulty-form__label">Easy - unlimited hints</label>
 
                             <input type="radio" value={"medium"} name="difficulty" onChange={this.onChange} />
-                            <label htmlFor="medium">Medium - distance to finish is 3 or 4 steps and 2 hint</label>
+                            <label htmlFor="medium" className="difficulty-form__label">Medium - distance to finish is 3 or 4 steps and 2 hint</label>
 
                             <input type="radio" value={"hard"} name="difficulty" onChange={this.onChange} />
-                            <label htmlFor="hard">Hard - distance to finish is 5 steps or more and 3 hints</label>
+                            <label htmlFor="hard" className="difficulty-form__label">Hard - distance to finish is 5 steps or more and 3 hints</label>
 
-                            <button type="submit">Start</button>
+                            <button type="submit" className="button">Start</button>
                         </form>
                     </div>
                 )}
