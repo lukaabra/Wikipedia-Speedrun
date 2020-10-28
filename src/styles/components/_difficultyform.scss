@@ -1,10 +1,12 @@
 .difficulty-form {
     border: 0.1rem solid $button-background;
+    background-color: $header-background;
     border-radius: 0.2rem;
     padding: 1rem 2rem;
     text-align: center;
     width: 40%;
     margin: 1rem auto;
+    box-shadow: 0.2rem 0.2rem 0.5rem #222;
 }
 
 .difficulty-form__label {

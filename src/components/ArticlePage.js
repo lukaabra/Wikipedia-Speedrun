@@ -142,8 +142,8 @@ class ArticlePage extends React.Component {
                 />
                 <GameSessionContext.Consumer>
                     {(value) => (
-                        <Link to={'/finish'}>
-                            <button onClick={() => this.clickSurrender(value)}>Surrender</button>
+                        <Link to={'/finish'} className="surrender-button">
+                            <button onClick={() => this.clickSurrender(value)} className="button">Surrender</button>
                         </Link>
                     )}
                 </GameSessionContext.Consumer>

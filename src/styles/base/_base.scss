@@ -22,3 +22,8 @@ body {
     background-color: $button-background-hover;
     box-shadow: 0.05rem 0.1rem $button-shadow-hover;
 }
+
+.button:focus {
+    box-shadow: 0.05rem 0.1rem $button-shadow-focus;
+    outline: none;
+}
