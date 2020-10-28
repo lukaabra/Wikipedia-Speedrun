@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import AppRouter from './routers/AppRouter';
 
-import './styles/styles.css'
+import './styles/styles.scss'
 
 const jsx = (
     <div className="container">

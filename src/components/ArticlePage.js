@@ -52,7 +52,7 @@ class ArticlePage extends React.Component {
             const res = await fetch(`http://localhost:3001/api/article/${this.state.currentArticle._id}`);
             const hasWon = await res.text();
 
-            this.setState(() => ({ hasWon: !!hasWon }));
+            this.setState(() => ({ hasWon }));
         } catch (error) {
             console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle}`);
             console.log(`Response object:\n ${res}\n`);
@@ -115,8 +115,6 @@ class ArticlePage extends React.Component {
         // Second (path.length - 2) is the hint
         this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
         this.checkIfGameWon();
-
-        console.log(this.state);
 
         this.setState(() => ({ showHint: false }));
     };
