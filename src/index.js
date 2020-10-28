@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import HomePage from './components/HomePage';
 import AppRouter from './routers/AppRouter';
 
+import './styles/styles.css'
+
 const jsx = (
-    <div>
+    <div className="container">
         <AppRouter />
     </div>
 );
