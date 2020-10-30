@@ -1,5 +1,6 @@
 .header {
     background-color: $header-background;
+    margin: 0 -1rem;
 }
 
 .header__title {
@@ -8,6 +9,10 @@
     color: $font-color;
     padding: 0.05rem;
     text-align: center;
+
+    @media only screen and (max-width: 569px) {
+        font-size: 2rem;
+    }
 }
 
 .header__subtitle {
@@ -15,4 +20,5 @@
     text-align: center;
     padding-bottom: 2rem;
     border-bottom: 0.1rem solid $button-background;
+    padding: 1.5rem;
 }

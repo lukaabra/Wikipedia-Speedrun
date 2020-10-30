@@ -12,8 +12,7 @@ router.get('/api/article/:id', async (req, res) => {
             if (error)
                 console.log('Get article error: ' + error);
         })
-        // TODO: Fix Session not being remembered
-        // updateGameSession(req, article);
+        updateGameSession(req, article.title);
         res.send(false);
     }
 });
