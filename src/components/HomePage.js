@@ -24,8 +24,16 @@ class HomePage extends React.Component {
         return (
             <div className="home">
                 <Header subtitle={subtitle} />
-                <Link to={'/instructions'} className="home__link"><p className="button">Play</p></Link>
-                <Link to={'/ranks'} className="home__link"><p className="button">Ranks</p></Link>
+                <div className="home__link-container">
+                    <Link to={'/instructions'} className="home__link-container__link">
+                        <p className="button">Play</p>
+                    </Link>
+                </div>
+                <div className="home__link-container">
+                    <Link to={'/ranks'} className="home__link-container__link">
+                        <p className="button">Ranks</p>
+                    </Link>
+                </div>
                 <ScoreList topThree={true} />
             </div>
         );
