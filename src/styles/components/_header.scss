@@ -3,22 +3,25 @@
     margin: 0 -1rem;
 }
 
-.header__title {
-    font-size: 3rem;
+.header__link {
     text-decoration: none;
-    color: $font-color;
-    padding: 0.05rem;
-    text-align: center;
+}
 
-    @media only screen and (max-width: 569px) {
-        font-size: 2rem;
+.header__link__title {
+    font-size: 4rem;
+    color: $font-color;
+    text-align: center;
+    margin: 0;
+    padding: 2rem;
+
+    @media only screen and (max-width: 375px) {
+        font-size: 3rem;
     }
 }
 
 .header__subtitle {
     font-size: 1.2rem;
     text-align: center;
-    padding-bottom: 2rem;
     border-bottom: 0.1rem solid $button-background;
-    padding: 1.5rem;
+    padding: 3rem;
 }
