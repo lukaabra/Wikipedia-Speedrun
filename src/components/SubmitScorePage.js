@@ -47,7 +47,7 @@ class SubmitScorePage extends React.Component {
     calculateScore = async (toSubmitScore) => {
         // Send the score to the server. The server calculates the score and saves it in the db
         const url = `http://localhost:3001/api/calculate-score/${this.context.difficulty}/${this.state.runTimeMs}?submit=${toSubmitScore}`
-        const res = await fetch(url);
+        const res = await fetch(url, { credentials: 'include' });
         const runScore = await res.json();
 
         const runTimeString = this.millisToMinutesAndSeconds(this.state.runTimeMs);
@@ -61,9 +61,8 @@ class SubmitScorePage extends React.Component {
             minPossibleSteps: this.context.startingArticle.path.length,
             score: runScore.runScore,
             // Sent from the server
-            rank: 0,
-            // User path is sent from the server. Will work when sessions are fixed.
-            userPath: ['gdjskagh', 'htuiewhge', 'hjfkelsag'],
+            rank: runScore.rank,
+            userPath: runScore.userPath,
             shortestPath: this.context.startingArticle.path
         };
 
