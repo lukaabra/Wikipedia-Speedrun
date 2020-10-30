@@ -22,7 +22,7 @@ class SubmitScorePage extends React.Component {
         runTimeMs: ''
     };
 
-    goToFinish = async (e, context) => {
+    goToFinish = async (e, context, toSubmitScore) => {
         if (e)
             e.preventDefault();
 
@@ -32,7 +32,7 @@ class SubmitScorePage extends React.Component {
             const error = "Please enter a name";
             this.setState(() => ({ error }));
         } else {
-            await this.calculateScore();
+            await this.calculateScore(toSubmitScore);
             await context.setScore(this.state.score);
 
             this.props.history.push('/finish');
@@ -44,13 +44,11 @@ class SubmitScorePage extends React.Component {
         this.setState(() => ({ name }));
     };
 
-    calculateScore = async () => {
+    calculateScore = async (toSubmitScore) => {
         // Send the score to the server. The server calculates the score and saves it in the db
-        const url = `http://localhost:3001/api/calculate-score/${this.context.difficulty}/${this.state.runTimeMs}`
-        console.log(url);
+        const url = `http://localhost:3001/api/calculate-score/${this.context.difficulty}/${this.state.runTimeMs}?submit=${toSubmitScore}`
         const res = await fetch(url);
         const runScore = await res.json();
-        console.log(runScore);
 
         const runTimeString = this.millisToMinutesAndSeconds(this.state.runTimeMs);
 
@@ -68,6 +66,7 @@ class SubmitScorePage extends React.Component {
             userPath: ['gdjskagh', 'htuiewhge', 'hjfkelsag'],
             shortestPath: this.context.startingArticle.path
         };
+
         this.setState(() => ({ score: scoreObject }));
     };
 
@@ -87,7 +86,7 @@ class SubmitScorePage extends React.Component {
                     {(value) => (
                         <div>
                             {this.state.error && <h4 className="error">{this.state.error}</h4>}
-                            <form onSubmit={(e) => this.goToFinish(e, value)} >
+                            <form onSubmit={(e) => this.goToFinish(e, value, true)} >
                                 <input
                                     type="text"
                                     autoFocus placeholder="Your name"
@@ -96,7 +95,7 @@ class SubmitScorePage extends React.Component {
                                 />
                                 <button className="button" className="button">Submit score</button>
                             </form>
-                            <button onClick={() => this.goToFinish(undefined, value)} className="button">Skip</button>
+                            <button onClick={() => this.goToFinish(undefined, value, false)} className="button">Skip</button>
                         </div>
                     )}
                 </GameSessionContext.Consumer>

@@ -48,7 +48,6 @@ initializeGameSession = (req) => {
     req.session.steps = 0;
     req.session.path = [];
     req.session.save();
-    console.log(req.session);
 };
 
 module.exports = router;

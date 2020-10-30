@@ -26,12 +26,15 @@ router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
     // const steps = req.session.steps;
     const steps = 15;
     const runScore = calculateScore(req.params.difficulty, req.params.time, steps);
+    const toSubmitScore = req.query.submit;
 
     const rankingTable = await getRankingTable();
     const rank = calculateRanking(runScore, rankingTable);
 
-    await updateRankingTable(rank, rankingTable);
-    await deleteSurplusScores(RANK_TABLE_SIZE);
+    if (toSubmitScore === 'true') {
+        await updateRankingTable(rank, rankingTable);
+        await deleteSurplusScores(RANK_TABLE_SIZE);
+    }
 
     const score = {
         runScore,

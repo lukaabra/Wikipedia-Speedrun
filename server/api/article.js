@@ -53,8 +53,8 @@ router.get('/api/article/edges/:edges/:article', async (req, res) => {
                 // TODO: A lot of the times around 20% of links are missing
                 if (edgeRecord !== null)
                     articleEdges.push(edgeRecord);
-                else
-                    console.log(`EDGE THAT IS NULL: ${edges}, ${edge}`);
+                // else
+                //     console.log(`EDGE THAT IS NULL: ${edges}, ${edge}`);
             }
         });
     };
