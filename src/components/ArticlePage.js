@@ -33,6 +33,10 @@ class ArticlePage extends React.Component {
     };
 
     componentDidUpdate() {
+        const currentArticleEdgesTitles = this.state.currentArticleEdges.sort().map(edge => {
+            return edge.title;
+        });
+        console.log(currentArticleEdgesTitles.sort());
         if (this.state.hasWon === true || this.state.hasWon === 'true')
             this.props.history.push('/submitscore');
     };
@@ -56,7 +60,10 @@ class ArticlePage extends React.Component {
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
     checkIfGameWon = async () => {
         try {
-            const res = await fetch(`http://localhost:3001/hasWon/${this.state.currentArticle._id}`, { signal: this.abortController.signal });
+            const res = await fetch(`http://localhost:3001/hasWon/${this.state.currentArticle._id}`, {
+                signal: this.abortController.signal,
+                credentials: 'include'
+            });
             const hasWon = await res.text();
 
             this.setState(() => ({ hasWon }));

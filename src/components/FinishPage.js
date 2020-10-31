@@ -15,7 +15,6 @@ class FinishPage extends React.Component {
     };
 
     componentDidMount() {
-        console.log(this.props);
         if (!this.context.gameStarted)
             this.props.history.push('/');
 
@@ -24,7 +23,7 @@ class FinishPage extends React.Component {
 
     getShortestPath = () => {
         if (this.state.surrendered) {
-            const shortestPath = this.context.startingArticle.path;
+            const shortestPath = this.context.startingArticle.path.reverse();
             this.setState(() => ({ shortestPath }));
         }
     }

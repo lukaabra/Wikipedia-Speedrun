@@ -6,19 +6,13 @@ const winningArticleId = '5f341062eee9893534cbded3';
 
 // Makni api
 router.get('/hasWon/:id', async (req, res) => {
-    if (req.params.id === winningArticleId) {
+    if (req.params.id === winningArticleId)
         res.send(true);
-    } else {
-        const article = await Article.findById(req.params.id, (error) => {
-            if (error)
-                console.log('Get article error: ' + error);
-        })
-        // updateGameSession(req, article.title);
+    else
         res.send(false);
-    }
 });
 
-router.get('api/:title', async (req, res) => {
+router.get('/api/:title', async (req, res) => {
     await Article.findOne({
         'title': req.params.title
     }, (error, foundArticle) => {

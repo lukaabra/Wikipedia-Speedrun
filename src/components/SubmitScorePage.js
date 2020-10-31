@@ -63,7 +63,8 @@ class SubmitScorePage extends React.Component {
             // Sent from the server
             rank: runScore.rank,
             userPath: runScore.userPath,
-            shortestPath: this.context.startingArticle.path
+            // Reverse the array so it's in the same order as the users path
+            shortestPath: this.context.startingArticle.path.reverse()
         };
 
         this.setState(() => ({ score: scoreObject }));

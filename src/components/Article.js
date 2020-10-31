@@ -1,6 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const compareTitles = (a, b) => {
+    if (a.title < b.title)
+        return -1;
+    if (a.title > b.title)
+        return 1;
+    return 0;
+};
+
 const Article = (props) => (
     <div className="article">
         <h4 className="article__title">{props.currentArticle.title}</h4>
@@ -14,24 +22,25 @@ const Article = (props) => (
                 </tr>
             </thead>
 
-            {
-                props.currentArticleEdges.sort().map((edge) => (
-                    <tbody>
-                        <tr>
+            <tbody>
+                {
+                    props.currentArticleEdges.sort(compareTitles).map((edge) => (
+                        <tr key={edge._id}>
                             <td key={edge.title} className="table-item-cell">
                                 <Link
                                     to={`/article/${edge._id}`}
                                     onClick={props.getClickedArticle}
                                     className="table-item-cell__link"
+                                    key={edge._id + edge.edges.length}
                                 >
                                     {edge.title}
                                 </Link>
                             </td>
-                            <td key={edge.id} className="table-item-cell">{edge.edges.length}</td>
+                            <td key={edge._id + edge.title} className="table-item-cell">{edge.edges.length}</td>
                         </tr>
-                    </tbody>
-                ))
-            }
+                    ))
+                }
+            </tbody>
 
         </table>
 
