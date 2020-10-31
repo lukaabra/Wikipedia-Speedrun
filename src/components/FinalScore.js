@@ -33,7 +33,7 @@ const FinalScore = (props) => (
         <ul className="final-score__path">
             {
                 Object.values(props.score.userPath).map((article) => (
-                    <li key={article}>{article}</li>
+                    <li key={article} className="final-score__path__li">{article}</li>
                 ))
             }
         </ul>
@@ -42,7 +42,7 @@ const FinalScore = (props) => (
         <ul className="final-score__path">
             {
                 Object.values(props.score.shortestPath).map((article, index) => (
-                    <li key={index}>{article}</li>
+                    <li key={index} className="final-score__path__li">{article}</li>
                 ))
             }
         </ul>
