@@ -62,7 +62,7 @@ class ArticlePage extends React.Component {
             });
             const hasWon = await res.text();
 
-            this.setState(() => ({ hasWon }));
+            this.setState(() => ({ hasWon: !!hasWon }));
         } catch (error) {
             console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle.title}`);
         }

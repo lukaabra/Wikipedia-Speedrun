@@ -4,7 +4,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     cors = require('cors'),
-    Article = require('./models/articles');
+    Score = require('./models/scores');
 
 // DATABASE SEEDING
 // const seed = require('../seed/seed');

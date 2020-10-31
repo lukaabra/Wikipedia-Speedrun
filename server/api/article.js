@@ -29,18 +29,14 @@ router.post('/article/edges', async (req, res) => {
     let articleEdges = [];
 
     for (let edge of edges) {
-        await Article.findOne({
+        const edgeRecord = await Article.findOne({
             'title': edge
-        }, (err, edgeRecord) => {
-            if (err) {
+        }, (err) => {
+            if (err)
                 console.log("Get article edge error: " + err);
-            } else {
-                if (edgeRecord !== null)
-                    articleEdges.push(edgeRecord);
-                else
-                    console.log(`EDGE THAT IS NULL: ${edge}`);
-            }
         });
+
+        articleEdges.push(edgeRecord);
     };
 
     await updateGameSession(req, articleTitle);

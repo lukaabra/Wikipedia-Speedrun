@@ -23,6 +23,7 @@ class DifficultyForm extends React.Component {
             edges: randomArticle.edges
         };
         url = 'http://localhost:3001/article/edges';
+
         res = await fetch(url, {
             method: 'POST',
             headers: {

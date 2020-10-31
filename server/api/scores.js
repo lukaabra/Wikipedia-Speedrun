@@ -29,7 +29,7 @@ router.post('/calculateScore', async (req, res) => {
     const rankingTable = await getRankingTable();
     const rank = calculateRanking(runScore, rankingTable);
 
-    if (toSubmitScore === 'true') {
+    if (toSubmitScore === true) {
         await updateRankingTable(rank, rankingTable);
         await deleteSurplusScores(RANK_TABLE_SIZE);
     }
@@ -40,6 +40,7 @@ router.post('/calculateScore', async (req, res) => {
         steps,
         userPath
     };
+
     res.json(score);
 });
 
@@ -134,7 +135,8 @@ updateRankingTable = (rankFromWhichToUpdate, rankingTable) => {
                 'rank': 1
             }
         }, (err, foundScore) => {
-            if (err) console.log("UPDATE RANK ERROR: " + err);
+            if (err)
+                console.log("UPDATE RANK ERROR: " + err);
         });
     }
 };
