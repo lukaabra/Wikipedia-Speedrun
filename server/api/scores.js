@@ -6,15 +6,12 @@ const RANK_TABLE_SIZE = 100;
 
 router.get("/api/score-table", async (req, res) => {
     let scores;
-    if (req.query.topThree) {
+    if (req.query.topThree === 'true') {
         scores = await Score.aggregate().sort({
             'score': 'asc'
         }).limit(3).exec();
-    } else {
-        scores = await Score.find({}).sort('score').exec((err) => {
-            if (err)
-                console.log('Retrieving all scores error: ', err);
-        });
+    } else if (req.query.topThree === 'false') {
+        scores = await Score.find({}).sort('rank');
     };
 
     res.json(scores);
@@ -22,11 +19,12 @@ router.get("/api/score-table", async (req, res) => {
 
 // Consider calculating the time on the server.
 // In such a case, a fail might occur where the rendered timer in react and the server timer don't match.
-router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
+router.post('/calculateScore', async (req, res) => {
     const steps = req.session.steps;
     const userPath = req.session.path;
-    const runScore = calculateScore(req.params.difficulty, req.params.time, steps);
-    const toSubmitScore = req.query.submit;
+    const toSubmitScore = req.body.toSubmitScore;
+
+    const runScore = calculateScore(req.body.difficulty, req.body.runTimeMs, steps);
 
     const rankingTable = await getRankingTable();
     const rank = calculateRanking(runScore, rankingTable);
@@ -46,8 +44,11 @@ router.get('/api/calculate-score/:difficulty/:time', async (req, res) => {
 });
 
 // Finish submit score
-router.post('/api/score', async (req, res) => {
+router.post('/submitScore', async (req, res) => {
+    const score = req.body
     await submitScore(score);
+
+    res.send(req.statusCode);
 });
 
 //==================================================

@@ -33,10 +33,6 @@ class ArticlePage extends React.Component {
     };
 
     componentDidUpdate() {
-        const currentArticleEdgesTitles = this.state.currentArticleEdges.sort().map(edge => {
-            return edge.title;
-        });
-        console.log(currentArticleEdgesTitles.sort());
         if (this.state.hasWon === true || this.state.hasWon === 'true')
             this.props.history.push('/submitscore');
     };

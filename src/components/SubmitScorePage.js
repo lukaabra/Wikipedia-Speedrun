@@ -35,7 +35,31 @@ class SubmitScorePage extends React.Component {
             await this.calculateScore(toSubmitScore);
             await context.setScore(this.state.score);
 
-            this.props.history.push('/finish');
+            if (toSubmitScore) {
+                const url = 'http://localhost:3001/submitScore';
+
+                const payload = { ...this.state.score };
+                delete payload.userPath;
+                delete payload.shortestPath;
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload),
+                    credentials: "include",
+                });
+
+                if (res.status == 200)
+                    this.props.history.push('/finish');
+                else
+                    this.props.history.push('/error');
+
+            } else {
+                this.props.history.push('/finish');
+            }
         }
     };
 
@@ -46,8 +70,22 @@ class SubmitScorePage extends React.Component {
 
     calculateScore = async (toSubmitScore) => {
         // Send the score to the server. The server calculates the score and saves it in the db
-        const url = `http://localhost:3001/api/calculate-score/${this.context.difficulty}/${this.state.runTimeMs}?submit=${toSubmitScore}`
-        const res = await fetch(url, { credentials: 'include' });
+        const url = `http://localhost:3001/calculateScore`;
+        const payload = {
+            runTimeMs: this.state.runTimeMs,
+            difficulty: this.context.difficulty,
+            toSubmitScore
+        };
+
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            credentials: "include",
+        });
         const runScore = await res.json();
 
         const runTimeString = this.millisToMinutesAndSeconds(this.state.runTimeMs);
@@ -57,7 +95,7 @@ class SubmitScorePage extends React.Component {
             name: this.state.name,
             startingArticle: this.context.startingArticle.title,
             time: runTimeString,
-            userSteps: runScore.steps,
+            steps: runScore.steps,
             minPossibleSteps: this.context.startingArticle.path.length,
             score: runScore.runScore,
             // Sent from the server

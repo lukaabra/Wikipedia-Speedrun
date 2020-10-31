@@ -18,7 +18,7 @@ const FinalScore = (props) => (
         <p>{props.score.time}</p>
 
         <h3 className="final-score__title">Your steps:</h3>
-        <p>{props.score.userSteps}</p>
+        <p>{props.score.steps}</p>
 
         <h3 className="final-score__title">Minimum possible steps:</h3>
         <p>{props.score.minPossibleSteps}</p>
