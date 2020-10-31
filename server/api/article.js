@@ -4,7 +4,8 @@ const Article = require('../models/articles');
 
 const winningArticleId = '5f341062eee9893534cbded3';
 
-router.get('/api/article/:id', async (req, res) => {
+// Makni api
+router.get('/hasWon/:id', async (req, res) => {
     if (req.params.id === winningArticleId) {
         res.send(true);
     } else {
@@ -12,21 +13,12 @@ router.get('/api/article/:id', async (req, res) => {
             if (error)
                 console.log('Get article error: ' + error);
         })
-        updateGameSession(req, article.title);
+        // updateGameSession(req, article.title);
         res.send(false);
     }
 });
 
-router.get('/article/:id', async (req, res) => {
-    await Article.findById(req.params.id, (error, foundArticle) => {
-        if (error)
-            res.send(error)
-        else
-            res.json(foundArticle)
-    })
-});
-
-router.get('/title/:title', async (req, res) => {
+router.get('api/:title', async (req, res) => {
     await Article.findOne({
         'title': req.params.title
     }, (error, foundArticle) => {
@@ -37,9 +29,9 @@ router.get('/title/:title', async (req, res) => {
     })
 });
 
-router.get('/api/article/edges/:edges/:article', async (req, res) => {
-    const edges = req.params.edges.split(',');
-    const articleTitle = req.params.article;
+router.post('/article/edges', async (req, res) => {
+    const articleTitle = req.body.title;
+    const edges = req.body.edges;
     let articleEdges = [];
 
     for (let edge of edges) {
@@ -49,11 +41,10 @@ router.get('/api/article/edges/:edges/:article', async (req, res) => {
             if (err) {
                 console.log("Get article edge error: " + err);
             } else {
-                // TODO: A lot of the times around 20% of links are missing
                 if (edgeRecord !== null)
                     articleEdges.push(edgeRecord);
-                // else
-                //     console.log(`EDGE THAT IS NULL: ${edges}, ${edge}`);
+                else
+                    console.log(`EDGE THAT IS NULL: ${edge}`);
             }
         });
     };

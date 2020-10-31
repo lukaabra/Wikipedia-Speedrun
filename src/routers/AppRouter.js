@@ -35,15 +35,15 @@ class AppRouter extends React.Component {
 
     setScore = (score) => {
         this.setState(() => ({ score }));
-    }
+    };
 
     setSurrendered = (surrendered) => {
-        this.setState(() => ({ surrendered }))
-    }
+        this.setState(() => ({ surrendered }));
+    };
 
     setDifficulty = (difficulty) => {
         this.setState(() => ({ difficulty }));
-    }
+    };
 
     setStartingArticle = (startingArticle) => {
         this.setState(() => ({ startingArticle }));

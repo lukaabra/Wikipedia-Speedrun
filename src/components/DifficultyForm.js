@@ -18,8 +18,21 @@ class DifficultyForm extends React.Component {
         let res = await fetch(url, { credentials: 'include' });
         const randomArticle = await res.json();
 
-        url = `http://localhost:3001/api/article/edges/${randomArticle.edges}/${randomArticle.title}`;
-        res = await fetch(url, { credentials: 'include' });
+        const payload = {
+            title: randomArticle.title,
+            edges: randomArticle.edges
+        };
+        url = 'http://localhost:3001/article/edges';
+        res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            credentials: "include"
+        });
+
         const randomArticleEdges = await res.json();
 
         return [randomArticle, randomArticleEdges];

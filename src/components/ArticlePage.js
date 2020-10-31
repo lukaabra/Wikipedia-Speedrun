@@ -9,6 +9,9 @@ import GameSessionContext from '../context/GameSessionContext';
 class ArticlePage extends React.Component {
     static contextType = GameSessionContext;
 
+    // Used to abort all API calls when the component unmounts
+    abortController = new AbortController();
+
     componentDidMount() {
         if (!this.context.gameStarted) {
             this.props.history.push('/');
@@ -34,6 +37,10 @@ class ArticlePage extends React.Component {
             this.props.history.push('/submitscore');
     };
 
+    componentWillUnmount() {
+        this.abortController.abort();
+    };
+
     state = {
         currentArticle: this.context.startingArticle,
         currentArticleEdges: this.context.startingArticleEdges,
@@ -49,13 +56,12 @@ class ArticlePage extends React.Component {
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
     checkIfGameWon = async () => {
         try {
-            const res = await fetch(`http://localhost:3001/api/article/${this.state.currentArticle._id}`);
+            const res = await fetch(`http://localhost:3001/hasWon/${this.state.currentArticle._id}`, { signal: this.abortController.signal });
             const hasWon = await res.text();
 
             this.setState(() => ({ hasWon }));
         } catch (error) {
-            console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle}`);
-            console.log(`Response object:\n ${res}\n`);
+            console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle.title}`);
         }
     }
 
@@ -93,15 +99,29 @@ class ArticlePage extends React.Component {
 
     getArticleEdges = async () => {
         try {
-            const url = `http://localhost:3001/api/article/edges/
-            ${this.state.currentArticle.edges}/${this.state.currentArticle.title}`;
-            const res = await fetch(url, { credentials: 'include' });
+            const payload = {
+                title: this.state.currentArticle.title,
+                edges: this.state.currentArticle.edges
+            };
+            const url = 'http://localhost:3001/article/edges';
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                credentials: "include",
+                signal: this.abortController.signal
+            });
             const clickedArticleEdges = await res.json();
 
             this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));
         } catch (error) {
-            console.log(`\nError in fetching following articles edges:\n\t '${this.state.currentArticle.title}`);
-            console.log(this.state.currentArticle);
+            if (error === "AbortError")
+                console.log("Fetch aborted");
+            else
+                console.log(`\nError in fetching following articles edges:\n\t '${this.state.currentArticle.title}`);
         }
     };
 
@@ -111,12 +131,15 @@ class ArticlePage extends React.Component {
         await this.getArticle(e);
         await this.getArticleEdges();
 
-        // Last item (path.length - 1) in the path array is the clickedArticle
-        // Second (path.length - 2) is the hint
-        this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
-        this.checkIfGameWon();
+        // Check if the current article is not the finishing article
+        if (this.state.currentArticle.path.length > 1)
+            // Last item (path.length - 1) in the path array is the clickedArticle
+            // Second (path.length - 2) is the hint
+            this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
 
         this.setState(() => ({ showHint: false }));
+
+        this.checkIfGameWon();
     };
 
     useHint = () => {

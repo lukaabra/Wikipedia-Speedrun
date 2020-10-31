@@ -1,6 +1,7 @@
 const express = require('express'),
     app = express(),
     session = require('express-session'),
+    bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     cors = require('cors'),
     Article = require('./models/articles');
@@ -13,37 +14,42 @@ const scoresRouter = require('./api/scores');
 const randomArticleRouter = require('./api/generateRandom');
 const articleRouter = require('./api/article');
 
+mongoose.connect('mongodb://localhost:27017/wiki_articles', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+});
 
-(async () => {
-    //====================================================
-    // MONGOOSE SETUP
-    // Connection is awaited to prevent database actions rushing before the connection is established.
-    //====================================================
-    await mongoose.connect('mongodb://localhost:27017/wiki_articles', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false
-    });
+// (async () => {
+//     //====================================================
+//     // MONGOOSE SETUP
+//     // Connection is awaited to prevent database actions rushing before the connection is established.
+//     //====================================================
+//     mongoose.connect('mongodb://localhost:27017/wiki_articles', {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//         useFindAndModify: false
+//     });
 
-    //====================================================
-    // CREATE GRAPH AND SEED DATABASE
-    // ! WARNING !
-    // COMMENT OUT ONLY IF YOU WANT TO WRITE JSON FILES AND DB FROM SCRATCH
-    //====================================================
-    // const STARTING_ARTICLE = 'Rijeka'
-    // await seed.constructGraphToJSON(STARTING_ARTICLE);
-    // await seed.saveGraphToDb();
-})();
-
-// Session is not initalized properly:
-// Session {
-//   cookie: { path: '/', _expires: null, originalMaxAge: null, httpOnly: true }
-// }
+//====================================================
+// CREATE GRAPH AND SEED DATABASE
+// ! WARNING !
+// COMMENT OUT ONLY IF YOU WANT TO WRITE JSON FILES AND DB FROM SCRATCH
+//====================================================
+// const STARTING_ARTICLE = 'Rijeka'
+// await seed.constructGraphToJSON(STARTING_ARTICLE);
+// await seed.saveGraphToDb();
+// })();
 
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }));
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
 app.use(session({
     secret: 'Speedrunning is my passion',
@@ -61,5 +67,5 @@ app.use(randomArticleRouter);
 app.use(articleRouter);
 
 app.listen(3001, () => {
-    console.log("Server starting at port 3001 ...");
+    console.log("Server started at port 3001.");
 });

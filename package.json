@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "start": "webpack serve --config webpack.dev.js"
+    "start": "webpack serve --config webpack.dev.js",
+    "server": "nodemon ./server/server.js"
   },
   "author": "Luka Abramovic",
   "license": "ISC",
