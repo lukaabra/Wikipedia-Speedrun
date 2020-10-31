@@ -4,7 +4,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     cors = require('cors'),
-    Score = require('./models/scores');
+    port = process.env.PORT || 3001;
 
 // DATABASE SEEDING
 // const seed = require('../seed/seed');
@@ -66,6 +66,6 @@ app.use(scoresRouter);
 app.use(randomArticleRouter);
 app.use(articleRouter);
 
-app.listen(3001, () => {
+app.listen(port, () => {
     console.log("Server started at port 3001.");
 });
