@@ -62,7 +62,7 @@ class ArticlePage extends React.Component {
             });
             const hasWon = await res.text();
 
-            this.setState(() => ({ hasWon: !!hasWon }));
+            this.setState(() => ({ hasWon }));
         } catch (error) {
             console.log(`\nError in checking if following article is the finishing one:\n\t '${this.state.currentArticle.title}`);
         }
@@ -117,6 +117,10 @@ class ArticlePage extends React.Component {
                 credentials: "include",
                 signal: this.abortController.signal
             });
+
+            if (res.status >= 400 && res.status <= 511)
+                this.props.history.push('/error');
+
             const clickedArticleEdges = await res.json();
 
             this.setState(() => ({ currentArticleEdges: clickedArticleEdges }));

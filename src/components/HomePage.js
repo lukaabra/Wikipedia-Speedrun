@@ -34,7 +34,7 @@ class HomePage extends React.Component {
                         <p className="button">Ranks</p>
                     </Link>
                 </div>
-                <ScoreList topThree={true} />
+                <ScoreList topThree={true} history={this.props.history} />
             </div>
         );
     };

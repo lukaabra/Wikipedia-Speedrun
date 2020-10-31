@@ -18,9 +18,12 @@ class ScoreList extends React.Component {
 
     getScores = async () => {
         const res = await fetch(`http://localhost:3001/api/score-table?topThree=${this.props.topThree}`);
-        const scores = await res.json();
-
-        this.setState(() => ({ scores }));
+        if (res.status >= 400 && res.status <= 511)
+            this.props.history.push('/error');
+        else {
+            const scores = await res.json();
+            this.setState(() => ({ scores }));
+        }
     };
 
     render() {

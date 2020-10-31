@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const NotFoundPage = () => (
     <div>
-        <p>The page you are trying to access does not exist.</p>
-        <Link to={'/'}>Home</Link>
+        <p className="header__subtitle">The page you are trying to access does not exist.</p>
+        <Link to={'/'} className="button">Home</Link>
     </div>
 );
 

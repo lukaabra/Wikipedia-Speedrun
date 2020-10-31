@@ -16,6 +16,10 @@ class DifficultyForm extends React.Component {
     generateRandom = async () => {
         let url = `http://localhost:3001/generateRandom/${this.state.difficulty}`;
         let res = await fetch(url, { credentials: 'include' });
+
+        if (res.status >= 400 && res.status <= 511)
+            this.props.history.push('/error');
+
         const randomArticle = await res.json();
 
         const payload = {
@@ -33,6 +37,9 @@ class DifficultyForm extends React.Component {
             body: JSON.stringify(payload),
             credentials: "include"
         });
+
+        if (res.status >= 400 && res.status <= 511)
+            this.props.history.push('/error');
 
         const randomArticleEdges = await res.json();
 

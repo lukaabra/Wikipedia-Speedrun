@@ -7,6 +7,7 @@ import InstructionPage from '../components/InstructionPage';
 import ArticlePage from '../components/ArticlePage';
 import SubmitScorePage from '../components/SubmitScorePage';
 import FinishPage from '../components/FinishPage';
+import ErrorPage from '../components/ErrorPage';
 import NotFoundPage from '../components/NotFoundPage';
 
 import GameSessionContext from '../context/GameSessionContext';
@@ -72,6 +73,7 @@ class AppRouter extends React.Component {
                         <Route path="/article/:id" component={ArticlePage} />
                         <Route path="/submitscore" component={SubmitScorePage} />
                         <Route path="/finish" component={FinishPage} />
+                        <Route path="/error" component={ErrorPage} />
                         <Route component={NotFoundPage} />
                     </Switch>
                 </BrowserRouter>
