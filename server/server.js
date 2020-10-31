@@ -4,7 +4,9 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     cors = require('cors'),
-    port = process.env.PORT || 3001;
+    path = require('path'),
+    port = process.env.PORT || 3001,
+    publicPath = path.join(__dirname, '..', 'public');
 
 // DATABASE SEEDING
 // const seed = require('../seed/seed');
@@ -41,6 +43,8 @@ mongoose.connect('mongodb://localhost:27017/wiki_articles', {
 // await seed.saveGraphToDb();
 // })();
 
+app.use(express.static(publicPath));
+
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
@@ -65,6 +69,10 @@ app.use(session({
 app.use(scoresRouter);
 app.use(randomArticleRouter);
 app.use(articleRouter);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(publicPath, 'index.html'));
+});
 
 app.listen(port, () => {
     console.log("Server started at port 3001.");
