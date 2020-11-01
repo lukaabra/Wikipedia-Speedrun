@@ -5,13 +5,15 @@
     height: 50px;
     width: calc(100% + 2rem);
     margin-left: -1rem;
-    margin-bottom: -125px;
     background-color: $button-background-hover;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: -0.1rem 0 0.1rem 0.1rem $button-shadow;
 
+    @media only screen and (min-height: 655px) {
+        margin-bottom: -125px;
+    }
 }
 
 .footer a {
