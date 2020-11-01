@@ -16,7 +16,8 @@ const scoresRouter = require('./api/scores');
 const randomArticleRouter = require('./api/generateRandom');
 const articleRouter = require('./api/article');
 
-mongoose.connect('mongodb://localhost:27017/wiki_articles', {
+const uri = 'mongodb+srv://Wiki:speedrun@wikicluster.vll3i.mongodb.net/wiki_articles?retryWrites=true&w=majority';
+mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
