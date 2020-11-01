@@ -1,5 +1,5 @@
 # Wikipedia-Speedrun
-## Find shortest path from starting Wikipedia article to target article.
+## Find the shortest path from a starting Wikipedia article to the target article.
 
 ### What?
 A SPA (Single-page application) in which you traverse Wikipedia articles with the goal of reaching the final article for 'Rijeka' (city in Croatia).
