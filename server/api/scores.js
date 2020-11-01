@@ -4,7 +4,7 @@ const Score = require('../models/scores');
 
 const RANK_TABLE_SIZE = 100;
 
-router.get("/api/score-table", async (req, res) => {
+router.get("/score-table", async (req, res) => {
     let scores;
     if (req.query.topThree === 'true') {
         scores = await Score.aggregate().sort({
