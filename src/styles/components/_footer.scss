@@ -1,0 +1,32 @@
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-bottom: 0;
+    background-color: $button-background-hover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: -0.1rem 0 0.1rem 0.1rem $button-shadow;
+
+}
+
+.footer a {
+    text-decoration: none;
+}
+
+
+.footer__link {
+    margin: 0.5rem 2rem 0.3rem 2rem;
+    color: $font-color;
+    border-bottom: 0px solid $font-color;
+    transition: border-bottom 0.05s;
+    padding-top: 0.2rem;
+}
+
+.footer__link:hover {
+    border-bottom: 0.1rem solid $font-color;
+}

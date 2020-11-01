@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import Header from './Header';
+import Footer from './Footer';
 import ScoreList from './ScoreList';
 
 import GameSessionContext from '../context/GameSessionContext';
-import Header from './Header';
 
 const subtitle = 'Reach the Wikipedia article for the city of Rijeka, Croatia as fast as you can!'
 
@@ -35,6 +36,7 @@ class HomePage extends React.Component {
                     </Link>
                 </div>
                 <ScoreList topThree={true} history={this.props.history} />
+                <Footer />
             </div>
         );
     };

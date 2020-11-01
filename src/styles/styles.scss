@@ -11,6 +11,8 @@
 @import './components/finishpage';
 @import './components/submitscore';
 @import './components/finalscore';
+@import './components/howitworks';
+@import './components/footer';
 
 // There are no style sheets for ScoreList or ScoreListItem since the table
 // used there is styles in _base.scss. That is because the table is reused elsewhere.

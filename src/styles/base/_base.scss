@@ -3,10 +3,18 @@ body {
     background-color: $body-background;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 .container {
     margin: 0 1rem;
+    min-height: 100vh;
+    position: relative;
+    padding: 0;
+
+    @media only screen and (max-width: 650px) {
+        padding: 0 0 50px;
+    }
 }
 
 // Custom button
