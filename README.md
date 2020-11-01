@@ -15,3 +15,4 @@ The backend server was built with Express, and database modelling was done with 
 The main purpose of this project is to gain knowledge and experience with the technologies used and with the application development process in general.
 
 ### Technologies used:
+![](./icons/react.svg) ![](./icons/nodejs.svg) ![](./icons/mongodb.svg) ![](./icons/express.svg) ![](./icons/sass.svg) ![](./icons/webpack.svg)
