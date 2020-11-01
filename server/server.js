@@ -6,7 +6,8 @@ const express = require('express'),
     cors = require('cors'),
     path = require('path'),
     port = process.env.PORT || 3001,
-    publicPath = path.join(__dirname, '..', 'public');
+    publicPath = path.join(__dirname, '..', 'public'),
+    dotenv = require('dotenv');
 
 // DATABASE SEEDING
 // const seed = require('../seed/seed');
@@ -16,7 +17,8 @@ const scoresRouter = require('./api/scores');
 const randomArticleRouter = require('./api/generateRandom');
 const articleRouter = require('./api/article');
 
-const uri;
+dotenv.config();
+const uri = process.env.MONGO_ATLAS_URI;
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
