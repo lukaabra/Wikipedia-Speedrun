@@ -3,11 +3,9 @@ const router = express.Router();
 const Article = require('../models/articles');
 
 router.get('/generateRandom/:difficulty', async (req, res) => {
-    // Since the user is starting the game, destroy the session of the previous game
-    // req.session.destroy();
-
     const randomArticle = await generateRandomArticle(req.params.difficulty);
     await initializeGameSession(req);
+
     res.json(randomArticle[0]);
 });
 

@@ -25,11 +25,13 @@ mongoose.connect(uri, {
     useFindAndModify: false
 });
 
+// UNCOMMENT THE CODE BELOW IF YOU WANT TO SEED THE DATABASE
+
 // (async () => {
-//     //====================================================
-//     // MONGOOSE SETUP
-//     // Connection is awaited to prevent database actions rushing before the connection is established.
-//     //====================================================
+//====================================================
+// MONGOOSE SETUP
+// Connection is awaited to prevent database actions rushing before the connection is established.
+//====================================================
 //     mongoose.connect('mongodb://localhost:27017/wiki_articles', {
 //         useNewUrlParser: true,
 //         useUnifiedTopology: true,

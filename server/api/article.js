@@ -12,17 +12,6 @@ router.get('/hasWon/:id', async (req, res) => {
         res.send(false);
 });
 
-router.get('/api/:title', async (req, res) => {
-    await Article.findOne({
-        'title': req.params.title
-    }, (error, foundArticle) => {
-        if (error)
-            res.send(error)
-        else
-            res.json(foundArticle)
-    })
-});
-
 router.post('/article/edges', async (req, res) => {
     const articleTitle = req.body.title;
     const edges = req.body.edges;
@@ -41,6 +30,18 @@ router.post('/article/edges', async (req, res) => {
 
     await updateGameSession(req, articleTitle);
     res.json(articleEdges);
+});
+
+// Route for testing
+router.get('/api/:title', async (req, res) => {
+    await Article.findOne({
+        'title': req.params.title
+    }, (error, foundArticle) => {
+        if (error)
+            res.send(error)
+        else
+            res.json(foundArticle)
+    })
 });
 
 updateGameSession = async (req, articleTitle) => {
