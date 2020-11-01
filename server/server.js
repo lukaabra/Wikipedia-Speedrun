@@ -3,7 +3,6 @@ const express = require('express'),
     session = require('express-session'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    cors = require('cors'),
     path = require('path'),
     port = process.env.PORT || 3001,
     publicPath = path.join(__dirname, '..', 'public'),
@@ -12,11 +11,12 @@ const express = require('express'),
 // DATABASE SEEDING
 // const seed = require('../seed/seed');
 
-// REQUIRING ROUTES
+// Routers
 const scoresRouter = require('./api/scores');
 const randomArticleRouter = require('./api/generateRandom');
 const articleRouter = require('./api/article');
 
+// Retrieve environment variable
 dotenv.config();
 const uri = process.env.MONGO_ATLAS_URI;
 mongoose.connect(uri, {
@@ -50,16 +50,12 @@ mongoose.connect(uri, {
 
 app.use(express.static(publicPath));
 
-// app.use(cors({
-//     origin: 'http://localhost:3000',
-//     credentials: true
-// }));
 
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-
+// Session
 app.use(session({
     secret: 'Speedrunning is my passion',
     maxAge: 3600000,
@@ -71,6 +67,7 @@ app.use(session({
     }
 }));
 
+// Routers
 app.use(scoresRouter);
 app.use(randomArticleRouter);
 app.use(articleRouter);
