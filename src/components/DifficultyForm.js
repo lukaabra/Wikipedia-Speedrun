@@ -14,7 +14,7 @@ class DifficultyForm extends React.Component {
      * Fetches a random article and its edges from the database and returns them in an array.
      */
     generateRandom = async () => {
-        let url = `http://localhost:3001/generateRandom/${this.state.difficulty}`;
+        let url = `https://wiki-speedrun.herokuapp.com:3001/generateRandom/${this.state.difficulty}`;
         let res = await fetch(url, { credentials: 'include' });
 
         if (res.status >= 400 && res.status <= 511)
@@ -26,7 +26,7 @@ class DifficultyForm extends React.Component {
             title: randomArticle.title,
             edges: randomArticle.edges
         };
-        url = 'http://localhost:3001/article/edges';
+        url = 'https://wiki-speedrun.herokuapp.com:3001/article/edges';
 
         res = await fetch(url, {
             method: 'POST',
