@@ -11,7 +11,7 @@
     align-items: center;
     box-shadow: -0.1rem 0 0.1rem 0.1rem $button-shadow;
 
-    @media only screen and (min-height: 655px) {
+    @media only screen and (max-height: 655px) {
         margin-bottom: -125px;
     }
 }
