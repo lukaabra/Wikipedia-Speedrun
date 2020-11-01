@@ -15,6 +15,9 @@ const express = require('express'),
 const scoresRouter = require('./api/scores');
 const randomArticleRouter = require('./api/generateRandom');
 const articleRouter = require('./api/article');
+const healthRouter = require('./api/healthEndpoint');
+
+const pingHealthEndpoint = require('./test/healthEndpoint');
 
 // Retrieve environment variable
 dotenv.config();
@@ -71,11 +74,14 @@ app.use(session({
 app.use(scoresRouter);
 app.use(randomArticleRouter);
 app.use(articleRouter);
+app.use(healthRouter);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
 });
 
+pingHealthEndpoint();
+
 app.listen(port, () => {
-    console.log("Server started at port 3001.");
+    console.log(`Server started at port ${port}.`);
 });
