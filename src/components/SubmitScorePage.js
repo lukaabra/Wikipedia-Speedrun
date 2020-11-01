@@ -36,7 +36,7 @@ class SubmitScorePage extends React.Component {
             await context.setScore(this.state.score);
 
             if (toSubmitScore) {
-                const url = 'http://localhost:3001/submitScore';
+                const url = '/submitScore';
 
                 const payload = { ...this.state.score };
                 delete payload.userPath;
@@ -70,7 +70,7 @@ class SubmitScorePage extends React.Component {
 
     calculateScore = async (toSubmitScore) => {
         // Send the score to the server. The server calculates the score and saves it in the db
-        const url = `http://localhost:3001/calculateScore`;
+        const url = `/calculateScore`;
         const payload = {
             runTimeMs: this.state.runTimeMs,
             difficulty: this.context.difficulty,

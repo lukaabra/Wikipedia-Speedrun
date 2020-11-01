@@ -56,7 +56,7 @@ class ArticlePage extends React.Component {
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
     checkIfGameWon = async () => {
         try {
-            const res = await fetch(`http://localhost:3001/hasWon/${this.state.currentArticle._id}`, {
+            const res = await fetch(`/hasWon/${this.state.currentArticle._id}`, {
                 signal: this.abortController.signal,
                 credentials: 'include'
             });
@@ -106,7 +106,7 @@ class ArticlePage extends React.Component {
                 title: this.state.currentArticle.title,
                 edges: this.state.currentArticle.edges
             };
-            const url = 'http://localhost:3001/article/edges';
+            const url = '/article/edges';
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
