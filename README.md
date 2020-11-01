@@ -15,4 +15,4 @@ The backend server was built with Express, and database modelling was done with 
 The main purpose of this project is to gain knowledge and experience with the technologies used and with the application development process in general.
 
 ### Technologies used:
-<img src="./icons/react.svg" alt="React icon" width="100" height="75"><img src="./icons/nodejs.svg" alt="Node icon" width="100" height="75"><img src="./icons/mongodb.svg" alt="MongoDB icon" width="100" height="75"><img src="./icons/express.svg" alt="Express icon" width="100" height="75"><img src="./icons/sass.svg" alt="Sass icon" width="100" height="75"><img src="./icons/webpack.svg" alt="Webpack icon" width="100" height="75">
+<img src="./icons/react.svg" alt="React icon" width="100" height="75">   <img src="./icons/nodejs.svg" alt="Node icon" width="100" height="75">   <img src="./icons/mongodb.svg" alt="MongoDB icon" width="100" height="75">   <img src="./icons/express.svg" alt="Express icon" width="100" height="75">   <img src="./icons/sass.svg" alt="Sass icon" width="100" height="75">   <img src="./icons/webpack.svg" alt="Webpack icon" width="100" height="75">
