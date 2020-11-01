@@ -16,7 +16,7 @@ const scoresRouter = require('./api/scores');
 const randomArticleRouter = require('./api/generateRandom');
 const articleRouter = require('./api/article');
 
-const uri = 'mongodb+srv://Wiki:speedrun@wikicluster.vll3i.mongodb.net/wiki_articles?retryWrites=true&w=majority';
+const uri;
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
