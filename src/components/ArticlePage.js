@@ -18,6 +18,7 @@ class ArticlePage extends React.Component {
         } else {
             this.context.setStartTime(Date.now());
             this.encodeHint(this.state.currentArticle.path[this.state.currentArticle.path.length - 2]);
+
             switch (this.state.difficulty) {
                 case 'easy':
                     this.setState(() => ({ numOfHints: Number.MAX_SAFE_INTEGER }));
@@ -50,7 +51,8 @@ class ArticlePage extends React.Component {
         numOfHints: Number.MAX_SAFE_INTEGER,
         key: Math.floor(Math.random() * 26) + 1,
         hint: '',
-        showHint: false
+        showHint: false,
+        isLoaded: true
     };
 
     // ADD CHECKING WINNING CONDITION AND ROUTING TO FINISHING SCREEN
@@ -135,8 +137,12 @@ class ArticlePage extends React.Component {
     getClickedArticle = async (e) => {
         e.persist();
 
+        this.setState(() => ({ isLoaded: false }));
+
         await this.getArticle(e);
         await this.getArticleEdges();
+
+        this.setState(() => ({ isLoaded: true }));
 
         // Check if the current article is not the finishing article
         if (this.state.currentArticle.path.length > 1)
@@ -165,6 +171,7 @@ class ArticlePage extends React.Component {
                     getClickedArticle={this.getClickedArticle}
                     currentArticle={this.state.currentArticle}
                     currentArticleEdges={this.state.currentArticleEdges}
+                    isLoaded={this.state.isLoaded}
                 />
                 <Hints
                     useHint={this.useHint}
@@ -179,7 +186,7 @@ class ArticlePage extends React.Component {
                         </div>
                     )}
                 </GameSessionContext.Consumer>
-            </div >
+            </div>
         )
     }
 };

@@ -4,7 +4,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     path = require('path'),
-    port = process.env.PORT || 3001,
+    port = process.env.PORT || 3000,
     publicPath = path.join(__dirname, '..', 'public'),
     dotenv = require('dotenv');
 
@@ -80,7 +80,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
 });
 
-pingHealthEndpoint();
+// pingHealthEndpoint();
 
 app.listen(port, () => {
     console.log(`Server started at port ${port}.`);
