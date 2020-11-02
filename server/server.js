@@ -80,7 +80,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
 });
 
-// pingHealthEndpoint();
+pingHealthEndpoint();
 
 app.listen(port, () => {
     console.log(`Server started at port ${port}.`);
