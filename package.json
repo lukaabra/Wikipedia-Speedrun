@@ -29,7 +29,7 @@
     "mini-css-extract-plugin": "^1.2.0",
     "mongoose": "^5.9.26",
     "node-sass": "^4.14.1",
-    "nodemailer": "^6.4.14",
+    "nodemailer": "^6.4.16",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-loader-spinner": "^3.1.14",
